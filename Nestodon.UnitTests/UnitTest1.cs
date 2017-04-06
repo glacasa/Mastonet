@@ -9,7 +9,7 @@ namespace Nestodon.UnitTests
         [TestMethod]
         public void GetAccount()
         {
-            var client = new NestodonClient();
+            var client = new NestodonClient("mastodon.cx");
             Assert.IsTrue(true);
         }
     }
