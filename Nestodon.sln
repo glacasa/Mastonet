@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestodon", "Nestodon\Nestodon.csproj", "{ED05B3AC-97C1-4237-A45F-25A8CE14C169}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestodon.UnitTests", "Nestodon.UnitTests\Nestodon.UnitTests.csproj", "{F56B17AD-55D0-4B36-B708-34B88389D947}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestodon.Entities", "Nestodon.Entities\Nestodon.Entities.csproj", "{C4F5C48D-7325-46C8-9B64-574EAB3AB693}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nestodon.Tests", "Nestodon.Tests\Nestodon.Tests.csproj", "{E7363D37-D863-4221-AD35-535AE65EFAD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{ED05B3AC-97C1-4237-A45F-25A8CE14C169}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED05B3AC-97C1-4237-A45F-25A8CE14C169}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED05B3AC-97C1-4237-A45F-25A8CE14C169}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F56B17AD-55D0-4B36-B708-34B88389D947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F56B17AD-55D0-4B36-B708-34B88389D947}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F56B17AD-55D0-4B36-B708-34B88389D947}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F56B17AD-55D0-4B36-B708-34B88389D947}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C4F5C48D-7325-46C8-9B64-574EAB3AB693}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C4F5C48D-7325-46C8-9B64-574EAB3AB693}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4F5C48D-7325-46C8-9B64-574EAB3AB693}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4F5C48D-7325-46C8-9B64-574EAB3AB693}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7363D37-D863-4221-AD35-535AE65EFAD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7363D37-D863-4221-AD35-535AE65EFAD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7363D37-D863-4221-AD35-535AE65EFAD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7363D37-D863-4221-AD35-535AE65EFAD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
