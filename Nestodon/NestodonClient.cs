@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Nestodon
 {
@@ -11,6 +12,13 @@ namespace Nestodon
         {
         }
 
+
+        private async Task SendRequest(string route, string method = "GET")
+        {
+            await Task.Delay(100);
+        }
+
+        
 
 
     }
