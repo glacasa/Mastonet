@@ -39,6 +39,16 @@ namespace Nestodon
             }
         }
 
+        private async Task<string> Delete(string route)
+        {
+            string url = "https://" + this.Instance + route;
+
+            var client = new HttpClient();
+            AddHttpHeader(client);
+            var response = await client.DeleteAsync(url);
+            return await response.Content.ReadAsStringAsync();
+        }
+
         private async Task<string> Get(string route)
         {
             string url = "https://" + this.Instance + route;
@@ -49,32 +59,33 @@ namespace Nestodon
             return await response.Content.ReadAsStringAsync();
         }
 
-        private async Task<T> GetObject<T>(string route)
+        private async Task<T> Get<T>(string route)
         {
             var content = await Get(route);
             return JsonConvert.DeserializeObject<T>(content);
         }
 
-        private async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data)
+        private async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             string url = "https://" + this.Instance + route;
 
             var client = new HttpClient();
             AddHttpHeader(client);
-            var content = new FormUrlEncodedContent(data);
+
+            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
             var response = await client.PostAsync(url, content);
             return await response.Content.ReadAsStringAsync();
         }
 
-        private async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data)
+        private async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             var content = await Post(route, data);
             return JsonConvert.DeserializeObject<T>(content);
         }
-        
+
         #endregion
 
-        #region Static App creation / login
+        #region Apps
 
         public static async Task<AppRegistration> CreateApp(string instance, string appName)
         {
@@ -107,7 +118,7 @@ namespace Nestodon
                 new KeyValuePair<string, string>("username", email),
                 new KeyValuePair<string, string>("password", password),
             };
-            
+
             this.UserAuth = await Post<Auth>("/oauth/token", data);
             return this.UserAuth;
         }
@@ -121,7 +132,7 @@ namespace Nestodon
         /// <returns>Returns an Account</returns>
         public Task<Account> GetAccount(int accountId)
         {
-            return GetObject<Account>($"/api/v1/accounts/{accountId}");
+            return Get<Account>($"/api/v1/accounts/{accountId}");
         }
 
         /// <summary>
@@ -130,7 +141,7 @@ namespace Nestodon
         /// <returns>Returns the authenticated user's Account</returns>
         public Task<Account> GetCurrentUser()
         {
-            return GetObject<Account>($"/api/v1/accounts/verify_credentials");
+            return Get<Account>($"/api/v1/accounts/verify_credentials");
         }
 
         /// <summary>
@@ -150,7 +161,7 @@ namespace Nestodon
         /// <returns>Returns an array of Relationships of the current user to a list of given accounts</returns>
         public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<int> ids)
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Relationship>>("/api/v1/accounts/relationships");
         }
 
         #endregion
@@ -164,7 +175,7 @@ namespace Nestodon
         /// <returns>Returns the target Account</returns>
         public Task<Account> Block(int accountId)
         {
-            throw new NotImplementedException();
+            return Get<Account>($"/api/v1/accounts/{accountId}/block");
         }
 
         /// <summary>
@@ -174,7 +185,7 @@ namespace Nestodon
         /// <returns>Returns the target Account</returns>
         public Task<Account> Unblock(int accountId)
         {
-            throw new NotImplementedException();
+            return Get<Account>($"/api/v1/accounts/{accountId}/unblock");
         }
 
         /// <summary>
@@ -183,7 +194,7 @@ namespace Nestodon
         /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
         public Task<IEnumerable<Account>> GetBlocks()
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Account>>("/api/v1/blocks");
         }
 
         #endregion
@@ -191,12 +202,32 @@ namespace Nestodon
         #region Favourites
 
         /// <summary>
+        /// Favouriting a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Favourite(int statusId)
+        {
+            return Post<Status>($"/api/vi/statuses/{statusId}/favourite");
+        }
+
+        /// <summary>
+        /// Unfavouriting a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Unfavourite(int statusId)
+        {
+            return Post<Status>($"/api/vi/statuses/{statusId}/unfavourite");
+        }
+
+        /// <summary>
         /// Fetching a user's favourites
         /// </summary>
         /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
         public Task<IEnumerable<Status>> GetFavourites()
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Status>>("/api/v1/favourites");
         }
 
         #endregion
@@ -209,7 +240,7 @@ namespace Nestodon
         /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
         public Task<IEnumerable<Account>> GetFollowRequests()
         {
-            throw new NotImplementedException();
+            return this.Get<IEnumerable<Account>>("/api/v1/follow_requests");
         }
 
         /// <summary>
@@ -218,7 +249,10 @@ namespace Nestodon
         /// <param name="accountId">The id of the account to authorize</param>
         public Task AuthorizeRequest(int accountId)
         {
-            throw new NotImplementedException();
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("id", accountId.ToString())
+            };
+            return this.Post("/api/v1/follow_requests/authorize");
         }
 
         /// <summary>
@@ -227,7 +261,10 @@ namespace Nestodon
         /// <param name="accountId">The id of the account to reject</param>
         public Task RejectRequest(int accountId)
         {
-            throw new NotImplementedException();
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("id", accountId.ToString())
+            };
+            return this.Post("/api/v1/follow_requests/reject");
         }
 
         #endregion
@@ -241,7 +278,7 @@ namespace Nestodon
         /// <returns>Returns an array of Accounts</returns>
         public Task<IEnumerable<Account>> GetAccountFollowers(int accountId)
         {
-            return GetObject<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/followers");
+            return Get<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/followers");
         }
 
         /// <summary>
@@ -251,7 +288,7 @@ namespace Nestodon
         /// <returns>Returns an array of Accounts</returns>
         public Task<IEnumerable<Account>> GetAccountFollowing(int accountId)
         {
-            return GetObject<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/following");
+            return Get<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/following");
         }
 
         /// <summary>
@@ -261,7 +298,10 @@ namespace Nestodon
         /// <returns>Returns the local representation of the followed account, as an Account</returns>
         public Task<Account> Follow(string uri)
         {
-            throw new NotImplementedException();
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("uri", uri)
+            };
+            return this.Post<Account>($"/api/v1/follows");
         }
 
         /// <summary>
@@ -271,7 +311,7 @@ namespace Nestodon
         /// <returns>Returns the target Account</returns>
         public Task<Account> Follow(int accountId)
         {
-            throw new NotImplementedException();
+            return this.Get<Account>($"/api/v1/accounts/{accountId}/follow");
         }
 
         /// <summary>
@@ -281,7 +321,7 @@ namespace Nestodon
         /// <returns>Returns the target Account</returns>
         public Task<Account> Unfollow(int accountId)
         {
-            throw new NotImplementedException();
+            return this.Get<Account>($"/api/v1/accounts/{accountId}/unfollow");
         }
 
         #endregion
@@ -294,7 +334,7 @@ namespace Nestodon
         /// <returns>Returns the current Instance. Does not require authentication</returns>
         public Task<Instance> GetInstance()
         {
-            throw new NotImplementedException();
+            return this.Get<Instance>("/api/v1/instance");
         }
 
         #endregion
@@ -309,6 +349,9 @@ namespace Nestodon
         public Task<Attachment> UploadMedia(object file)
         {
             throw new NotImplementedException();
+
+            // TODO : upload attachment
+            // return this.Post<Attachment>("/api/v1/media");
         }
 
         #endregion
@@ -322,7 +365,7 @@ namespace Nestodon
         /// <returns>Returns the target Account</returns>
         public Task<Account> Mute(int accountId)
         {
-            throw new NotImplementedException();
+            return Get<Account>($"/api/v1/accounts/{accountId}/mute");
         }
 
         /// <summary>
@@ -332,7 +375,7 @@ namespace Nestodon
         /// <returns>Returns the target Account</returns>
         public Task<Account> Unmute(int accountId)
         {
-            throw new NotImplementedException();
+            return Get<Account>($"/api/v1/accounts/{accountId}/unmute");
         }
 
         /// <summary>
@@ -341,7 +384,7 @@ namespace Nestodon
         /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
         public Task<IEnumerable<Account>> GetMutes()
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Account>>("/api/v1/mutes");
         }
 
         #endregion
@@ -354,7 +397,7 @@ namespace Nestodon
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
         public Task<IEnumerable<Notification>> GetNotifications()
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Notification>>("/api/v1/notifications");
         }
 
         /// <summary>
@@ -364,7 +407,7 @@ namespace Nestodon
         /// <returns>Returns the Notification</returns>
         public Task<Notification> GetNotification(int notificationId)
         {
-            throw new NotImplementedException();
+            return Get<Notification>($"/api/v1/notifications/{notificationId}");
         }
 
         /// <summary>
@@ -373,7 +416,7 @@ namespace Nestodon
         /// <returns></returns>
         public Task ClearNotifications()
         {
-            throw new NotImplementedException();
+            return Post("/api/v1/notifications/clear");
         }
 
         #endregion
@@ -386,19 +429,25 @@ namespace Nestodon
         /// <returns>Returns a list of Reports made by the authenticated user</returns>
         public Task<IEnumerable<Report>> GetReports()
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Report>>("/api/v1/reports");
         }
 
         /// <summary>
         /// Reporting a user
         /// </summary>
-        /// <param name="accountIs">The ID of the account to report</param>
+        /// <param name="accountId">The ID of the account to report</param>
         /// <param name="statusIds">The IDs of statuses to report</param>
         /// <param name="comment">A comment to associate with the report</param>
         /// <returns>Returns the finished Report</returns>
-        public Task<Report> Report(int accountIs, IEnumerable<int> statusIds, string comment)
+        public Task<Report> Report(int accountId, IEnumerable<int> statusIds, string comment)
         {
-            throw new NotImplementedException();
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("account_id", accountId.ToString()),
+                new KeyValuePair<string, string>("status_ids", JsonConvert.SerializeObject(statusIds)),
+                new KeyValuePair<string, string>("comment", comment),
+            };
+
+            return Post<Report>("/api/v1/reports", data);
         }
 
         #endregion
@@ -413,7 +462,18 @@ namespace Nestodon
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database</returns>
         public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(q))
+            {
+                return Task.FromResult(Enumerable.Empty<Account>());
+            }
+
+            string url = "/api/v1/accounts/search?q=" + Uri.EscapeUriString(q);
+            if (limit.HasValue)
+            {
+                url += "&limit=" + limit.Value;
+            }
+
+            return Get<IEnumerable<Account>>(url);
         }
 
         /// <summary>
@@ -424,7 +484,18 @@ namespace Nestodon
         /// <returns>Returns Results. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
         public Task<Results> Search(string q, bool resolve)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(q))
+            {
+                return Task.FromResult(new Results());
+            }
+
+            string url = "/api/v1/search?q=" + Uri.EscapeUriString(q);
+            if (resolve)
+            {
+                url += "&resolve=true";
+            }
+
+            return Get<Results>(url);
         }
 
         #endregion
@@ -460,7 +531,7 @@ namespace Nestodon
                 queryParams += "exclude_replies=true";
             }
 
-            return GetObject<IEnumerable<Status>>(url + queryParams);
+            return Get<IEnumerable<Status>>(url + queryParams);
         }
 
         /// <summary>
@@ -470,7 +541,7 @@ namespace Nestodon
         /// <returns>Returns a Status</returns>
         public Task<Status> GetStatus(int statusId)
         {
-            throw new NotImplementedException();
+            return Get<Status>($"/api/v1/statuses/{statusId}");
         }
 
         /// <summary>
@@ -480,7 +551,7 @@ namespace Nestodon
         /// <returns>Returns a Context</returns>
         public Task<Context> GetStatusContext(int statusId)
         {
-            throw new NotImplementedException();
+            return Get<Context>($"/api/v1/statuses/{statusId}/context");
         }
 
         /// <summary>
@@ -490,7 +561,7 @@ namespace Nestodon
         /// <returns>Returns a Card</returns>
         public Task<Card> GetStatusCard(int statusId)
         {
-            throw new NotImplementedException();
+            return Get<Card>($"/api/v1/statuses/{statusId}/card");
         }
 
         /// <summary>
@@ -500,7 +571,7 @@ namespace Nestodon
         /// <returns>Returns an array of Accounts</returns>
         public Task<IEnumerable<Account>> GetRebloggedBy(int statusId)
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Account>>($"/api/v1/statuses/{statusId}/reblogged_by");
         }
 
         /// <summary>
@@ -510,7 +581,7 @@ namespace Nestodon
         /// <returns>Returns an array of Accounts</returns>
         public Task<IEnumerable<Account>> GetFavouritedBy(int statusId)
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Account>>($"/api/v1/statuses/{statusId}/favourited_by");
         }
 
         /// <summary>
@@ -525,7 +596,33 @@ namespace Nestodon
         /// <returns></returns>
         public Task<Status> PostStatus(string status, int? replyStatusId = null, IEnumerable<int> mediaIds = null, bool sensitive = false, string spoilerText = null, string visibility = null)
         {
-            throw new NotImplementedException();
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("status", status),
+            };
+
+            if (replyStatusId.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("in_reply_to_id", replyStatusId.Value.ToString()));
+            }
+            if (mediaIds != null && mediaIds.Any())
+            {
+                var mediaJson = JsonConvert.SerializeObject(mediaIds);
+                data.Add(new KeyValuePair<string, string>("media_ids", mediaJson));
+            }
+            if (sensitive)
+            {
+                data.Add(new KeyValuePair<string, string>("sensitive", "true"));
+            }
+            if (!string.IsNullOrEmpty(spoilerText))
+            {
+                data.Add(new KeyValuePair<string, string>("spoiler_text", spoilerText));
+            }
+            if (!string.IsNullOrEmpty(visibility))
+            {
+                data.Add(new KeyValuePair<string, string>("visibility", visibility));
+            }
+
+            return Post<Status>("/api/v1/statuses", data);
         }
 
         /// <summary>
@@ -534,7 +631,7 @@ namespace Nestodon
         /// <param name="statusId"></param>
         public Task DeleteStatus(int statusId)
         {
-            throw new NotImplementedException();
+            return Delete($"/api/v1/statuses/{statusId}");
         }
 
         /// <summary>
@@ -544,7 +641,7 @@ namespace Nestodon
         /// <returns>Returns the target Status</returns>
         public Task<Status> Reblog(int statusId)
         {
-            throw new NotImplementedException();
+            return Post<Status>($"/api/vi/statuses/{statusId}/reblog");
         }
 
         /// <summary>
@@ -554,27 +651,7 @@ namespace Nestodon
         /// <returns>Returns the target Status</returns>
         public Task<Status> Unreblog(int statusId)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Favouriting a status
-        /// </summary>
-        /// <param name="statusId"></param>
-        /// <returns>Returns the target Status</returns>
-        public Task<Status> Favourite(int statusId)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Unfavouriting a status
-        /// </summary>
-        /// <param name="statusId"></param>
-        /// <returns>Returns the target Status</returns>
-        public Task<Status> Unfavourite(int statusId)
-        {
-            throw new NotImplementedException();
+            return Post<Status>($"/api/vi/statuses/{statusId}/unreblog");
         }
         #endregion
 
@@ -586,7 +663,7 @@ namespace Nestodon
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
         public Task<IEnumerable<Status>> GetHomeTimeline()
         {
-            throw new NotImplementedException();
+            return Get<IEnumerable<Status>>("/api/v1/timelines/home");
         }
 
         /// <summary>
@@ -596,7 +673,12 @@ namespace Nestodon
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
         public Task<IEnumerable<Status>> GetPublicTimeline(bool local = false)
         {
-            throw new NotImplementedException();
+            string url = "/api/v1/timelines/public";
+            if (local)
+            {
+                url += "?local=true";
+            }
+            return Get<IEnumerable<Status>>(url);
         }
 
         /// <summary>
@@ -607,7 +689,12 @@ namespace Nestodon
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
         public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, bool local = false)
         {
-            throw new NotImplementedException();
+            string url = "/api/v1/timelines/tag" + hashtag;
+            if (local)
+            {
+                url += "?local=true";
+            }
+            return Get<IEnumerable<Status>>(url);
         }
 
         #endregion
