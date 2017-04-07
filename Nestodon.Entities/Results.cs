@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Nestodon.Entities
 {
-    public class Result
+    public class Results
     {
         /// <summary>
         /// An array of matched Accounts
