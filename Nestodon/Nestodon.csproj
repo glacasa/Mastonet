@@ -8,8 +8,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Nestodon.Entities\Nestodon.Entities.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -49,7 +49,7 @@ namespace Nestodon.Tests
         {
             var client = new NestodonClient("mastodon.social", app, auth);
 
-            var accounts = await client.GetFollowing(33049);
+            var accounts = await client.GetAccountFollowing(33049);
 
             Assert.Equal(1, accounts.Count());
         }
@@ -59,7 +59,7 @@ namespace Nestodon.Tests
         {
             var client = new NestodonClient("mastodon.social", app, auth);
 
-            var accounts = await client.GetFollowers(33049);
+            var accounts = await client.GetAccountFollowers(33049);
 
             Assert.Equal(1, accounts.Count());
         }
