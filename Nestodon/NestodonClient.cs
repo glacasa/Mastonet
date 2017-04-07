@@ -73,6 +73,19 @@ namespace Nestodon
 
         #endregion
 
+        public async Task<AppRegistration> RegisterApp(string appName)
+        {
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("client_name", appName),
+                new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"),
+                new KeyValuePair<string, string>("scopes", "read"),
+            };
+
+            this.AppRegistration = await Post<AppRegistration>("/api/v1/apps", data);
+
+            return this.AppRegistration;
+        }
+
         public async Task<Auth> Connect(string email, string password)
         {
             var data = new List<KeyValuePair<string, string>>()
@@ -90,26 +103,51 @@ namespace Nestodon
             return this.UserAuth;
         }
 
-        public async Task<AppRegistration> RegisterApp(string appName)
+
+        public Task<Account> GetAccount(int accountId)
         {
-            var data = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>("client_name", appName),
-                new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"),
-                new KeyValuePair<string, string>("scopes", "read"),
-            };
-
-            this.AppRegistration = await Post<AppRegistration>("/api/v1/apps", data);
-
-            return this.AppRegistration;
+            return GetObject<Account>($"/api/v1/accounts/{accountId}");
         }
 
-
-        public Task<Account> GetAccount(int id)
+        public Task<Account> GetCurrentUser()
         {
-            return GetObject<Account>($"/api/v1/accounts/{id}");
+            return GetObject<Account>($"/api/v1/accounts/verify_credentials");
         }
 
+        public Task<IEnumerable<Account>> GetFollowers(int accountId)
+        {
+            return GetObject<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/followers");
+        }
 
+        public Task<IEnumerable<Account>> GetFollowing(int accountId)
+        {
+            return GetObject<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/following");
+        }
+
+        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, bool onlyMedia = false, bool excludeReplies = false)
+        {
+            var url = $"/api/v1/accounts/{accountId}/statuses";
+
+            string queryParams = "";
+            if (onlyMedia)
+            {
+                queryParams = "?only_media=true";
+            }
+            if (excludeReplies)
+            {
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += "exclude_replies=true";
+            }
+
+            return GetObject<IEnumerable<Status>>(url + queryParams);
+        }
 
     }
 }

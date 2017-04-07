@@ -9,7 +9,7 @@ namespace Nestodon.Entities
         /// The ID of the account
         /// </summary>
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// The username of the account
