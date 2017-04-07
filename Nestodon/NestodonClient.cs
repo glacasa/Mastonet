@@ -522,7 +522,89 @@ namespace Nestodon
         /// <param name="visibility">either "direct", "private", "unlisted" or "public"</param>
         /// <returns></returns>
         public Task<Status> PostStatus(string status, int? replyStatusId = null, IEnumerable<int> mediaIds = null, bool sensitive = false, string spoilerText = null, string visibility = null)
-        {            
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deleting a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        public Task DeleteStatus(int statusId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Reblogging a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Reblog(int statusId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Unreblogging a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Unreblog(int statusId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Favouriting a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Favourite(int statusId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Unfavouriting a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Unfavourite(int statusId)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Timelines
+
+        /// <summary>
+        /// Retrieving Home timeline
+        /// </summary>
+        /// <returns>Returns an array of Statuses, most recent ones first</returns>
+        public Task<IEnumerable<Status>> GetHomeTimeline()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Retrieving Public timeline
+        /// </summary>
+        /// <param name="local">Only return statuses originating from this instance</param>
+        /// <returns>Returns an array of Statuses, most recent ones first</returns>
+        public Task<IEnumerable<Status>> GetPublicTimeline(bool local = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Retrieving Tag timeline
+        /// </summary>
+        /// <param name="hashtag">The tag to retieve</param>
+        /// <param name="local">Only return statuses originating from this instance</param>
+        /// <returns>Returns an array of Statuses, most recent ones first</returns>
+        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, bool local = false)
+        {
             throw new NotImplementedException();
         }
 
