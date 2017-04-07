@@ -12,32 +12,30 @@ namespace Nestodon
     {
         public string Instance { get; }
 
-        public string ClientId { get;  }
+        public AppRegistration AppRegistration { get; set; }
 
-        public string ClientSecret { get;  }
+        public Auth UserAuth { get; set; }
+
 
         #region Ctor
 
-        public NestodonClient(string instance)
+        public NestodonClient(string instance, AppRegistration appRegistration = null, Auth userAuth = null)
         {
             this.Instance = instance;
-        }
-
-        public NestodonClient(string instance, string clientId, string clientSecret)
-        {
-            this.Instance = instance;
-            this.ClientId = clientId;
-            this.ClientSecret = clientSecret;
+            this.AppRegistration = appRegistration;
+            this.UserAuth = userAuth;
         }
 
         #endregion
 
         #region Http helpers
 
-        private static void AddHttpHeader(HttpClient client)
+        private void AddHttpHeader(HttpClient client)
         {
-            // TODO : add access token
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer ");
+            if (UserAuth != null)
+            {
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + UserAuth.AccessToken);
+            }
         }
 
         private async Task<string> Get(string route)
@@ -45,6 +43,7 @@ namespace Nestodon
             string url = "https://" + this.Instance + route;
 
             var client = new HttpClient();
+            AddHttpHeader(client);
             var response = await client.GetAsync(url);
             return await response.Content.ReadAsStringAsync();
         }
@@ -60,40 +59,49 @@ namespace Nestodon
             string url = "https://" + this.Instance + route;
 
             var client = new HttpClient();
+            AddHttpHeader(client);
             var content = new FormUrlEncodedContent(data);
             var response = await client.PostAsync(url, content);
             return await response.Content.ReadAsStringAsync();
         }
 
+        private async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data)
+        {
+            var content = await Post(route, data);
+            return JsonConvert.DeserializeObject<T>(content);
+        }
+
         #endregion
 
-        public async Task Connect(string email, string password)
+        public async Task<Auth> Connect(string email, string password)
         {
             var data = new List<KeyValuePair<string, string>>();
-            data.Add(new KeyValuePair<string, string>("client_id", ClientId));
-            data.Add(new KeyValuePair<string, string>("client_secret", ClientSecret));
+            data.Add(new KeyValuePair<string, string>("client_id", AppRegistration.ClientId));
+            data.Add(new KeyValuePair<string, string>("client_secret", AppRegistration.ClientSecret));
             data.Add(new KeyValuePair<string, string>("grant_type", "password"));
             data.Add(new KeyValuePair<string, string>("username", email));
             data.Add(new KeyValuePair<string, string>("password", password));
 
-            var response = await Post("/oauth/token", data);
-
+            this.UserAuth = await Post<Auth>("/oauth/token", data);
+            return this.UserAuth;
         }
 
-        public async Task RegisterApp(string appName)
+        public async Task<AppRegistration> RegisterApp(string appName)
         {
             var data = new List<KeyValuePair<string, string>>();
             data.Add(new KeyValuePair<string, string>("client_name", appName));
             data.Add(new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"));
             data.Add(new KeyValuePair<string, string>("scopes", "read"));
 
-            var response = await Post("/api/v1/apps", data);
+            this.AppRegistration = await Post<AppRegistration>("/api/v1/apps", data);
+
+            return this.AppRegistration;
         }
 
 
-        public Task<Account> GetAccount(string name)
+        public Task<Account> GetAccount(int id)
         {
-            return GetObject<Account>($"/api/v1/accounts/{name}");
+            return GetObject<Account>($"/api/v1/accounts/{id}");
         }
 
 

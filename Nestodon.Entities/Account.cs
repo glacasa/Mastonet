@@ -8,79 +8,79 @@ namespace Nestodon.Entities
         /// <summary>
         /// The ID of the account
         /// </summary>
-        [JsonProperty(PropertyName = "id")]
+        [JsonProperty("id")]
         public string Id { get; set; }
 
         /// <summary>
         /// The username of the account
         /// </summary>
-        [JsonProperty(PropertyName = "username")]
+        [JsonProperty("username")]
         public string UserName { get; set; }
 
         /// <summary>
         /// Equals username for local users, includes @domain for remote ones
         /// </summary>
-        [JsonProperty(PropertyName = "acct")]
+        [JsonProperty("acct")]
         public string AccountName { get; set; }
 
         /// <summary>
         /// The account's display name
         /// </summary>
-        [JsonProperty(PropertyName = "display_name")]
+        [JsonProperty("display_name")]
         public string DisplayName { get; set; }
 
         /// <summary>
         /// Biography of user
         /// </summary>
-        [JsonProperty(PropertyName = "note")]
+        [JsonProperty("note")]
         public string Note { get; set; }
 
         /// <summary>
         /// URL of the user's profile page (can be remote)
         /// </summary>
-        [JsonProperty(PropertyName = "url")]
+        [JsonProperty("url")]
         public string ProfileUrl { get; set; }
 
         /// <summary>
         /// URL to the avatar image
         /// </summary>
-        [JsonProperty(PropertyName = "avatar")]
+        [JsonProperty("avatar")]
         public string AvatarUrl { get; set; }
 
         /// <summary>
         /// URL to the header image
         /// </summary>
-        [JsonProperty(PropertyName = "header")]
+        [JsonProperty("header")]
         public string HeaderUrl { get; set; }
 
         /// <summary>
         /// Boolean for when the account cannot be followed without waiting for approval first
         /// </summary>
-        [JsonProperty(PropertyName = "locked")]
+        [JsonProperty("locked")]
         public bool Locked { get; set; }
 
         /// <summary>
         /// The time the account was created
         /// </summary>
-        [JsonProperty(PropertyName = "created_at")]
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
         /// The number of followers for the account
         /// </summary>
-        [JsonProperty(PropertyName = "followers_count")]
+        [JsonProperty("followers_count")]
         public int FollowersCount { get; set; }
 
         /// <summary>
         /// The number of accounts the given account is following
         /// </summary>
-        [JsonProperty(PropertyName = "following_count")]
+        [JsonProperty("following_count")]
         public int FollowingCount { get; set; }
 
         /// <summary>
         /// The number of statuses the account has made
         /// </summary>
-        [JsonProperty(PropertyName = "statuses_count")]
+        [JsonProperty("statuses_count")]
         public int StatusesCount { get; set; }
     }
 }
