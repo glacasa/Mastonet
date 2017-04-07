@@ -102,7 +102,30 @@ namespace Nestodon.Entities
         /// </summary>
         [JsonProperty("visibility")]
         public string Visibility { get; set; }
-        
-        // TODO : attachments, mentions, tags, application
+
+        /// <summary>
+        /// An array of Attachments
+        /// </summary>
+        [JsonProperty("media_attachments")]
+        public IEnumerable<Attachment> MediaAttachments { get; set; }
+
+        /// <summary>
+        /// An array of Mentions
+        /// </summary>
+        [JsonProperty("mentions")]
+        public IEnumerable<Mention> Mentions { get; set; }
+
+        /// <summary>
+        /// An array of Tags
+        /// </summary>
+        [JsonProperty("tags")]
+        public IEnumerable<Tag> Tags { get; set; }
+
+        /// <summary>
+        /// Application from which the status was posted
+        /// </summary>
+        [JsonProperty("application")]
+        public Application Application { get; set; }
+
     }
 }
