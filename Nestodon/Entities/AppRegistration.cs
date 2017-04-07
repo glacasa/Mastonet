@@ -18,5 +18,8 @@ namespace Nestodon.Entities
 
         [JsonProperty("client_secret")]
         public string ClientSecret { get; set; }
+
+        [JsonIgnore]
+        public string Instance { get; set; }
     }
 }

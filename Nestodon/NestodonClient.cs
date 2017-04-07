@@ -20,7 +20,7 @@ namespace Nestodon
 
         #region Ctor
 
-        public NestodonClient(string instance, AppRegistration appRegistration = null, Auth userAuth = null)
+        public NestodonClient(string instance, AppRegistration appRegistration, Auth userAuth = null)
         {
             this.Instance = instance;
             this.AppRegistration = appRegistration;
@@ -71,9 +71,31 @@ namespace Nestodon
             var content = await Post(route, data);
             return JsonConvert.DeserializeObject<T>(content);
         }
-
+        
         #endregion
 
+        #region Static App creation / login
+
+        public static async Task<AppRegistration> CreateApp(string instance, string appName)
+        {
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("client_name", appName),
+                new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"),
+                new KeyValuePair<string, string>("scopes", "read"),
+            };
+
+            string url = $"https://{instance}/api/v1/apps";
+            var client = new HttpClient();
+            var content = new FormUrlEncodedContent(data);
+            var response = await client.PostAsync(url, content);
+            var responseJson = await response.Content.ReadAsStringAsync();
+            var appRegistration = JsonConvert.DeserializeObject<AppRegistration>(responseJson);
+            appRegistration.Instance = instance;
+
+            return appRegistration;
+        }
+
+        #endregion
 
         public async Task<Auth> Connect(string email, string password)
         {
@@ -85,13 +107,10 @@ namespace Nestodon
                 new KeyValuePair<string, string>("username", email),
                 new KeyValuePair<string, string>("password", password),
             };
-
-
-
+            
             this.UserAuth = await Post<Auth>("/oauth/token", data);
             return this.UserAuth;
         }
-
 
         #region Accounts
 
@@ -132,23 +151,6 @@ namespace Nestodon
         public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<int> ids)
         {
             throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region Apps
-
-        public async Task<AppRegistration> RegisterApp(string appName)
-        {
-            var data = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>("client_name", appName),
-                new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"),
-                new KeyValuePair<string, string>("scopes", "read"),
-            };
-
-            this.AppRegistration = await Post<AppRegistration>("/api/v1/apps", data);
-
-            return this.AppRegistration;
         }
 
         #endregion
