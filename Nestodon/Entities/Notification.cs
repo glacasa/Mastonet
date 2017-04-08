@@ -28,7 +28,7 @@ namespace Nestodon.Entities
         /// <summary>
         /// The Account sending the notification to the user
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonProperty("account")]
         public Account Account { get; set; }
 
         /// <summary>
