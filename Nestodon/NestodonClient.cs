@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Nestodon.Enums;
 
 namespace Nestodon
 {
@@ -87,13 +88,29 @@ namespace Nestodon
 
         #region Apps
 
-        public static async Task<AppRegistration> CreateApp(string instance, string appName)
+        /// <summary>
+        /// Registering an application
+        /// </summary>
+        /// <param name="instance">Instance to connect</param>
+        /// <param name="appName">Name of your application</param>
+        /// <returns></returns>
+        public static async Task<AppRegistration> CreateApp(string instance, string appName, Scope scope, string website = null)
         {
+            var scopeParam = "";
+            if ((scope & Scope.Read) == Scope.Read) scopeParam += "read ";
+            if ((scope & Scope.Write) == Scope.Write) scopeParam += "write ";
+            if ((scope & Scope.Follow) == Scope.Follow) scopeParam += "follow ";
+            scopeParam = scopeParam.Substring(0, scopeParam.Length - 1);
+
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("client_name", appName),
                 new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"),
-                new KeyValuePair<string, string>("scopes", "read"),
+                new KeyValuePair<string, string>("scopes", scopeParam),
             };
+            if (!string.IsNullOrEmpty(website))
+            {
+                data.Add(new KeyValuePair<string, string>("website", website));
+            }
 
             string url = $"https://{instance}/api/v1/apps";
             var client = new HttpClient();
