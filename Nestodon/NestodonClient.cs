@@ -93,6 +93,8 @@ namespace Nestodon
         /// </summary>
         /// <param name="instance">Instance to connect</param>
         /// <param name="appName">Name of your application</param>
+        /// <param name="scope">The rights needed by your application</param>
+        /// <param name="website">URL to the homepage of your app</param>
         /// <returns></returns>
         public static async Task<AppRegistration> CreateApp(string instance, string appName, Scope scope, string website = null)
         {
@@ -605,13 +607,13 @@ namespace Nestodon
         /// Posting a new status
         /// </summary>
         /// <param name="status">The text of the status</param>
+        /// <param name="visibility">either "direct", "private", "unlisted" or "public"</param>
         /// <param name="replyStatusId">local ID of the status you want to reply to</param>
         /// <param name="mediaIds">array of media IDs to attach to the status (maximum 4)</param>
         /// <param name="sensitive">set this to mark the media of the status as NSFW</param>
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
-        /// <param name="visibility">either "direct", "private", "unlisted" or "public"</param>
         /// <returns></returns>
-        public Task<Status> PostStatus(string status, int? replyStatusId = null, IEnumerable<int> mediaIds = null, bool sensitive = false, string spoilerText = null, string visibility = null)
+        public Task<Status> PostStatus(string status, Visibility visibility, int? replyStatusId = null, IEnumerable<int> mediaIds = null, bool sensitive = false, string spoilerText = null)
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("status", status),
@@ -634,11 +636,9 @@ namespace Nestodon
             {
                 data.Add(new KeyValuePair<string, string>("spoiler_text", spoilerText));
             }
-            if (!string.IsNullOrEmpty(visibility))
-            {
-                data.Add(new KeyValuePair<string, string>("visibility", visibility));
-            }
 
+            data.Add(new KeyValuePair<string, string>("visibility", visibility.ToString().ToLower()));
+            
             return Post<Status>("/api/v1/statuses", data);
         }
 
