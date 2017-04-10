@@ -89,7 +89,7 @@ namespace Mastonet.Entities
         /// Whether media attachments should be hidden by default
         /// </summary>
         [JsonProperty("sensitive")]
-        public bool Sensitive { get; set; }
+        public bool? Sensitive { get; set; }
 
         /// <summary>
         /// If not empty, warning text that should be displayed before the actual content
