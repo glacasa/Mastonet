@@ -10,7 +10,7 @@ using Mastonet.Enums;
 
 namespace Mastonet
 {
-    public class MastonetClient
+    public class MastodonClient
     {
         public string Instance { get; }
 
@@ -21,7 +21,7 @@ namespace Mastonet
 
         #region Ctor
 
-        public MastonetClient(string instance, AppRegistration appRegistration, Auth userAuth = null)
+        public MastodonClient(string instance, AppRegistration appRegistration, Auth userAuth = null)
         {
             this.Instance = instance;
             this.AppRegistration = appRegistration;

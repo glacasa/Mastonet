@@ -21,7 +21,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetAccount()
         {
-            var client = new MastonetClient("mastodon.social", app, auth);
+            var client = new MastodonClient("mastodon.social", app, auth);
 
             //await client.RegisterApp("MastonetTest");
             //await client.Connect("mastodon@adhess.net", "");
@@ -36,7 +36,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetCurrentUser()
         {
-            var client = new MastonetClient("mastodon.social", app, auth);
+            var client = new MastodonClient("mastodon.social", app, auth);
 
             var account = await client.GetCurrentUser();
 
@@ -47,7 +47,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetFollowing()
         {
-            var client = new MastonetClient("mastodon.social", app, auth);
+            var client = new MastodonClient("mastodon.social", app, auth);
 
             var accounts = await client.GetAccountFollowing(33049);
 
@@ -57,7 +57,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetFollowers()
         {
-            var client = new MastonetClient("mastodon.social", app, auth);
+            var client = new MastodonClient("mastodon.social", app, auth);
 
             var accounts = await client.GetAccountFollowers(33049);
 
@@ -66,7 +66,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetStatuses()
         {
-            var client = new MastonetClient("mastodon.social", app, auth);
+            var client = new MastodonClient("mastodon.social", app, auth);
 
             var statuses = await client.GetAccountStatuses(33049);
             Assert.Equal(1, statuses.Count());
