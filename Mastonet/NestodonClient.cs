@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Nestodon.Entities;
+using Mastonet.Entities;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Nestodon.Enums;
+using Mastonet.Enums;
 
-namespace Nestodon
+namespace Mastonet
 {
-    public class NestodonClient
+    public class MastonetClient
     {
         public string Instance { get; }
 
@@ -21,7 +21,7 @@ namespace Nestodon
 
         #region Ctor
 
-        public NestodonClient(string instance, AppRegistration appRegistration, Auth userAuth = null)
+        public MastonetClient(string instance, AppRegistration appRegistration, Auth userAuth = null)
         {
             this.Instance = instance;
             this.AppRegistration = appRegistration;

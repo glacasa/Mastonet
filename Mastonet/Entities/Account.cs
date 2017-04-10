@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace Nestodon.Entities
+namespace Mastonet.Entities
 {
     public class Account
     {

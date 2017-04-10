@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Nestodon.Enums
+namespace Mastonet.Enums
 {
     public enum Visibility
     {

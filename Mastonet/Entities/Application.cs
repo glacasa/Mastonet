@@ -3,20 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Nestodon.Entities
+namespace Mastonet.Entities
 {
-    public class Tag
+    public class Application
     {
         /// <summary>
-        /// The hashtag, not including the preceding #
+        /// Name of the app
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
-        /// The URL of the hashtag
+        /// Homepage URL of the app
         /// </summary>
-        [JsonProperty("url")]
-        public string Url { get; set; }
+        [JsonProperty("website")]
+        public string Website { get; set; }
     }
 }

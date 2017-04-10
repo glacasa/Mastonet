@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Nestodon.Entities
+namespace Mastonet.Entities
 {
     public class Report
     {
