@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Mastonet
 {
-    public class MastodonClient
+    public partial class MastodonClient
     {
         public string Instance { get; }
 
