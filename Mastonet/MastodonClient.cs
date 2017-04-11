@@ -636,7 +636,7 @@ namespace Mastonet
             }
 
             data.Add(new KeyValuePair<string, string>("visibility", visibility.ToString().ToLower()));
-            
+
             return Post<Status>("/api/v1/statuses", data);
         }
 
@@ -710,6 +710,36 @@ namespace Mastonet
                 url += "?local=true";
             }
             return Get<IEnumerable<Status>>(url);
+        }
+
+        #endregion
+
+        #region Streaming
+
+        public TimelineStreaming GetPublicStreaming()
+        {
+            string url = "https://" + this.Instance + "/api/v1/streaming/public";
+
+            return new TimelineStreaming(url, UserAuth.AccessToken);
+        }
+
+        public TimelineStreaming GetUserStreaming()
+        {
+            string url = "https://" + this.Instance + "/api/v1/streaming/user";
+
+            return new TimelineStreaming(url, UserAuth.AccessToken);
+        }
+
+        public TimelineStreaming GetHashtagStreaming(string hashtag)
+        {
+            if (string.IsNullOrEmpty(hashtag))
+            {
+                throw new ArgumentException("You must specify a hashtag", "hashtag");
+            }
+
+            string url = "https://" + this.Instance + "/api/v1/streaming/hashtag?tag=" + hashtag;
+
+            return new TimelineStreaming(url, UserAuth.AccessToken);
         }
 
         #endregion

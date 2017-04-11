@@ -1,35 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net.Http;
-using System.IO;
+﻿using Mastonet.Entities;
 using Newtonsoft.Json;
-using Mastonet.Entities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Text;
 
 namespace Mastonet
 {
-    public partial class MastodonClient
+    public class TimelineStreaming
     {
-        private StreamingMode mode = StreamingMode.None;
+        private string url;
+        private string accessToken;
+        private HttpClient client;
+
 
         public event EventHandler<StreamUpdateEventArgs> OnUpdate;
         public event EventHandler<StreamNotificationEventArgs> OnNotification;
         public event EventHandler<StreamDeleteEventArgs> OnDelete;
 
-        public void StartPublicStreaming()
+        internal TimelineStreaming(string url, string accessToken)
         {
-            StopStreaming();
-            mode = StreamingMode.Public;
-            string url = "https://" + this.Instance + "/api/v1/streaming/public";
-            StartStreaming(url);
+            this.url = url;
+            this.accessToken = accessToken;
         }
 
 
-
-        public async void StartStreaming(string url)
-        {            
-            var client = new HttpClient();
-            AddHttpHeader(client);
+        public async void Start(string url)
+        {
+            client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
 
             var stream = await client.GetStreamAsync(url);
 
@@ -38,9 +38,10 @@ namespace Mastonet
             string eventName = null;
             string data = null;
 
-            while (mode != StreamingMode.None)
+            while (client != null)
             {
                 var line = reader.ReadLine();
+
 
                 if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
                 {
@@ -75,35 +76,10 @@ namespace Mastonet
             }
         }
 
-        public void StopStreaming()
+        public void Stop()
         {
-            mode = StreamingMode.None;
-            // TODO : really stop
+            client.Dispose();
+            client = null;
         }
-
     }
-
-    public class StreamUpdateEventArgs : EventArgs
-    {
-        public Status Status { get; set; }
-    }
-    public class StreamNotificationEventArgs : EventArgs
-    {
-        public Notification Notification { get; set; }
-    }
-    public class StreamDeleteEventArgs : EventArgs
-    {
-        public int StatusId { get; set; }
-    }
-
-
-    internal enum StreamingMode
-    {
-        None,
-        User,
-        Public,
-        Hashtag,
-    }
-
-
 }
