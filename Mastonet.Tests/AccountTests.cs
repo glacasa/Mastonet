@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Mastonet.Tests
 {
-  public  class AccountTests: MastodonClientTests
+    public class AccountTests : MastodonClientTests
     {
         [Fact]
         public async Task GetAccount()
