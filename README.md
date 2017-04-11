@@ -23,3 +23,25 @@ Save this `auth` object, you will need it when you restart the app. You can crea
 	var client = var client = new MastodonClient("instanceUrl", appRegistration, auth);
 
 Now you can call all the API methods. [See Mastodon API overview](https://github.com/tootsuite/mastodon/blob/master/docs/Using-the-API/API.md)
+
+## Streaming
+
+You can use the `TimelineStreaming` to be notified for every status, notification and deletion on a timeline.
+
+	var client =  new MastodonClient("instance", appRegistration, auth);
+	var streaming = client.GetUserStreaming();
+
+	// Register events
+	streaming.OnUpdate = OnStatusReceived;
+	streaming.OnNotification = OnNotificationReceived;
+	streaming.OnDelete = OnDeleteReceived;
+
+	// Start streaming
+	streaming.Start();
+
+
+	// ...
+
+	// Stop streaming
+	streaming.Stop();
+        

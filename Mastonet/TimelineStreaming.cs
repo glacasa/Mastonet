@@ -26,7 +26,7 @@ namespace Mastonet
         }
 
 
-        public async void Start(string url)
+        public async void Start()
         {
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
