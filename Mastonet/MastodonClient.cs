@@ -59,9 +59,10 @@ namespace Mastonet
         }
 
         private async Task<T> Get<T>(string route)
+            where T : class
         {
             var content = await Get(route);
-            return JsonConvert.DeserializeObject<T>(content);
+            return TryDeserialize<T>(content);
         }
 
         private async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data = null)
@@ -77,9 +78,33 @@ namespace Mastonet
         }
 
         private async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+            where T : class
         {
             var content = await Post(route, data);
-            return JsonConvert.DeserializeObject<T>(content);
+            return TryDeserialize<T>(content);
+        }
+
+
+        private T TryDeserialize<T>(string json)
+        {
+            try
+            {
+                var obj = JsonConvert.DeserializeObject<T>(json);
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                Error error;
+                try
+                {
+                    error = JsonConvert.DeserializeObject<Error>(json);
+                }
+                catch (Exception)
+                {
+                    throw ex;
+                }
+                throw new ServerErrorException(error);
+            }
         }
 
         #endregion
