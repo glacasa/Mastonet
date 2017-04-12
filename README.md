@@ -47,5 +47,7 @@ You can use the `TimelineStreaming` to be notified for every status, notificatio
 
 ## Connection issues with .net framework
 
-Some instances have a very strict https configuration, and it may block this library if you are on an old version of the .net framework. 
-If you have the problem or if you are doing a public app, you should update to the last version of the .net framework (or version 4.6 at least)
+Some instances only accept TLS 1.2 requests, but .net Framework only support TLS 1.2 by default on version 4.6 and above
+If you are on version 4.5.2 or earlier, you should force using TLS 1.2 by this line of code before any request :
+
+	ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
