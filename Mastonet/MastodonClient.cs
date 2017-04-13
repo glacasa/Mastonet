@@ -14,16 +14,16 @@ namespace Mastonet
 
         public AppRegistration AppRegistration { get; set; }
 
-        public Auth UserAuth { get; set; }
+        public string AccessToken { get; set; }
 
 
         #region Ctor
-
-        public MastodonClient(AppRegistration appRegistration, Auth userAuth = null)
-        { 
+        
+        public MastodonClient(AppRegistration appRegistration, string accessToken = null)
+        {
             this.Instance = appRegistration.Instance;
             this.AppRegistration = appRegistration;
-            this.UserAuth = userAuth;
+            this.AccessToken = accessToken;
         }
 
         #endregion
@@ -32,9 +32,9 @@ namespace Mastonet
 
         private void AddHttpHeader(HttpClient client)
         {
-            if (UserAuth != null)
+            if (AccessToken != null)
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + UserAuth.AccessToken);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
             }
         }
 
@@ -108,18 +108,26 @@ namespace Mastonet
         /// <param name="scope">The rights needed by your application</param>
         /// <param name="website">URL to the homepage of your app</param>
         /// <returns></returns>
-        public static async Task<AppRegistration> CreateApp(string instance, string appName, Scope scope, string website = null)
+        public static async Task<AppRegistration> CreateApp(string instance, string appName, Scope scope, string website = null, string redirectUri = null)
         {
             var scopeParam = "";
             if ((scope & Scope.Read) == Scope.Read) scopeParam += " read";
             if ((scope & Scope.Write) == Scope.Write) scopeParam += " write";
             if ((scope & Scope.Follow) == Scope.Follow) scopeParam += " follow";
 
+
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("client_name", appName),
-                new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"),
                 new KeyValuePair<string, string>("scopes", scopeParam.Trim()),
             };
+            if (string.IsNullOrEmpty(redirectUri))
+            {
+                data.Add(new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"));
+            }
+            else
+            {
+                data.Add(new KeyValuePair<string, string>("redirect_uris", redirectUri));
+            }
             if (!string.IsNullOrEmpty(website))
             {
                 data.Add(new KeyValuePair<string, string>("website", website));
@@ -138,6 +146,8 @@ namespace Mastonet
 
         #endregion
 
+        #region Auth
+
         public async Task<Auth> Connect(string email, string password)
         {
             var data = new List<KeyValuePair<string, string>>()
@@ -149,9 +159,17 @@ namespace Mastonet
                 new KeyValuePair<string, string>("password", password),
             };
 
-            this.UserAuth = await Post<Auth>("/oauth/token", data);
-            return this.UserAuth;
+            var auth = await Post<Auth>("/oauth/token", data);
+            this.AccessToken = auth.AccessToken;
+            return auth;
         }
+
+        public string OAuthUrl(string redirectUri = null)
+        {
+                return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
+        }
+
+        #endregion
 
         #region Accounts
 
@@ -733,14 +751,14 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + "/api/v1/streaming/public";
 
-            return new TimelineStreaming(url, UserAuth.AccessToken);
+            return new TimelineStreaming(url, AccessToken);
         }
 
         public TimelineStreaming GetUserStreaming()
         {
             string url = "https://" + this.Instance + "/api/v1/streaming/user";
 
-            return new TimelineStreaming(url, UserAuth.AccessToken);
+            return new TimelineStreaming(url, AccessToken);
         }
 
         public TimelineStreaming GetHashtagStreaming(string hashtag)
@@ -752,7 +770,7 @@ namespace Mastonet
 
             string url = "https://" + this.Instance + "/api/v1/streaming/hashtag?tag=" + hashtag;
 
-            return new TimelineStreaming(url, UserAuth.AccessToken);
+            return new TimelineStreaming(url, AccessToken);
         }
 
         #endregion

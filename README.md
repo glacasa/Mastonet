@@ -6,6 +6,8 @@ Work In Progress. You can try it, but be aware there's probably gonna be breakin
 
 ## How to use
 
+### App registration
+
 You need to obtain a ClientId and a ClientSecret for your app, directly from the client, on the target Mastodon instance.
 Call the static `CreateApp` method :
 
@@ -13,14 +15,37 @@ Call the static `CreateApp` method :
 
 The `appRegistration` object must be saved.
 
-Now you can create a client, and connect the user (OAuth login to come soon) :
+### User login, using e-mail and password
 
-	var client = var client = new MastodonClient("instanceUrl", appRegistration);
+Now you can create a client, and connect the user (not recommended, prefer OAuth when you can) :
+
+	var client = new MastodonClient(appRegistration);
 	var auth = await client.Connect("email", "password");
 
-Save this `auth` object, you will need it when you restart the app. You can create a client with the `auth` object :
 
-	var client = var client = new MastodonClient("instanceUrl", appRegistration, auth);
+### User login, using OAuth
+
+The recommended way to login is to use OAuth. You open a web browser and let the user login himself on his instance. 
+
+	var client = new MastodonClient(appRegistration);
+	var url = client.OAuthUrl();
+	OpenBrowser(url);
+
+You can either embed a WebView in you app, or open an external browser. When the user allowed your app to access its account, he is redirected to a web page with the access token.
+
+You have several option to get the access token :
+
+  - Ask the user to copy and paste it in your app (easy for you, but not user-friendly)
+  - If you have embedded a WebView in your app, you can read the final page. The access token is in the url, and in the webpage embedded in a `<code>` tag  
+	![OAuth result](oauth.png)
+
+If you are in a web context, you can set the final page url, and the user will be redirected directly to your server with the access token. Just add your url to the `OAuthUrl` method.
+
+	var url = client.OAuthUrl(myRedirectPage);
+	
+Save the AccessToken value, you will need it when you restart the app. You can create a client with the access token :
+
+	var client = new MastodonClient("instanceUrl", appRegistration, accessToken);
 
 Now you can call all the API methods. [See Mastodon API overview](https://github.com/tootsuite/mastodon/blob/master/docs/Using-the-API/API.md)
 
