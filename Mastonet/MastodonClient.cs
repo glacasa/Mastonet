@@ -19,9 +19,9 @@ namespace Mastonet
 
         #region Ctor
 
-        public MastodonClient(string instance, AppRegistration appRegistration, Auth userAuth = null)
-        {
-            this.Instance = instance;
+        public MastodonClient(AppRegistration appRegistration, Auth userAuth = null)
+        { 
+            this.Instance = appRegistration.Instance;
             this.AppRegistration = appRegistration;
             this.UserAuth = userAuth;
         }
