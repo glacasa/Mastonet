@@ -149,7 +149,7 @@ namespace Mastonet
 
         #region Auth
 
-        public async Task<Auth> Connect(string email, string password)
+        public async Task<Auth> ConnectWithPassword(string email, string password)
         {
             var data = new List<KeyValuePair<string, string>>()
             {
