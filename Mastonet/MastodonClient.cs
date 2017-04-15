@@ -18,7 +18,7 @@ namespace Mastonet
 
 
         #region Ctor
-        
+
         public MastodonClient(AppRegistration appRegistration, string accessToken = null)
         {
             this.Instance = appRegistration.Instance;
@@ -56,6 +56,11 @@ namespace Mastonet
             AddHttpHeader(client);
             var response = await client.GetAsync(url);
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public Task PostStatus(string v, object @private)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task<T> Get<T>(string route)
@@ -110,15 +115,9 @@ namespace Mastonet
         /// <returns></returns>
         public static async Task<AppRegistration> CreateApp(string instance, string appName, Scope scope, string website = null, string redirectUri = null)
         {
-            var scopeParam = "";
-            if ((scope & Scope.Read) == Scope.Read) scopeParam += " read";
-            if ((scope & Scope.Write) == Scope.Write) scopeParam += " write";
-            if ((scope & Scope.Follow) == Scope.Follow) scopeParam += " follow";
-
-
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("client_name", appName),
-                new KeyValuePair<string, string>("scopes", scopeParam.Trim()),
+                new KeyValuePair<string, string>("scopes", GetScopeParam(scope)),
             };
             if (string.IsNullOrEmpty(redirectUri))
             {
@@ -138,8 +137,10 @@ namespace Mastonet
             var content = new FormUrlEncodedContent(data);
             var response = await client.PostAsync(url, content);
             var responseJson = await response.Content.ReadAsStringAsync();
+
             var appRegistration = JsonConvert.DeserializeObject<AppRegistration>(responseJson);
             appRegistration.Instance = instance;
+            appRegistration.Scope = scope;
 
             return appRegistration;
         }
@@ -163,7 +164,7 @@ namespace Mastonet
             this.AccessToken = auth.AccessToken;
             return auth;
         }
-        
+
         public async Task<Auth> ConnectWithCode(string code, string redirect_uri = null)
         {
             var data = new List<KeyValuePair<string, string>>()
@@ -182,7 +183,17 @@ namespace Mastonet
 
         public string OAuthUrl(string redirectUri = null)
         {
-                return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
+            return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope)}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
+        }
+
+        private static string GetScopeParam(Scope scope)
+        {
+            var scopeParam = "";
+            if ((scope & Scope.Read) == Scope.Read) scopeParam += " read";
+            if ((scope & Scope.Write) == Scope.Write) scopeParam += " write";
+            if ((scope & Scope.Follow) == Scope.Follow) scopeParam += " follow";
+
+            return scopeParam.Trim();
         }
 
         #endregion

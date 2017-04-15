@@ -21,5 +21,8 @@ namespace Mastonet.Entities
 
         [JsonIgnore]
         public string Instance { get; set; }
+
+        [JsonIgnore]
+        public Scope Scope { get; set; }
     }
 }
