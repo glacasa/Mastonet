@@ -163,6 +163,22 @@ namespace Mastonet
             this.AccessToken = auth.AccessToken;
             return auth;
         }
+        
+        public async Task<Auth> ConnectWithCode(string code, string redirect_uri = null)
+        {
+            var data = new List<KeyValuePair<string, string>>()
+            {
+                new KeyValuePair<string, string>("client_id", AppRegistration.ClientId),
+                new KeyValuePair<string, string>("client_secret", AppRegistration.ClientSecret),
+                new KeyValuePair<string, string>("grant_type", "authorization_code"),
+                new KeyValuePair<string, string>("redirect_uri", redirect_uri ?? "urn:ietf:wg:oauth:2.0:oob"),
+                new KeyValuePair<string, string>("code", code),
+            };
+
+            var auth = await Post<Auth>("/oauth/token", data);
+            this.AccessToken = auth.AccessToken;
+            return auth;
+        }
 
         public string OAuthUrl(string redirectUri = null)
         {
