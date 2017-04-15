@@ -57,12 +57,7 @@ namespace Mastonet
             var response = await client.GetAsync(url);
             return await response.Content.ReadAsStringAsync();
         }
-
-        public Task PostStatus(string v, object @private)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         private async Task<T> Get<T>(string route)
             where T : class
         {
@@ -158,6 +153,7 @@ namespace Mastonet
                 new KeyValuePair<string, string>("grant_type", "password"),
                 new KeyValuePair<string, string>("username", email),
                 new KeyValuePair<string, string>("password", password),
+                new KeyValuePair<string, string>("scope", GetScopeParam(AppRegistration.Scope)),
             };
 
             var auth = await Post<Auth>("/oauth/token", data);
