@@ -87,11 +87,12 @@ namespace Mastonet
 
         private T TryDeserialize<T>(string json)
         {
-            var error = JsonConvert.DeserializeObject<Error>(json);
-            if (!string.IsNullOrEmpty(error.Description))
-            {
-                throw new ServerErrorException(error);
-            }
+            //TODO handle error gracefully
+            //var error = JsonConvert.DeserializeObject<Error>(json);
+            //if (!string.IsNullOrEmpty(error.Description))
+            //{
+            //    throw new ServerErrorException(error);
+            //}
 
             return JsonConvert.DeserializeObject<T>(json);
         }
