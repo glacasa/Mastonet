@@ -180,7 +180,7 @@ namespace Mastonet
 
         public string OAuthUrl(string redirectUri = null)
         {
-            return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope)}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
+            return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
         }
 
         private static string GetScopeParam(Scope scope)
