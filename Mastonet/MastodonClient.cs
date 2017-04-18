@@ -815,15 +815,26 @@ namespace Mastonet
         public Task<IEnumerable<Status>> GetPublicTimeline(bool local = false, ArrayOptions options = null)
         {
             string url = "/api/v1/timelines/public";
+
+            var queryParams = "";
             if (local)
             {
-                url += "?local=true";
+                queryParams += "?local=true";
             }
             if (options != null)
             {
-                url += (local ? "" : "?") + options.ToQueryString();
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += options.ToQueryString();
             }
-            return Get<IEnumerable<Status>>(url);
+
+            return Get<IEnumerable<Status>>(url + queryParams);
         }
 
         /// <summary>
@@ -835,15 +846,26 @@ namespace Mastonet
         public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, bool local = false, ArrayOptions options = null)
         {
             string url = "/api/v1/timelines/tag" + hashtag;
+
+            var queryParams = "";
             if (local)
             {
-                url += "?local=true";
+                queryParams += "?local=true";
             }
             if (options != null)
             {
-                url += (local ? "" : "?") + options.ToQueryString();
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += options.ToQueryString();
             }
-            return Get<IEnumerable<Status>>(url);
+
+            return Get<IEnumerable<Status>>(url + queryParams);
         }
 
         #endregion
