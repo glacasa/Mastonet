@@ -280,7 +280,7 @@ namespace Mastonet
         /// <returns>Returns the target Status</returns>
         public Task<Status> Favourite(int statusId)
         {
-            return Post<Status>($"/api/vi/statuses/{statusId}/favourite");
+            return Post<Status>($"/api/v1/statuses/{statusId}/favourite");
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace Mastonet
         /// <returns>Returns the target Status</returns>
         public Task<Status> Unfavourite(int statusId)
         {
-            return Post<Status>($"/api/vi/statuses/{statusId}/unfavourite");
+            return Post<Status>($"/api/v1/statuses/{statusId}/unfavourite");
         }
 
         /// <summary>
@@ -711,7 +711,7 @@ namespace Mastonet
         /// <returns>Returns the target Status</returns>
         public Task<Status> Reblog(int statusId)
         {
-            return Post<Status>($"/api/vi/statuses/{statusId}/reblog");
+            return Post<Status>($"/api/v1/statuses/{statusId}/reblog");
         }
 
         /// <summary>
@@ -721,7 +721,7 @@ namespace Mastonet
         /// <returns>Returns the target Status</returns>
         public Task<Status> Unreblog(int statusId)
         {
-            return Post<Status>($"/api/vi/statuses/{statusId}/unreblog");
+            return Post<Status>($"/api/v1/statuses/{statusId}/unreblog");
         }
         #endregion
 
