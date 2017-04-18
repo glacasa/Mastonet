@@ -84,8 +84,7 @@ namespace Mastonet
             return TryDeserialize<T>(content);
         }
 
-        private async Task<string> Patch(string route,
-        IEnumerable<KeyValuePair<string, string>> data = null)
+        private async Task<string> Patch(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             string url = "https://" + this.Instance + route;
 
@@ -100,8 +99,7 @@ namespace Mastonet
             return await response.Content.ReadAsStringAsync();
         }
 
-        private async Task<T> Patch<T>(string route,
-        IEnumerable<KeyValuePair<string, string>> data = null)
+        private async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
             where T : class
         {
             var content = await Patch(route, data);
@@ -267,8 +265,7 @@ namespace Mastonet
         /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
         /// <param name="header">A base64 encoded image to display as the user's header image</param>
         /// <returns>Returns an array of Relationships of the current user to a list of given accounts</returns>
-        public Task<Account> UpdateCredentials(string display_name = null,
-        string note = null, string avatar = null, string header = null)
+        public Task<Account> UpdateCredentials(string display_name = null, string note = null, string avatar = null, string header = null)
         {
             var data = new List<KeyValuePair<string, string>>();
             
