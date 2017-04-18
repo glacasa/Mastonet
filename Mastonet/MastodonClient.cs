@@ -317,9 +317,14 @@ namespace Mastonet
         /// Fetching a user's blocks
         /// </summary>
         /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetBlocks()
+        public Task<IEnumerable<Account>> GetBlocks(ArrayOptions options = null)
         {
-            return Get<IEnumerable<Account>>("/api/v1/blocks");
+            var url = "/api/v1/blocks";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Account>>(url);
         }
 
         #endregion
@@ -350,9 +355,14 @@ namespace Mastonet
         /// Fetching a user's favourites
         /// </summary>
         /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-        public Task<IEnumerable<Status>> GetFavourites()
+        public Task<IEnumerable<Status>> GetFavourites(ArrayOptions options = null)
         {
-            return Get<IEnumerable<Status>>("/api/v1/favourites");
+            var url = "/api/v1/favourites";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Status>>(url);
         }
 
         #endregion
@@ -363,9 +373,14 @@ namespace Mastonet
         /// Fetching a list of follow requests
         /// </summary>
         /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetFollowRequests()
+        public Task<IEnumerable<Account>> GetFollowRequests(ArrayOptions options = null)
         {
-            return this.Get<IEnumerable<Account>>("/api/v1/follow_requests");
+            var url = "/api/v1/follow_requests";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return this.Get<IEnumerable<Account>>(url);
         }
 
         /// <summary>
@@ -401,9 +416,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId)
+        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId, ArrayOptions options = null)
         {
-            return Get<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/followers");
+            var url = $"/api/v1/accounts/{accountId}/followers";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Account>>(url);
         }
 
         /// <summary>
@@ -411,9 +431,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId)
+        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId, ArrayOptions options = null)
         {
-            return Get<IEnumerable<Account>>($"/api/v1/accounts/{accountId}/following");
+            var url = $"/api/v1/accounts/{accountId}/following";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Account>>(url);
         }
 
         /// <summary>
@@ -507,9 +532,14 @@ namespace Mastonet
         /// Fetching a user's mutes
         /// </summary>
         /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetMutes()
+        public Task<IEnumerable<Account>> GetMutes(ArrayOptions options = null)
         {
-            return Get<IEnumerable<Account>>("/api/v1/mutes");
+            var url = "/api/v1/mutes";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Account>>(url);
         }
 
         #endregion
@@ -520,9 +550,14 @@ namespace Mastonet
         /// Fetching a user's notifications
         /// </summary>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<IEnumerable<Notification>> GetNotifications()
+        public Task<IEnumerable<Notification>> GetNotifications(ArrayOptions options = null)
         {
-            return Get<IEnumerable<Notification>>("/api/v1/notifications");
+            var url = "/api/v1/notifications";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Notification>>(url);
         }
 
         /// <summary>
@@ -552,9 +587,14 @@ namespace Mastonet
         /// Fetching a user's reports
         /// </summary>
         /// <returns>Returns a list of Reports made by the authenticated user</returns>
-        public Task<IEnumerable<Report>> GetReports()
+        public Task<IEnumerable<Report>> GetReports(ArrayOptions options = null)
         {
-            return Get<IEnumerable<Report>>("/api/v1/reports");
+            var url = "/api/v1/reports";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Report>>(url);
         }
 
         /// <summary>
@@ -585,7 +625,7 @@ namespace Mastonet
         /// <param name="q">What to search for</param>
         /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database</returns>
-        public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null)
+        public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null, ArrayOptions options = null)
         {
             if (string.IsNullOrEmpty(q))
             {
@@ -596,6 +636,10 @@ namespace Mastonet
             if (limit.HasValue)
             {
                 url += "&limit=" + limit.Value;
+            }
+            if (options != null)
+            {
+                url += "&" + options.ToQueryString();
             }
 
             return Get<IEnumerable<Account>>(url);
@@ -634,7 +678,7 @@ namespace Mastonet
         /// <param name="onlyMedia">Only return statuses that have media attachments</param>
         /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, bool onlyMedia = false, bool excludeReplies = false, ArrayOptions options = null)
         {
             var url = $"/api/v1/accounts/{accountId}/statuses";
 
@@ -654,6 +698,18 @@ namespace Mastonet
                     queryParams += "?";
                 }
                 queryParams += "exclude_replies=true";
+            }
+            if (options != null)
+            {
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += options.ToQueryString();
             }
 
             return Get<IEnumerable<Status>>(url + queryParams);
@@ -694,9 +750,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId)
+        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId, ArrayOptions options = null)
         {
-            return Get<IEnumerable<Account>>($"/api/v1/statuses/{statusId}/reblogged_by");
+            var url = $"/api/v1/statuses/{statusId}/reblogged_by";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Account>>(url);
         }
 
         /// <summary>
@@ -704,9 +765,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId)
+        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId, ArrayOptions options = null)
         {
-            return Get<IEnumerable<Account>>($"/api/v1/statuses/{statusId}/favourited_by");
+            var url = $"/api/v1/statuses/{statusId}/favourited_by";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Account>>(url);
         }
 
         /// <summary>
@@ -784,9 +850,14 @@ namespace Mastonet
         /// Retrieving Home timeline
         /// </summary>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetHomeTimeline()
+        public Task<IEnumerable<Status>> GetHomeTimeline(ArrayOptions options = null)
         {
-            return Get<IEnumerable<Status>>("/api/v1/timelines/home");
+            string url = "/api/v1/timelines/home";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return Get<IEnumerable<Status>>(url);
         }
 
         /// <summary>
@@ -794,14 +865,29 @@ namespace Mastonet
         /// </summary>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetPublicTimeline(bool local = false)
+        public Task<IEnumerable<Status>> GetPublicTimeline(bool local = false, ArrayOptions options = null)
         {
             string url = "/api/v1/timelines/public";
+
+            var queryParams = "";
             if (local)
             {
-                url += "?local=true";
+                queryParams += "?local=true";
             }
-            return Get<IEnumerable<Status>>(url);
+            if (options != null)
+            {
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += options.ToQueryString();
+            }
+
+            return Get<IEnumerable<Status>>(url + queryParams);
         }
 
         /// <summary>
@@ -810,14 +896,29 @@ namespace Mastonet
         /// <param name="hashtag">The tag to retieve</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, bool local = false)
+        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, bool local = false, ArrayOptions options = null)
         {
             string url = "/api/v1/timelines/tag" + hashtag;
+
+            var queryParams = "";
             if (local)
             {
-                url += "?local=true";
+                queryParams += "?local=true";
             }
-            return Get<IEnumerable<Status>>(url);
+            if (options != null)
+            {
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += options.ToQueryString();
+            }
+
+            return Get<IEnumerable<Status>>(url + queryParams);
         }
 
         #endregion
