@@ -319,7 +319,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetBlocks(string maxId, string sinceId)
+        public Task<IEnumerable<Account>> GetBlocks(string maxId = null, string sinceId = null)
         {
             return GetBlocks(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -329,7 +329,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetBlocks(ArrayOptions options = null)
+        public Task<IEnumerable<Account>> GetBlocks(ArrayOptions options)
         {
             var url = "/api/v1/blocks";
             if (options != null)
@@ -369,7 +369,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-        public Task<IEnumerable<Status>> GetFavourites(string maxId, string sinceId)
+        public Task<IEnumerable<Status>> GetFavourites(string maxId = null, string sinceId = null)
         {
             return GetFavourites(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -379,7 +379,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-        public Task<IEnumerable<Status>> GetFavourites(ArrayOptions options = null)
+        public Task<IEnumerable<Status>> GetFavourites(ArrayOptions options)
         {
             var url = "/api/v1/favourites";
             if (options != null)
@@ -399,7 +399,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetFollowRequests(string maxId, string sinceId)
+        public Task<IEnumerable<Account>> GetFollowRequests(string maxId = null, string sinceId = null)
         {
             return GetFollowRequests(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -409,7 +409,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetFollowRequests(ArrayOptions options = null)
+        public Task<IEnumerable<Account>> GetFollowRequests(ArrayOptions options)
         {
             var url = "/api/v1/follow_requests";
             if (options != null)
@@ -454,7 +454,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId, string maxId, string sinceId)
+        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId, string maxId = null, string sinceId = null)
         {
             return GetAccountFollowers(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -466,7 +466,7 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId, ArrayOptions options = null)
+        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId, ArrayOptions options)
         {
             var url = $"/api/v1/accounts/{accountId}/followers";
             if (options != null)
@@ -483,7 +483,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId, string maxId, string sinceId)
+        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId, string maxId = null, string sinceId = null)
         {
             return GetAccountFollowing(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -494,7 +494,7 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId, ArrayOptions options = null)
+        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId, ArrayOptions options)
         {
             var url = $"/api/v1/accounts/{accountId}/following";
             if (options != null)
@@ -597,7 +597,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetMutes(string maxId, string sinceId)
+        public Task<IEnumerable<Account>> GetMutes(string maxId = null, string sinceId = null)
         {
             return GetMutes(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -607,7 +607,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetMutes(ArrayOptions options = null)
+        public Task<IEnumerable<Account>> GetMutes(ArrayOptions options)
         {
             var url = "/api/v1/mutes";
             if (options != null)
@@ -627,7 +627,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<IEnumerable<Notification>> GetNotifications(string maxId, string sinceId)
+        public Task<IEnumerable<Notification>> GetNotifications(string maxId = null, string sinceId = null)
         {
             return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -637,7 +637,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<IEnumerable<Notification>> GetNotifications(ArrayOptions options = null)
+        public Task<IEnumerable<Notification>> GetNotifications(ArrayOptions options)
         {
             var url = "/api/v1/notifications";
             if (options != null)
@@ -676,7 +676,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns a list of Reports made by the authenticated user</returns>
-        public Task<IEnumerable<Report>> GetReports(string maxId, string sinceId)
+        public Task<IEnumerable<Report>> GetReports(string maxId = null, string sinceId = null)
         {
             return GetReports(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -686,7 +686,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns a list of Reports made by the authenticated user</returns>
-        public Task<IEnumerable<Report>> GetReports(ArrayOptions options = null)
+        public Task<IEnumerable<Report>> GetReports(ArrayOptions options)
         {
             var url = "/api/v1/reports";
             if (options != null)
@@ -726,7 +726,7 @@ namespace Mastonet
         /// <param name="sinceId">Define the first items to get</param>
         /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database</returns>
-        public Task<IEnumerable<Account>> SearchAccounts(string q, string maxId, string sinceId, int? limit = null)
+        public Task<IEnumerable<Account>> SearchAccounts(string q, string maxId = null, string sinceId = null, int? limit = null)
         {
             return SearchAccounts(q, new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, limit);
         }
@@ -738,7 +738,7 @@ namespace Mastonet
         /// <param name="options">Define the first and last items to get</param>
         /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database</returns>
-        public Task<IEnumerable<Account>> SearchAccounts(string q, ArrayOptions options = null, int? limit = null)
+        public Task<IEnumerable<Account>> SearchAccounts(string q, ArrayOptions options, int? limit = null)
         {
             if (string.IsNullOrEmpty(q))
             {
@@ -793,7 +793,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, string maxId, string sinceId, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, string maxId = null, string sinceId = null, bool onlyMedia = false, bool excludeReplies = false)
         {
             return GetAccountStatuses(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, onlyMedia, excludeReplies);
         }
@@ -806,7 +806,7 @@ namespace Mastonet
         /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, ArrayOptions options = null, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false)
         {
             var url = $"/api/v1/accounts/{accountId}/statuses";
 
@@ -880,7 +880,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId, string maxId, string sinceId)
+        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId, string maxId = null, string sinceId = null)
         {
             return GetRebloggedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -891,7 +891,7 @@ namespace Mastonet
         /// <param name="statusId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId, ArrayOptions options = null)
+        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId, ArrayOptions options)
         {
             var url = $"/api/v1/statuses/{statusId}/reblogged_by";
             if (options != null)
@@ -908,7 +908,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId, string maxId, string sinceId)
+        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId, string maxId = null, string sinceId = null)
         {
             return GetFavouritedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -919,7 +919,7 @@ namespace Mastonet
         /// <param name="statusId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId, ArrayOptions options = null)
+        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId, ArrayOptions options)
         {
             var url = $"/api/v1/statuses/{statusId}/favourited_by";
             if (options != null)
@@ -1006,7 +1006,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetHomeTimeline(string maxId, string sinceId)
+        public Task<IEnumerable<Status>> GetHomeTimeline(string maxId = null, string sinceId = null)
         {
             return GetHomeTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -1016,7 +1016,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetHomeTimeline(ArrayOptions options = null)
+        public Task<IEnumerable<Status>> GetHomeTimeline(ArrayOptions options)
         {
             string url = "/api/v1/timelines/home";
             if (options != null)
@@ -1033,7 +1033,7 @@ namespace Mastonet
         /// <param name="sinceId">Define the first items to get</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetPublicTimeline(string maxId, string sinceId, bool local = false)
+        public Task<IEnumerable<Status>> GetPublicTimeline(string maxId = null, string sinceId = null, bool local = false)
         {
             return GetPublicTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, local);
         }
@@ -1044,7 +1044,7 @@ namespace Mastonet
         /// <param name="options">Define the first and last items to get</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetPublicTimeline(ArrayOptions options = null, bool local = false)
+        public Task<IEnumerable<Status>> GetPublicTimeline(ArrayOptions options, bool local = false)
         {
             string url = "/api/v1/timelines/public";
 
@@ -1077,7 +1077,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, string maxId, string sinceId, bool local = false)
+        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, string maxId = null, string sinceId = null, bool local = false)
         {
             return GetTagTimeline(hashtag, new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, local);
         }
@@ -1089,7 +1089,7 @@ namespace Mastonet
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, ArrayOptions options = null, bool local = false)
+        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false)
         {
             string url = "/api/v1/timelines/tag" + hashtag;
 
