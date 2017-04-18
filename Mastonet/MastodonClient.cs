@@ -84,6 +84,29 @@ namespace Mastonet
             return TryDeserialize<T>(content);
         }
 
+        private async Task<string> Patch(string route,
+        IEnumerable<KeyValuePair<string, string>> data = null)
+        {
+            string url = "https://" + this.Instance + route;
+
+            var client = new HttpClient();
+            var method = new HttpMethod("PATCH");
+            AddHttpHeader(client);
+
+            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+            var message = new HttpRequestMessage(method, url);
+            message.Content = content;
+            var response = await client.SendAsync(message);
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        private async Task<T> Patch<T>(string route,
+        IEnumerable<KeyValuePair<string, string>> data = null)
+            where T : class
+        {
+            var content = await Patch(route, data);
+            return TryDeserialize<T>(content);
+        }
 
         private T TryDeserialize<T>(string json)
         {
@@ -234,6 +257,39 @@ namespace Mastonet
         public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<int> ids)
         {
             return Get<IEnumerable<Relationship>>("/api/v1/accounts/relationships");
+        }
+
+        /// <summary>
+        /// Updating the current user
+        /// </summary>
+        /// <param name="display_name">The name to display in the user's profile</param>
+        /// <param name="note">A new biography for the user</param>
+        /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
+        /// <param name="header">A base64 encoded image to display as the user's header image</param>
+        /// <returns>Returns an array of Relationships of the current user to a list of given accounts</returns>
+        public Task<Account> UpdateCredentials(string display_name = null,
+        string note = null, string avatar = null, string header = null)
+        {
+            var data = new List<KeyValuePair<string, string>>();
+            
+            if (display_name != null)
+            {
+                data.Add(new KeyValuePair<string, string>("display_name", display_name));
+            }
+            if (note != null)
+            {
+                data.Add(new KeyValuePair<string, string>("note", note));
+            }
+            if (avatar != null)
+            {
+                data.Add(new KeyValuePair<string, string>("avatar", avatar));
+            }
+            if (header != null)
+            {
+                data.Add(new KeyValuePair<string, string>("header", header));
+            }
+
+            return Patch<Account>($"/api/v1/accounts/update_credentials", data);
         }
 
         #endregion
