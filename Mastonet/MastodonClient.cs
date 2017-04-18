@@ -773,26 +773,41 @@ namespace Mastonet
 
         public TimelineStreaming GetPublicStreaming()
         {
-            string url = "https://" + this.Instance + "/api/v1/streaming/public";
+            return GetPublicStreaming(this.Instance);
+        }
+
+        public TimelineStreaming GetPublicStreaming(string instance)
+        {
+            string url = "https://" + instance + "/api/v1/streaming/public";
 
             return new TimelineStreaming(url, AccessToken);
         }
 
         public TimelineStreaming GetUserStreaming()
         {
-            string url = "https://" + this.Instance + "/api/v1/streaming/user";
+            return GetUserStreaming(this.Instance);
+        }
+
+        public TimelineStreaming GetUserStreaming(string instance)
+        {
+            string url = "https://" + instance + "/api/v1/streaming/user";
 
             return new TimelineStreaming(url, AccessToken);
         }
 
         public TimelineStreaming GetHashtagStreaming(string hashtag)
         {
+            return GetHashtagStreaming(this.Instance, hashtag);
+        }
+
+        public TimelineStreaming GetHashtagStreaming(string instance, string hashtag)
+        {
             if (string.IsNullOrEmpty(hashtag))
             {
                 throw new ArgumentException("You must specify a hashtag", "hashtag");
             }
 
-            string url = "https://" + this.Instance + "/api/v1/streaming/hashtag?tag=" + hashtag;
+            string url = "https://" + instance + "/api/v1/streaming/hashtag?tag=" + hashtag;
 
             return new TimelineStreaming(url, AccessToken);
         }
