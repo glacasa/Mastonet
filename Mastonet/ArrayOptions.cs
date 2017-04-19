@@ -7,18 +7,18 @@ namespace Mastonet
 {
     public class ArrayOptions
     {
-        public string MaxId { get; set; }
+        public int? MaxId { get; set; }
 
-        public string SinceId { get; set; }
+        public int? SinceId { get; set; }
 
         internal string ToQueryString()
         {
             var query = new Collection<string>();
-            if (!string.IsNullOrEmpty(this.MaxId))
+            if (this.MaxId.HasValue)
             {
                 query.Add("max_id=" + this.MaxId);
             }
-            if (!string.IsNullOrEmpty(this.SinceId))
+            if (this.SinceId.HasValue)
             {
                 query.Add("since_id=" + this.SinceId);
             }
