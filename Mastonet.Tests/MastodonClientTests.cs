@@ -18,17 +18,17 @@ namespace Mastonet.Tests
 
         protected MastodonClient GetReadClient()
         {
-            return new MastodonClient(app, AccessToken);
+            return new MastodonClient(app, new Auth() { AccessToken = AccessToken });
         }
 
         protected MastodonClient GetWriteClient()
         {
-            return new MastodonClient(app, AccessToken);
+            return new MastodonClient(app, new Auth() { AccessToken = AccessToken });
         }
 
         protected MastodonClient GetFollowClient()
         {
-            return new MastodonClient(app, AccessToken);
+            return new MastodonClient(app, new Auth() { AccessToken = AccessToken });
         }
 
 
