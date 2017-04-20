@@ -13,6 +13,12 @@ namespace Mastonet
             this.Instance = instance;
         }
 
+        public AuthenticationClient(AppRegistration app)
+        {
+            this.Instance = app.Instance;
+            this.AppRegistration = app;
+        }
+
         #region Apps
 
         /// <summary>
