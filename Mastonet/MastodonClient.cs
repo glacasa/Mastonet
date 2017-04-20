@@ -1118,43 +1118,74 @@ namespace Mastonet
 
         #region Streaming
 
-        public TimelineStreaming GetPublicStreaming()
+        private string StreamingApiUrl
         {
-            return GetPublicStreaming(this.Instance);
+            get
+            {
+                // mstdn.jp uses a different url for its streaming API, althoug it's supposed to be a dev feature.
+                // if other instances have the same problem, they will be added there, until the API is updated to
+                // allow us get the correct url
+                switch (this.Instance)
+                {
+                    case "mstdn.jp":
+                        return "streaming.mstdn.jp";
+                    default:
+                        return Instance;
+                }
+            }
         }
 
-        public TimelineStreaming GetPublicStreaming(string instance)
+        public TimelineStreaming GetPublicStreaming()
         {
-            string url = "https://" + instance + "/api/v1/streaming/public";
+            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/public";
+
+            return new TimelineStreaming(url, AccessToken);
+        }
+
+        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
+        public TimelineStreaming GetPublicStreaming(string streamingApiUrl)
+        {
+            string url = "https://" + streamingApiUrl + "/api/v1/streaming/public";
 
             return new TimelineStreaming(url, AccessToken);
         }
 
         public TimelineStreaming GetUserStreaming()
         {
-            return GetUserStreaming(this.Instance);
+            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/user";
+
+            return new TimelineStreaming(url, AccessToken);
         }
 
-        public TimelineStreaming GetUserStreaming(string instance)
+        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
+        public TimelineStreaming GetUserStreaming(string streamingApiUrl)
         {
-            string url = "https://" + instance + "/api/v1/streaming/user";
+            string url = "https://" + streamingApiUrl + "/api/v1/streaming/user";
 
             return new TimelineStreaming(url, AccessToken);
         }
 
         public TimelineStreaming GetHashtagStreaming(string hashtag)
         {
-            return GetHashtagStreaming(this.Instance, hashtag);
+            if (string.IsNullOrEmpty(hashtag))
+            {
+                throw new ArgumentException("You must specify a hashtag", "hashtag");
+            }
+
+            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
+
+            return new TimelineStreaming(url, AccessToken);
         }
 
-        public TimelineStreaming GetHashtagStreaming(string instance, string hashtag)
+        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
+        public TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag)
         {
             if (string.IsNullOrEmpty(hashtag))
             {
                 throw new ArgumentException("You must specify a hashtag", "hashtag");
             }
 
-            string url = "https://" + instance + "/api/v1/streaming/hashtag?tag=" + hashtag;
+            string url = "https://" + streamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
 
             return new TimelineStreaming(url, AccessToken);
         }
