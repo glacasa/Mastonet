@@ -21,7 +21,7 @@ namespace Mastonet
         {
             if (AuthToken != null)
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthToken);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthToken.AccessToken);
             }
         }
 

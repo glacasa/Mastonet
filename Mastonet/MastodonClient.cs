@@ -10,10 +10,6 @@ namespace Mastonet
 {
     public partial class MastodonClient : BaseHttpClient
     {
-
-
-
-
         #region Ctor
 
         public MastodonClient(AppRegistration appRegistration, Auth accessToken)
@@ -24,10 +20,7 @@ namespace Mastonet
         }
 
         #endregion
-
-
-       
-
+        
         #region Accounts
 
         /// <summary>
