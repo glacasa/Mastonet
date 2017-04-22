@@ -19,9 +19,4 @@ namespace Mastonet
     {
         public int StatusId { get; set; }
     }
-
-    public class StreamErrorEventArgs : EventArgs
-    {
-        public Exception Exception { get; set; }
-    }
 }
