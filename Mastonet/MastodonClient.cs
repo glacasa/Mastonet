@@ -8,214 +8,19 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Mastonet
 {
-    public partial class MastodonClient
+    public partial class MastodonClient : BaseHttpClient
     {
-        public string Instance { get; }
-
-        public AppRegistration AppRegistration { get; set; }
-
-        public string AccessToken { get; set; }
-
-
         #region Ctor
 
-        public MastodonClient(AppRegistration appRegistration, string accessToken = null)
+        public MastodonClient(AppRegistration appRegistration, Auth accessToken)
         {
             this.Instance = appRegistration.Instance;
             this.AppRegistration = appRegistration;
-            this.AccessToken = accessToken;
+            this.AuthToken = accessToken;
         }
 
         #endregion
-
-        #region Http helpers
-
-        private void AddHttpHeader(HttpClient client)
-        {
-            if (AccessToken != null)
-            {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
-            }
-        }
-
-        private async Task<string> Delete(string route)
-        {
-            string url = "https://" + this.Instance + route;
-
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.DeleteAsync(url);
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private async Task<string> Get(string route)
-        {
-            string url = "https://" + this.Instance + route;
-
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.GetAsync(url);
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private async Task<T> Get<T>(string route)
-            where T : class
-        {
-            var content = await Get(route);
-            return TryDeserialize<T>(content);
-        }
-
-        private async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data = null)
-        {
-            string url = "https://" + this.Instance + route;
-
-            var client = new HttpClient();
-            AddHttpHeader(client);
-
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.PostAsync(url, content);
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
-            where T : class
-        {
-            var content = await Post(route, data);
-            return TryDeserialize<T>(content);
-        }
-
-        private async Task<string> Patch(string route, IEnumerable<KeyValuePair<string, string>> data = null)
-        {
-            string url = "https://" + this.Instance + route;
-
-            var client = new HttpClient();
-            var method = new HttpMethod("PATCH");
-            AddHttpHeader(client);
-
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var message = new HttpRequestMessage(method, url);
-            message.Content = content;
-            var response = await client.SendAsync(message);
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
-            where T : class
-        {
-            var content = await Patch(route, data);
-            return TryDeserialize<T>(content);
-        }
-
-        private T TryDeserialize<T>(string json)
-        {
-            //TODO handle error gracefully
-            //var error = JsonConvert.DeserializeObject<Error>(json);
-            //if (!string.IsNullOrEmpty(error.Description))
-            //{
-            //    throw new ServerErrorException(error);
-            //}
-
-            return JsonConvert.DeserializeObject<T>(json);
-        }
-
-        #endregion
-
-        #region Apps
-
-        /// <summary>
-        /// Registering an application
-        /// </summary>
-        /// <param name="instance">Instance to connect</param>
-        /// <param name="appName">Name of your application</param>
-        /// <param name="scope">The rights needed by your application</param>
-        /// <param name="website">URL to the homepage of your app</param>
-        /// <returns></returns>
-        public static async Task<AppRegistration> CreateApp(string instance, string appName, Scope scope, string website = null, string redirectUri = null)
-        {
-            var data = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>("client_name", appName),
-                new KeyValuePair<string, string>("scopes", GetScopeParam(scope)),
-            };
-            if (string.IsNullOrEmpty(redirectUri))
-            {
-                data.Add(new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"));
-            }
-            else
-            {
-                data.Add(new KeyValuePair<string, string>("redirect_uris", redirectUri));
-            }
-            if (!string.IsNullOrEmpty(website))
-            {
-                data.Add(new KeyValuePair<string, string>("website", website));
-            }
-
-            string url = $"https://{instance}/api/v1/apps";
-            var client = new HttpClient();
-            var content = new FormUrlEncodedContent(data);
-            var response = await client.PostAsync(url, content);
-            var responseJson = await response.Content.ReadAsStringAsync();
-
-            var appRegistration = JsonConvert.DeserializeObject<AppRegistration>(responseJson);
-            appRegistration.Instance = instance;
-            appRegistration.Scope = scope;
-
-            return appRegistration;
-        }
-
-        #endregion
-
-        #region Auth
-
-        public async Task<Auth> ConnectWithPassword(string email, string password)
-        {
-            var data = new List<KeyValuePair<string, string>>()
-            {
-                new KeyValuePair<string, string>("client_id", AppRegistration.ClientId),
-                new KeyValuePair<string, string>("client_secret", AppRegistration.ClientSecret),
-                new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("username", email),
-                new KeyValuePair<string, string>("password", password),
-                new KeyValuePair<string, string>("scope", GetScopeParam(AppRegistration.Scope)),
-            };
-
-            var auth = await Post<Auth>("/oauth/token", data);
-            this.AccessToken = auth.AccessToken;
-            return auth;
-        }
-
-        public async Task<Auth> ConnectWithCode(string code, string redirect_uri = null)
-        {
-            var data = new List<KeyValuePair<string, string>>()
-            {
-                new KeyValuePair<string, string>("client_id", AppRegistration.ClientId),
-                new KeyValuePair<string, string>("client_secret", AppRegistration.ClientSecret),
-                new KeyValuePair<string, string>("grant_type", "authorization_code"),
-                new KeyValuePair<string, string>("redirect_uri", redirect_uri ?? "urn:ietf:wg:oauth:2.0:oob"),
-                new KeyValuePair<string, string>("code", code),
-            };
-
-            var auth = await Post<Auth>("/oauth/token", data);
-            this.AccessToken = auth.AccessToken;
-            return auth;
-        }
-
-        public string OAuthUrl(string redirectUri = null)
-        {
-            return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
-        }
-
-        private static string GetScopeParam(Scope scope)
-        {
-            var scopeParam = "";
-            if ((scope & Scope.Read) == Scope.Read) scopeParam += " read";
-            if ((scope & Scope.Write) == Scope.Write) scopeParam += " write";
-            if ((scope & Scope.Follow) == Scope.Follow) scopeParam += " follow";
-
-            return scopeParam.Trim();
-        }
-
-        #endregion
-
+        
         #region Accounts
 
         /// <summary>
@@ -319,7 +124,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetBlocks(string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Account>> GetBlocks(int? maxId = null, int? sinceId = null)
         {
             return GetBlocks(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -369,7 +174,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-        public Task<IEnumerable<Status>> GetFavourites(string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Status>> GetFavourites(int? maxId = null, int? sinceId = null)
         {
             return GetFavourites(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -399,7 +204,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetFollowRequests(string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Account>> GetFollowRequests(int? maxId = null, int? sinceId = null)
         {
             return GetFollowRequests(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -454,7 +259,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId, string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Account>> GetAccountFollowers(int accountId, int? maxId = null, int? sinceId = null)
         {
             return GetAccountFollowers(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -483,7 +288,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId, string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Account>> GetAccountFollowing(int accountId, int? maxId = null, int? sinceId = null)
         {
             return GetAccountFollowing(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -597,7 +402,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetMutes(string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Account>> GetMutes(int? maxId = null, int? sinceId = null)
         {
             return GetMutes(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -627,7 +432,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<IEnumerable<Notification>> GetNotifications(string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Notification>> GetNotifications(int? maxId = null, int? sinceId = null)
         {
             return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -676,7 +481,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns a list of Reports made by the authenticated user</returns>
-        public Task<IEnumerable<Report>> GetReports(string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Report>> GetReports(int? maxId = null, int? sinceId = null)
         {
             return GetReports(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -726,7 +531,7 @@ namespace Mastonet
         /// <param name="sinceId">Define the first items to get</param>
         /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database</returns>
-        public Task<IEnumerable<Account>> SearchAccounts(string q, string maxId = null, string sinceId = null, int? limit = null)
+        public Task<IEnumerable<Account>> SearchAccounts(string q, int? maxId = null, int? sinceId = null, int? limit = null)
         {
             return SearchAccounts(q, new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, limit);
         }
@@ -793,7 +598,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, string maxId = null, string sinceId = null, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<IEnumerable<Status>> GetAccountStatuses(int accountId, int? maxId = null, int? sinceId = null, bool onlyMedia = false, bool excludeReplies = false)
         {
             return GetAccountStatuses(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, onlyMedia, excludeReplies);
         }
@@ -880,7 +685,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId, string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Account>> GetRebloggedBy(int statusId, int? maxId = null, int? sinceId = null)
         {
             return GetRebloggedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -908,7 +713,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId, string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Account>> GetFavouritedBy(int statusId, int? maxId = null, int? sinceId = null)
         {
             return GetFavouritedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -1006,7 +811,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetHomeTimeline(string maxId = null, string sinceId = null)
+        public Task<IEnumerable<Status>> GetHomeTimeline(int? maxId = null, int? sinceId = null)
         {
             return GetHomeTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId });
         }
@@ -1033,7 +838,7 @@ namespace Mastonet
         /// <param name="sinceId">Define the first items to get</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetPublicTimeline(string maxId = null, string sinceId = null, bool local = false)
+        public Task<IEnumerable<Status>> GetPublicTimeline(int? maxId = null, int? sinceId = null, bool local = false)
         {
             return GetPublicTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, local);
         }
@@ -1077,7 +882,7 @@ namespace Mastonet
         /// <param name="maxId">Define the last items to get</param>
         /// <param name="sinceId">Define the first items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, string maxId = null, string sinceId = null, bool local = false)
+        public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, int? maxId = null, int? sinceId = null, bool local = false)
         {
             return GetTagTimeline(hashtag, new ArrayOptions() { MaxId = maxId, SinceId = sinceId }, local);
         }
@@ -1118,45 +923,76 @@ namespace Mastonet
 
         #region Streaming
 
-        public TimelineStreaming GetPublicStreaming()
+        private string StreamingApiUrl
         {
-            return GetPublicStreaming(this.Instance);
+            get
+            {
+                // mstdn.jp uses a different url for its streaming API, althoug it's supposed to be a dev feature.
+                // if other instances have the same problem, they will be added there, until the API is updated to
+                // allow us get the correct url
+                switch (this.Instance)
+                {
+                    case "mstdn.jp":
+                        return "streaming.mstdn.jp";
+                    default:
+                        return Instance;
+                }
+            }
         }
 
-        public TimelineStreaming GetPublicStreaming(string instance)
+        public TimelineStreaming GetPublicStreaming()
         {
-            string url = "https://" + instance + "/api/v1/streaming/public";
+            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/public";
 
-            return new TimelineStreaming(url, AccessToken);
+            return new TimelineStreaming(url, AuthToken.AccessToken);
+        }
+
+        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
+        public TimelineStreaming GetPublicStreaming(string streamingApiUrl)
+        {
+            string url = "https://" + streamingApiUrl + "/api/v1/streaming/public";
+
+            return new TimelineStreaming(url, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetUserStreaming()
         {
-            return GetUserStreaming(this.Instance);
+            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/user";
+
+            return new TimelineStreaming(url, AuthToken.AccessToken);
         }
 
-        public TimelineStreaming GetUserStreaming(string instance)
+        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
+        public TimelineStreaming GetUserStreaming(string streamingApiUrl)
         {
-            string url = "https://" + instance + "/api/v1/streaming/user";
+            string url = "https://" + streamingApiUrl + "/api/v1/streaming/user";
 
-            return new TimelineStreaming(url, AccessToken);
+            return new TimelineStreaming(url, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetHashtagStreaming(string hashtag)
-        {
-            return GetHashtagStreaming(this.Instance, hashtag);
-        }
-
-        public TimelineStreaming GetHashtagStreaming(string instance, string hashtag)
         {
             if (string.IsNullOrEmpty(hashtag))
             {
                 throw new ArgumentException("You must specify a hashtag", "hashtag");
             }
 
-            string url = "https://" + instance + "/api/v1/streaming/hashtag?tag=" + hashtag;
+            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
 
-            return new TimelineStreaming(url, AccessToken);
+            return new TimelineStreaming(url, AuthToken.AccessToken);
+        }
+
+        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
+        public TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag)
+        {
+            if (string.IsNullOrEmpty(hashtag))
+            {
+                throw new ArgumentException("You must specify a hashtag", "hashtag");
+            }
+
+            string url = "https://" + streamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
+
+            return new TimelineStreaming(url, AuthToken.AccessToken);
         }
 
         #endregion

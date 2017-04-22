@@ -38,13 +38,13 @@ namespace Mastonet
                 var stream = await client.GetStreamAsync(url);
 
                 var reader = new StreamReader(stream);
-
+                
                 string eventName = null;
                 string data = null;
 
                 while (client != null)
                 {
-                    var line = reader.ReadLine();
+                    var line = await reader.ReadLineAsync();
 
 
                     if (string.IsNullOrEmpty(line) || line.StartsWith(":"))

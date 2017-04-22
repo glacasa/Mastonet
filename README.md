@@ -4,6 +4,10 @@ Masto.NET is a .net standard library for Mastodon written in C#.
 
 Work In Progress. You can try it, but be aware there's probably gonna be breaking changes until a stable version is available. Also, don't send Pull Request before opening an issue.
 
+## Sample
+
+If you prefer to browse code, you can go the the sample project : https://github.com/glacasa/Mastonet.SampleApp
+
 ## How to use
 
 ### App registration
@@ -11,23 +15,22 @@ Work In Progress. You can try it, but be aware there's probably gonna be breakin
 You need to obtain a ClientId and a ClientSecret for your app, directly from the client, on the target Mastodon instance.
 Call the static `CreateApp` method :
 
-	  var appRegistration = await MastodonClient.CreateApp("instanceUrl", "Your app name", Scope.Read | Scope.Write | Scope.Follow);
+    var authClient = new AuthenticationClient("instanceUrl");
+	var appRegistration = await authClient.CreateApp("Your app name", Scope.Read | Scope.Write | Scope.Follow);
 
 The `appRegistration` object must be saved.
 
 ### User login, using e-mail and password
 
-Now you can create a client, and connect the user (not recommended, prefer OAuth when you can) :
+Now you can connect the user (not recommended, prefer OAuth when you can) :
 
-	var client = new MastodonClient(appRegistration);
-	var auth = await client.ConnectWithPassword("email", "password");
+	var auth = await authClient.ConnectWithPassword("email", "password");
 
 ### User login, using OAuth
 
 The recommended way to login is to use OAuth. You open a web browser and let the user login himself on his instance. 
 
-	var client = new MastodonClient(appRegistration);
-	var url = client.OAuthUrl();
+	var url = authClient.OAuthUrl();
 	OpenBrowser(url);
 
 You can either embed a WebView in you app, or open an external browser. When the user allowed your app to access its account, he is redirected to a web page with an auth code.
@@ -40,18 +43,17 @@ You have several option to get the code :
 
 If you are in a web context, you can set the final page url, and the user will be redirected directly to your server with the code. Just add your url to the `OAuthUrl` method.
 
-	var url = client.OAuthUrl(myRedirectPage);
+	var url = authClient.OAuthUrl(myRedirectPage);
 	
 Now this code will let you get the access token for the user
 
-	var client = new MastodonClient("instanceUrl", appRegistration);
-	var auth = await client.ConnectWithCode(authCode);
+	var auth = await authClient.ConnectWithCode(authCode);
 
 ### Connect with existing authentication token
 
-When you have the access token, you should save it in the app, and use it every time you restart the app. You just need to add it to the client constructor.
+When you have the access token, you should save it in the app, and use it every time you restart the app. You just need to add it to the MastodonClient constructor.
 
-	var client = new MastodonClient("instanceUrl", appRegistration, auth.AccessToken);
+	var client = new MastodonClient(appRegistration, auth);
 
 Now you can call all the API methods. [See Mastodon API overview](https://github.com/tootsuite/mastodon/blob/master/docs/Using-the-API/API.md)
 
