@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Mastonet
 {
@@ -26,7 +27,7 @@ namespace Mastonet
         }
 
 
-        public async void Start()
+        public async Task Start()
         {
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
@@ -34,7 +35,7 @@ namespace Mastonet
             var stream = await client.GetStreamAsync(url);
 
             var reader = new StreamReader(stream);
-
+                
             string eventName = null;
             string data = null;
 
@@ -74,12 +75,16 @@ namespace Mastonet
                     }
                 }
             }
+            this.Stop();
         }
 
         public void Stop()
         {
-            client.Dispose();
-            client = null;
+            if (client != null)
+            {
+                client.Dispose();
+                client = null;
+            }
         }
     }
 }
