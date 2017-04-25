@@ -35,7 +35,7 @@ namespace Mastonet
             var stream = await client.GetStreamAsync(url);
 
             var reader = new StreamReader(stream);
-                
+
             string eventName = null;
             string data = null;
 

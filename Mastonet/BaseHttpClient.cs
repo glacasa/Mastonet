@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -64,10 +65,35 @@ namespace Mastonet
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<Tuple<string, Stream, string>> media = null)
+        {
+            string url = "https://" + this.Instance + route;
+
+            var client = new HttpClient();
+            AddHttpHeader(client);
+
+            var content = new MultipartFormDataContent();
+
+            foreach (var tuple in media)
+            {
+                content.Add(new StreamContent(tuple.Item2), tuple.Item1, tuple.Item3);
+            }
+            if (data != null)
+            {
+                foreach (var pair in data)
+                {
+                    content.Add(new StringContent(pair.Value), pair.Key);
+                }
+            }
+
+            var response = await client.PostAsync(url, content);
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<Tuple<string, Stream, string>> media = null)
             where T : class
         {
-            var content = await Post(route, data);
+            var content = media == null ? await Post(route, data) : await PostMedia(route, data, media);
             return TryDeserialize<T>(content);
         }
 

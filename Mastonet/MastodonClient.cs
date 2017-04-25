@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+
 namespace Mastonet
 {
     public partial class MastodonClient : BaseHttpClient
@@ -362,14 +364,16 @@ namespace Mastonet
         /// <summary>
         /// Uploading a media attachment
         /// </summary>
-        /// <param name="file">Media to be uploaded</param>
+        /// <param name="data">Media stream to be uploaded</param>
+        /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(object file)
+        public Task<Attachment> UploadMedia(Stream data, string fileName)
         {
-            throw new NotImplementedException();
+            var media = new List<Tuple<string, Stream, string>>() {
+                new Tuple<string, Stream, string>("file", data, fileName),
+            };
 
-            // TODO : upload attachment
-            // return this.Post<Attachment>("/api/v1/media");
+            return this.Post<Attachment>("/api/v1/media", null, media);
         }
 
         #endregion
