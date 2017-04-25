@@ -319,7 +319,7 @@ namespace Mastonet
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("uri", uri)
             };
-            return this.Post<Account>($"/api/v1/follows");
+            return this.Post<Account>($"/api/v1/follows", data);
         }
 
         /// <summary>
