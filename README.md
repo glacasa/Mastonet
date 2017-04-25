@@ -8,6 +8,14 @@ Work In Progress. You can try it, but be aware there's probably gonna be breakin
 
 If you prefer to browse code, you can go the the sample project : https://github.com/glacasa/Mastonet.SampleApp
 
+## Nuget
+
+A preview version is available on Nuget : https://www.nuget.org/packages/Mastonet 
+
+Run the following command in the Package Manager Console  :
+
+    Install-Package Mastonet -Pre 
+
 ## How to use
 
 ### App registration
