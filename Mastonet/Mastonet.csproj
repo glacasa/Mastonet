@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
+    <Authors>Guillaume Lacasa</Authors>
+    <Description>A .net client library for Mastodon</Description>
+    <PackageProjectUrl>https://github.com/glacasa/Mastonet</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/glacasa/Mastonet/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
