@@ -896,7 +896,7 @@ namespace Mastonet
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
         public Task<IEnumerable<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false)
         {
-            string url = "/api/v1/timelines/tag" + hashtag;
+            string url = "/api/v1/timelines/tag/" + hashtag;
 
             var queryParams = "";
             if (local)
