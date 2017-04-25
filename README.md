@@ -2,8 +2,6 @@
 
 Masto.NET is a .net standard library for Mastodon written in C#.
 
-Work In Progress. You can try it, but be aware there's probably gonna be breaking changes until a stable version is available. Also, don't send Pull Request before opening an issue.
-
 ## Sample
 
 If you prefer to browse code, you can go the the sample project : https://github.com/glacasa/Mastonet.SampleApp
