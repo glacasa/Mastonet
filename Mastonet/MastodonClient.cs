@@ -367,7 +367,7 @@ namespace Mastonet
         /// <param name="data">Media stream to be uploaded</param>
         /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(Stream data, string fileName)
+        public Task<Attachment> UploadMedia(Stream data, string fileName = "file")
         {
             var media = new List<Tuple<string, Stream, string>>() {
                 new Tuple<string, Stream, string>("file", data, fileName),
