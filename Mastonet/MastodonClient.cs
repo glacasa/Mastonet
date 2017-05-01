@@ -516,9 +516,10 @@ namespace Mastonet
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("account_id", accountId.ToString()),
-                new KeyValuePair<string, string>("status_ids", JsonConvert.SerializeObject(statusIds)),
                 new KeyValuePair<string, string>("comment", comment),
             };
+            foreach (var statusId in statusIds)
+                data.Add(new KeyValuePair<string, string>("status_ids[]", statusId.ToString()));
 
             return Post<Report>("/api/v1/reports", data);
         }
@@ -760,8 +761,8 @@ namespace Mastonet
             }
             if (mediaIds != null && mediaIds.Any())
             {
-                var mediaJson = JsonConvert.SerializeObject(mediaIds);
-                data.Add(new KeyValuePair<string, string>("media_ids", mediaJson));
+                foreach (var mediaId in mediaIds)
+                    data.Add(new KeyValuePair<string, string>("media_ids[]", mediaId.ToString()));
             }
             if (sensitive)
             {
