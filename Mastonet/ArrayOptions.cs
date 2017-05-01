@@ -11,6 +11,8 @@ namespace Mastonet
 
         public int? SinceId { get; set; }
 
+        public int? Limit { get; set; }
+
         internal string ToQueryString()
         {
             var query = new Collection<string>();
@@ -21,6 +23,10 @@ namespace Mastonet
             if (this.SinceId.HasValue)
             {
                 query.Add("since_id=" + this.SinceId);
+            }
+            if (this.Limit.HasValue)
+            {
+                query.Add("limit=" + this.Limit);
             }
             return string.Join("&", query);
         }
