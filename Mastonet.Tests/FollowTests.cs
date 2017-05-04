@@ -16,7 +16,7 @@ namespace Mastonet.Tests
             var accounts = await client.GetAccountFollowers(1);
 
             Assert.NotNull(accounts);
-            Assert.True(accounts.Any());
+            Assert.Equal(2, accounts.Count());
         }
 
         [Fact]
@@ -26,20 +26,29 @@ namespace Mastonet.Tests
             var accounts = await client.GetAccountFollowing(1);
 
             Assert.NotNull(accounts);
-            Assert.True(accounts.Any());
+            Assert.Equal(3, accounts.Count());
         }
 
         [Fact]
         public async Task Follow()
         {
-            // Follow local
             var client = GetFollowClient();
-            var followedAccount = await client.Follow(1);
-            Assert.NotNull(followedAccount);
+            // Make sure we don't follow
+            await client.Unfollow(4);
+            await client.Unfollow(2);
+
+            // Follow local
+            var relation = await client.Follow(4);
+            Assert.NotNull(relation);
+            Assert.True(relation.Following);
 
             //follow remote
-            followedAccount = await client.Follow("");
+            var followedAccount = await client.Follow("glacasa@mamot.fr");
             Assert.NotNull(followedAccount);
+            Assert.Equal("glacasa", followedAccount.UserName);
+            relation = (await client.GetAccountRelationships(followedAccount.Id)).First();
+            Assert.True(relation.Following);
+
         }
 
         [Fact]

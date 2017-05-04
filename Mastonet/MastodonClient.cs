@@ -339,9 +339,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Account> Follow(int accountId)
+        public Task<Relationship> Follow(int accountId)
         {
-            return this.Post<Account>($"/api/v1/accounts/{accountId}/follow");
+            return this.Post<Relationship>($"/api/v1/accounts/{accountId}/follow");
         }
 
         /// <summary>
@@ -349,9 +349,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Account> Unfollow(int accountId)
+        public Task<Relationship> Unfollow(int accountId)
         {
-            return this.Post<Account>($"/api/v1/accounts/{accountId}/unfollow");
+            return this.Post<Relationship>($"/api/v1/accounts/{accountId}/unfollow");
         }
 
         #endregion
