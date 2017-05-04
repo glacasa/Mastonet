@@ -36,9 +36,15 @@ namespace Mastonet
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<string> Get(string route)
+        protected async Task<string> Get(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             string url = "https://" + this.Instance + route;
+
+            if (data != null)
+            {
+                var querystring = "?" + String.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
+                url += querystring;
+            }
 
             var client = new HttpClient();
             AddHttpHeader(client);
@@ -46,10 +52,10 @@ namespace Mastonet
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<T> Get<T>(string route)
+        protected async Task<T> Get<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
             where T : class
         {
-            var content = await Get(route);
+            var content = await Get(route, data);
             return TryDeserialize<T>(content);
         }
 

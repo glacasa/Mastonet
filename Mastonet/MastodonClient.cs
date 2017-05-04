@@ -22,7 +22,7 @@ namespace Mastonet
         }
 
         #endregion
-        
+
         #region Accounts
 
         /// <summary>
@@ -61,7 +61,12 @@ namespace Mastonet
         /// <returns>Returns an array of Relationships of the current user to a list of given accounts</returns>
         public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<int> ids)
         {
-            return Get<IEnumerable<Relationship>>("/api/v1/accounts/relationships");
+            var data = new List<KeyValuePair<string, string>>();
+            foreach (var id in ids)
+            {
+                data.Add(new KeyValuePair<string, string>("id[]", id.ToString()));
+            }
+            return Get<IEnumerable<Relationship>>("/api/v1/accounts/relationships", data);
         }
 
         /// <summary>
@@ -527,7 +532,9 @@ namespace Mastonet
                 new KeyValuePair<string, string>("comment", comment),
             };
             foreach (var statusId in statusIds)
+            {
                 data.Add(new KeyValuePair<string, string>("status_ids[]", statusId.ToString()));
+            }
 
             return Post<Report>("/api/v1/reports", data);
         }

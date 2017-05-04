@@ -18,6 +18,7 @@ namespace Mastonet.Tests
 
             Assert.NotNull(account.ProfileUrl);
             Assert.NotNull(account.UserName);
+            Assert.Equal("glacasa",account.UserName);
         }
 
         [Fact]
@@ -29,6 +30,7 @@ namespace Mastonet.Tests
 
             Assert.NotNull(account.ProfileUrl);
             Assert.NotNull(account.UserName);
+            Assert.Equal("TestAccount", account.UserName);
         }
 
         [Fact]
@@ -39,7 +41,14 @@ namespace Mastonet.Tests
             var relationships = await client.GetAccountRelationships(1);
 
             Assert.NotNull(relationships);
-            Assert.NotEqual(0, relationships.Count());
+            Assert.Equal(1, relationships.Count());
+
+            var rel = relationships.First();
+            Assert.True(rel.Following);
+            Assert.True(rel.FollowedBy);
+            Assert.False(rel.Blocking);
+            Assert.False(rel.Muting);
+            Assert.False(rel.Requested);
         }
     }
 }
