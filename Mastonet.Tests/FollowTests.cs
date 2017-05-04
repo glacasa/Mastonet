@@ -55,14 +55,19 @@ namespace Mastonet.Tests
         public async Task Unfollow()
         {
             var client = GetFollowClient();
-            var unfollowedAccount = await client.Unfollow(1);
-            Assert.NotNull(unfollowedAccount);
+            // Make sure we follow
+            await client.Follow(4);
+
+            var relation = await client.Unfollow(4);
+            Assert.NotNull(relation);
+            Assert.False(relation.Following);
         }
 
 
         [Fact]
         public async Task GetFollowRequests()
         {
+            throw new NotImplementedException();
             var client = GetFollowClient();
             var requests = await client.GetFollowRequests();
             Assert.NotNull(requests);
@@ -71,15 +76,15 @@ namespace Mastonet.Tests
         [Fact]
         public async Task AuthorizeRequest()
         {
-            var client = GetFollowClient();
             throw new NotImplementedException();
+            var client = GetFollowClient();
         }
 
         [Fact]
         public async Task RejectRequest()
         {
-            var client = GetFollowClient();
             throw new NotImplementedException();
+            var client = GetFollowClient();
         }
     }
 }
