@@ -11,7 +11,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task Block()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             var blocked = await client.Block(10);
             Assert.NotNull(blocked);
         }
@@ -19,7 +19,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task Unblock()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             var unblocked = await client.Unblock(10);
             Assert.NotNull(unblocked);
         }
@@ -27,7 +27,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetBlocks()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var blocked = await client.GetBlocks();
             Assert.NotNull(blocked);
         }
@@ -35,7 +35,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task Mute()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             var muted = await client.Mute(10);
             Assert.NotNull(muted);
         }
@@ -43,7 +43,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task Unmute()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             var unmuted = await client.Unmute(10);
             Assert.NotNull(unmuted);
         }
@@ -51,7 +51,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetMutes()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var muted = await client.GetMutes();
             Assert.NotNull(muted);
         }
@@ -59,21 +59,21 @@ namespace Mastonet.Tests
         [Fact]
         public async Task Favourite()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task Unfavourite()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task GetFavourites()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var favs = await client.GetFavourites();
             Assert.NotNull(favs);
         }

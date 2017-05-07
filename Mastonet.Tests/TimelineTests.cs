@@ -12,7 +12,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetHomeTimeline()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var timeline = await client.GetHomeTimeline();
             Assert.NotNull(timeline);
         }
@@ -20,7 +20,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetPublicTimeline()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var timeline = await client.GetPublicTimeline();
             Assert.NotNull(timeline);
         }
@@ -28,7 +28,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetTagTimeline()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var timeline = await client.GetTagTimeline("mastodon");
             Assert.NotNull(timeline);
         }

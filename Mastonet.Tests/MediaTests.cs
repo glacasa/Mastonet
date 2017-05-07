@@ -12,7 +12,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task UploadPngImage()
         {
-            var client = GetWriteClient();
+            var client = GetTestClient();
 
             System.IO.FileStream fs = new System.IO.FileStream(
                                                 @".\testimage.png",

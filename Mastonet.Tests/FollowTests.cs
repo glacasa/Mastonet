@@ -12,7 +12,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetAccountFollowers()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var accounts = await client.GetAccountFollowers(1);
 
             Assert.NotNull(accounts);
@@ -22,7 +22,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetAccountFollowing()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             var accounts = await client.GetAccountFollowing(1);
 
             Assert.NotNull(accounts);
@@ -32,7 +32,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task Follow()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             // Make sure we don't follow
             await client.Unfollow(4);
             await client.Unfollow(2);
@@ -54,7 +54,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task Unfollow()
         {
-            var client = GetFollowClient();
+            var client = GetTestClient();
             // Make sure we follow
             await client.Follow(4);
 
@@ -67,24 +67,34 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetFollowRequests()
         {
-            throw new NotImplementedException();
-            var client = GetFollowClient();
+            var client = GetPrivateClient();
             var requests = await client.GetFollowRequests();
             Assert.NotNull(requests);
+            Assert.True(requests.Any());
         }
 
         [Fact]
         public async Task AuthorizeRequest()
         {
-            throw new NotImplementedException();
-            var client = GetFollowClient();
+            var testClient = GetTestClient();
+            var privateClient = GetPrivateClient();
+
+            // Have the test follower
+            await privateClient.Block(3);
+            await privateClient.Unblock(3);
+            //await testClient.Unfollow(11);
+            await testClient.Follow(11);
+
+            var requests = await privateClient.GetFollowRequests();
+            Assert.True(requests.Any(r => r.AccountName == "TestAccount"));
+
         }
 
         [Fact]
         public async Task RejectRequest()
         {
             throw new NotImplementedException();
-            var client = GetFollowClient();
+            var client = GetTestClient();
         }
     }
 }

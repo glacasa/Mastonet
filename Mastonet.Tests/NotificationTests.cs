@@ -11,21 +11,21 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetNotifications()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task GetNotification()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task ClearNotifications()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
     }

@@ -12,7 +12,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetAccount()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
 
             var account = await client.GetAccount(1);
 
@@ -24,7 +24,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetCurrentUser()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
 
             var account = await client.GetCurrentUser();
 
@@ -36,7 +36,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetAccountRelationships()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
 
             var relationships = await client.GetAccountRelationships(1);
 

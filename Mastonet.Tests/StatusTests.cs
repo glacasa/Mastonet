@@ -12,7 +12,7 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetAccountStatuses()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
 
             var status = await client.GetAccountStatuses(1);
             Assert.NotNull(status);
@@ -28,35 +28,35 @@ namespace Mastonet.Tests
         [Fact]
         public async Task GetStatus()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task GetStatusContext()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task GetStatusCard()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task GetRebloggedBy()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
 
         [Fact]
         public async Task GetFavouritedBy()
         {
-            var client = GetReadClient();
+            var client = GetTestClient();
             throw new NotImplementedException();
         }
     }
