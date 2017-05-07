@@ -110,9 +110,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Account> Block(int accountId)
+        public Task<Relationship> Block(int accountId)
         {
-            return Get<Account>($"/api/v1/accounts/{accountId}/block");
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/block");
         }
 
         /// <summary>
@@ -120,9 +120,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Account> Unblock(int accountId)
+        public Task<Relationship> Unblock(int accountId)
         {
-            return Get<Account>($"/api/v1/accounts/{accountId}/unblock");
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/unblock");
         }
 
         /// <summary>
@@ -395,9 +395,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Account> Mute(int accountId)
+        public Task<Relationship> Mute(int accountId)
         {
-            return Get<Account>($"/api/v1/accounts/{accountId}/mute");
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/mute");
         }
 
         /// <summary>
@@ -405,9 +405,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Account> Unmute(int accountId)
+        public Task<Relationship> Unmute(int accountId)
         {
-            return Get<Account>($"/api/v1/accounts/{accountId}/unmute");
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/unmute");
         }
 
         /// <summary>
