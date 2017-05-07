@@ -22,16 +22,7 @@ namespace Mastonet.Tests
             return new MastodonClient(app, new Auth() { AccessToken = testAccessToken });
         }
 
-
-
-
-
-        //private static AppRegistration privateApp = new AppRegistration
-        //{
-        //    Instance = "mastonet.masto.host",
-        //    ClientId = "c055df68cf3e7287f1f9abe64ebaadbc7c940a56d206cbfac72855322a8411fc",
-        //    ClientSecret = "ef5daae140f1aa360ab04d1618eb79bee9353ea0f38f71c8e21ac4f48a3f51d3"
-        //};
+        
 
         private static string privateAccessToken = "c9ba4e2788ae3d756f54de22083dad7fcde659003646e99664d4fe3b163abf94";
 
