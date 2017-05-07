@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,16 +13,18 @@ namespace Mastonet.Tests
         public async Task Block()
         {
             var client = GetTestClient();
-            var blocked = await client.Block(10);
-            Assert.NotNull(blocked);
+            var rel = await client.Block(10);
+            Assert.NotNull(rel);
+            Assert.True(rel.Blocking);
         }
 
         [Fact]
         public async Task Unblock()
         {
             var client = GetTestClient();
-            var unblocked = await client.Unblock(10);
-            Assert.NotNull(unblocked);
+            var rel = await client.Unblock(10);
+            Assert.NotNull(rel);
+            Assert.False(rel.Blocking);
         }
 
         [Fact]
@@ -36,16 +39,18 @@ namespace Mastonet.Tests
         public async Task Mute()
         {
             var client = GetTestClient();
-            var muted = await client.Mute(10);
-            Assert.NotNull(muted);
+            var rel = await client.Mute(10);
+            Assert.NotNull(rel);
+            Assert.True(rel.Muting);
         }
 
         [Fact]
         public async Task Unmute()
         {
             var client = GetTestClient();
-            var unmuted = await client.Unmute(10);
-            Assert.NotNull(unmuted);
+            var rel = await client.Unmute(10);
+            Assert.NotNull(rel);
+            Assert.False(rel.Muting);
         }
 
         [Fact]
@@ -57,18 +62,19 @@ namespace Mastonet.Tests
         }
 
         [Fact]
-        public async Task Favourite()
+        public async Task FavouriteUnfavourite()
         {
             var client = GetTestClient();
-            throw new NotImplementedException();
+            var tl = await client.GetHomeTimeline(limit : 1);
+            var status = tl.First();
+
+            status = await client.Favourite(status.Id);
+            Assert.True(status.Favourited);
+            
+            status = await client.Unfavourite(status.Id);
+            Assert.False(status.Favourited);
         }
 
-        [Fact]
-        public async Task Unfavourite()
-        {
-            var client = GetTestClient();
-            throw new NotImplementedException();
-        }
 
         [Fact]
         public async Task GetFavourites()

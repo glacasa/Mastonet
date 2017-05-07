@@ -41,14 +41,7 @@ namespace Mastonet.Tests
             var relationships = await client.GetAccountRelationships(1);
 
             Assert.NotNull(relationships);
-            Assert.Equal(1, relationships.Count());
-
-            var rel = relationships.First();
-            Assert.True(rel.Following);
-            Assert.True(rel.FollowedBy);
-            Assert.False(rel.Blocking);
-            Assert.False(rel.Muting);
-            Assert.False(rel.Requested);
+            Assert.Equal(1, relationships.Count());            
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Mastonet.Tests
             var accounts = await client.GetAccountFollowers(1);
 
             Assert.NotNull(accounts);
-            Assert.Equal(2, accounts.Count());
+            Assert.True(accounts.Any());
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace Mastonet.Tests
             var accounts = await client.GetAccountFollowing(1);
 
             Assert.NotNull(accounts);
-            Assert.Equal(3, accounts.Count());
+            Assert.True(accounts.Any());
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Mastonet.Tests
             var client = GetTestClient();
             // Make sure we don't follow
             await client.Unfollow(4);
-            await client.Unfollow(2);
+            await client.Unfollow(12);
 
             // Follow local
             var relation = await client.Follow(4);
@@ -43,12 +43,12 @@ namespace Mastonet.Tests
             Assert.True(relation.Following);
 
             //follow remote
-            var followedAccount = await client.Follow("glacasa@mamot.fr");
-            Assert.NotNull(followedAccount);
-            Assert.Equal("glacasa", followedAccount.UserName);
-            relation = (await client.GetAccountRelationships(followedAccount.Id)).First();
-            Assert.True(relation.Following);
-
+            // Remote tests removed to avoid send test requests to random instances
+            //var followedAccount = await client.Follow("");
+            //Assert.NotNull(followedAccount);
+            //Assert.Equal("glacasa", followedAccount.UserName);
+            //relation = (await client.GetAccountRelationships(followedAccount.Id)).First();
+            //Assert.True(relation.Following);
         }
 
         [Fact]
