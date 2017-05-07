@@ -101,7 +101,7 @@ namespace Mastonet.Entities
         /// One of: public, unlisted, private, direct
         /// </summary>
         [JsonProperty("visibility")]
-        public string Visibility { get; set; }
+        public Visibility Visibility { get; set; }
 
         /// <summary>
         /// An array of Attachments
