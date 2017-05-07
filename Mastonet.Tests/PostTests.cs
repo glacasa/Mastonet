@@ -37,28 +37,53 @@ namespace Mastonet.Tests
         public async Task PostStatus()
         {
             var client = GetTestClient();
-            throw new NotImplementedException();
+            var status = await client.PostStatus("Yo1", Visibility.Public);
+
+            var client2 = GetPrivateClient();
+
+            var statusFromApi = await client2.GetStatus(status.Id);
+
+            Assert.Equal(status.Id, statusFromApi.Id);
+            Assert.Equal(status.Content, statusFromApi.Content);
+            Assert.Equal(Visibility.Public, statusFromApi.Visibility);
         }
 
         [Fact]
         public async Task DeleteStatus()
         {
             var client = GetTestClient();
-            throw new NotImplementedException();
+            var status = await client.PostStatus("Yo1", Visibility.Public);
+            var statusId = status.Id;
+
+            status = await client.GetStatus(statusId);
+            Assert.NotNull(status);
+
+            await client.DeleteStatus(statusId);
+
+            await Assert.ThrowsAsync<ServerErrorException>(async () =>
+            {
+                status = await client.GetStatus(statusId);
+            });
         }
 
         [Fact]
-        public async Task Reblog()
+        public async Task ReblogUnreblog()
         {
-            var client = GetTestClient();
-            throw new NotImplementedException();
-        }
+            var testClient = GetTestClient();
+            var status = await testClient.PostStatus("Yo1", Visibility.Public);
 
-        [Fact]
-        public async Task Unreblog()
-        {
-            var client = GetTestClient();
-            throw new NotImplementedException();
+            var client = GetPrivateClient();
+            status = await client.GetStatus(status.Id);
+            Assert.False(status.Reblogged);
+
+            await client.Reblog(status.Id);
+            status = await client.GetStatus(status.Id);
+            Assert.True(status.Reblogged);
+
+
+            await client.Unreblog(status.Id);
+            status = await client.GetStatus(status.Id);
+            Assert.False(status.Reblogged);
         }
     }
 }
