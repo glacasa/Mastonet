@@ -240,10 +240,7 @@ namespace Mastonet
         /// <param name="accountId">The id of the account to authorize</param>
         public Task AuthorizeRequest(int accountId)
         {
-            var data = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>("id", accountId.ToString())
-            };
-            return this.Post("/api/v1/follow_requests/authorize");
+            return this.Post($"/api/v1/follow_requests/{accountId}/authorize");
         }
 
         /// <summary>
@@ -252,10 +249,7 @@ namespace Mastonet
         /// <param name="accountId">The id of the account to reject</param>
         public Task RejectRequest(int accountId)
         {
-            var data = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>("id", accountId.ToString())
-            };
-            return this.Post("/api/v1/follow_requests/reject");
+            return this.Post($"/api/v1/follow_requests/{accountId}/reject");
         }
 
         #endregion

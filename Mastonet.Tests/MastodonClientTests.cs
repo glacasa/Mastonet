@@ -8,7 +8,7 @@ namespace Mastonet.Tests
 {
     public class MastodonClientTests
     {
-        private static AppRegistration testApp = new AppRegistration
+        private static AppRegistration app = new AppRegistration
         {
             Instance = "mastonet.masto.host",
             ClientId = "5713e1fe569b5486dde452f3107a1696a38341f14b75f682c6f4cfc8faa5d8c6",
@@ -19,25 +19,25 @@ namespace Mastonet.Tests
 
         protected MastodonClient GetTestClient()
         {
-            return new MastodonClient(testApp, new Auth() { AccessToken = testAccessToken });
+            return new MastodonClient(app, new Auth() { AccessToken = testAccessToken });
         }
 
 
 
 
 
-        private static AppRegistration privateApp = new AppRegistration
-        {
-            Instance = "mastonet.masto.host",
-            ClientId = "c055df68cf3e7287f1f9abe64ebaadbc7c940a56d206cbfac72855322a8411fc",
-            ClientSecret = "ef5daae140f1aa360ab04d1618eb79bee9353ea0f38f71c8e21ac4f48a3f51d3"
-        };
+        //private static AppRegistration privateApp = new AppRegistration
+        //{
+        //    Instance = "mastonet.masto.host",
+        //    ClientId = "c055df68cf3e7287f1f9abe64ebaadbc7c940a56d206cbfac72855322a8411fc",
+        //    ClientSecret = "ef5daae140f1aa360ab04d1618eb79bee9353ea0f38f71c8e21ac4f48a3f51d3"
+        //};
 
-        private static string privateAccessToken = "89b4b23dff1a92f499d4717fdc97ca20ced0e7c02c60823957b2e8e7bfcb3160";
+        private static string privateAccessToken = "c9ba4e2788ae3d756f54de22083dad7fcde659003646e99664d4fe3b163abf94";
 
         protected MastodonClient GetPrivateClient()
         {
-            return new MastodonClient(privateApp, new Auth() { AccessToken = privateAccessToken });
+            return new MastodonClient(app, new Auth() { AccessToken = privateAccessToken });
         }
 
 

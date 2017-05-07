@@ -78,23 +78,50 @@ namespace Mastonet.Tests
         {
             var testClient = GetTestClient();
             var privateClient = GetPrivateClient();
-
+                        
             // Have the test follower
-            await privateClient.Block(3);
+            await privateClient.RejectRequest(3);
             await privateClient.Unblock(3);
-            //await testClient.Unfollow(11);
+            await testClient.Unfollow(11);
             await testClient.Follow(11);
 
             var requests = await privateClient.GetFollowRequests();
-            Assert.True(requests.Any(r => r.AccountName == "TestAccount"));
+            Assert.True(requests.Any(r => r.Id == 3));
 
+            // Authorize
+            await privateClient.AuthorizeRequest(3);
+
+            // Check if it's ok
+            requests = await privateClient.GetFollowRequests();
+            Assert.False(requests.Any(r => r.Id == 3));
+
+            var followers = await privateClient.GetAccountFollowers(11);
+            Assert.True(followers.Any(f => f.Id == 3));
         }
 
         [Fact]
         public async Task RejectRequest()
         {
-            throw new NotImplementedException();
-            var client = GetTestClient();
+            var testClient = GetTestClient();
+            var privateClient = GetPrivateClient();
+
+            // Have the test follower
+            await privateClient.AuthorizeRequest(3);
+            await testClient.Unfollow(11);
+            await testClient.Follow(11);
+
+            var requests = await privateClient.GetFollowRequests();
+            Assert.True(requests.Any(r => r.Id == 3));
+
+            // Authorize
+            await privateClient.RejectRequest(3);
+
+            // Check if it's ok
+            requests = await privateClient.GetFollowRequests();
+            Assert.False(requests.Any(r => r.Id == 3));
+
+            var followers = await privateClient.GetAccountFollowers(11);
+            Assert.False(followers.Any(f => f.Id == 3));
         }
     }
 }
