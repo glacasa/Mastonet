@@ -11,7 +11,7 @@ namespace Mastonet.Entities
         /// The ID of the report
         /// </summary>
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The action taken in response to the report

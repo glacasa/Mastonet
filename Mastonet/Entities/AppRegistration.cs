@@ -8,7 +8,7 @@ namespace Mastonet.Entities
     public class AppRegistration
     {
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [JsonProperty("redirect_uri")]
         public string RedirectUri { get; set; }

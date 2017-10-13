@@ -11,7 +11,7 @@ namespace Mastonet.Entities
         /// ID of the attachment
         /// </summary>
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// One of: "image", "video", "gifv"

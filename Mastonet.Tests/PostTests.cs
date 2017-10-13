@@ -25,7 +25,7 @@ namespace Mastonet.Tests
             Assert.NotNull(attachment.PreviewUrl);
             Assert.NotNull(attachment.Url);
 
-            var status = await client.PostStatus("Status with imate", Visibility.Private, mediaIds: new int[] { attachment.Id });
+            var status = await client.PostStatus("Status with imate", Visibility.Private, mediaIds: new long[] { attachment.Id });
             status = await client.GetStatus(status.Id);
 
             Assert.NotNull(status.MediaAttachments);

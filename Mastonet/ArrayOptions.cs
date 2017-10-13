@@ -7,9 +7,9 @@ namespace Mastonet
 {
     public class ArrayOptions
     {
-        public int? MaxId { get; set; }
+        public long? MaxId { get; set; }
 
-        public int? SinceId { get; set; }
+        public long? SinceId { get; set; }
 
         public int? Limit { get; set; }
 

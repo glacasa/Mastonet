@@ -11,7 +11,7 @@ namespace Mastonet.Entities
         /// The ID of the status
         /// </summary>
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// A Fediverse-unique resource ID
