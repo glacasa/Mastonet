@@ -35,13 +35,13 @@ namespace Mastonet.Entities
         /// null or the ID of the status it replies to
         /// </summary>
         [JsonProperty("in_reply_to_id")]
-        public int? InReplyToId { get; set; }
+        public long? InReplyToId { get; set; }
 
         /// <summary>
         /// null or the ID of the account it replies to
         /// </summary>
         [JsonProperty("in_reply_to_account_id")]
-        public int? InReplyToAccountId { get; set; }
+        public long? InReplyToAccountId { get; set; }
 
         /// <summary>
         /// null or the reblogged Status
