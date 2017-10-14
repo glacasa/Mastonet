@@ -8,6 +8,12 @@ namespace Mastonet.Entities
     public class Relationship
     {
         /// <summary>
+        /// Target account id
+        /// </summary>
+        [JsonProperty("id")]
+        public long Id { get; set; }
+        
+        /// <summary>
         /// Whether the user is currently following the account
         /// </summary>
         [JsonProperty("following")]
