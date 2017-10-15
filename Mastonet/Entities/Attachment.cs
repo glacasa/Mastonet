@@ -14,7 +14,7 @@ namespace Mastonet.Entities
         public long Id { get; set; }
 
         /// <summary>
-        /// One of: "image", "video", "gifv"
+        /// One of: "image", "video", "gifv", "unknown"
         /// </summary>
         [JsonProperty("type")]
         public string Type { get; set; }
@@ -42,5 +42,7 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("text_url")]
         public string TextUrl { get; set; }
+
+
     }
 }

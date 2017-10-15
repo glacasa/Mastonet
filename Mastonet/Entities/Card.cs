@@ -30,5 +30,53 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("image")]
         public string Image { get; set; }
+
+        /// <summary>
+        /// "link", "photo", "video", or "rich"
+        /// </summary>
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// OEmbed data
+        /// </summary>
+        [JsonProperty("author_name")]
+        public string AuthorName { get; set; }
+
+        /// <summary>
+        /// OEmbed data
+        /// </summary>
+        [JsonProperty("author_url")]
+        public string AuthorUrl { get; set; }
+
+        /// <summary>
+        /// OEmbed data
+        /// </summary>
+        [JsonProperty("provider_name")]
+        public string ProviderName { get; set; }
+
+        /// <summary>
+        /// OEmbed data
+        /// </summary>
+        [JsonProperty("provider_url")]
+        public string ProviderUrl { get; set; }
+
+        /// <summary>
+        /// OEmbed data
+        /// </summary>
+        [JsonProperty("html")]
+        public string Html { get; set; }
+
+        /// <summary>
+        /// OEmbed data
+        /// </summary>
+        [JsonProperty("width")]
+        public int? Width { get; set; }
+
+        /// <summary>
+        /// OEmbed data
+        /// </summary>
+        [JsonProperty("height")]
+        public int? Height { get; set; }
     }
 }

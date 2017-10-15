@@ -42,5 +42,11 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("requested")]
         public bool Requested { get; set; }
+
+        /// <summary>
+        /// Whether the user is currently blocking the accounts's domain
+        /// </summary>
+        [JsonProperty("domain_blocking")]
+        public bool DomainBlocking { get; set; }
     }
 }

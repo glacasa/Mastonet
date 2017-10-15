@@ -86,6 +86,12 @@ namespace Mastonet.Entities
         public bool? Favourited { get; set; }
 
         /// <summary>
+        /// Whether the authenticated user has muted the conversation this status from
+        /// </summary>
+        [JsonProperty("muted")]
+        public bool? Muted { get; set; }
+
+        /// <summary>
         /// Whether media attachments should be hidden by default
         /// </summary>
         [JsonProperty("sensitive")]
@@ -126,6 +132,12 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("application")]
         public Application Application { get; set; }
+
+        /// <summary>
+        /// The detected language for the status, if detected
+        /// </summary>
+        [JsonProperty("language")]
+        public string Language { get; set; }
 
     }
 }

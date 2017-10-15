@@ -30,30 +30,6 @@ namespace Mastonet.Entities
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// Biography of user
-        /// </summary>
-        [JsonProperty("note")]
-        public string Note { get; set; }
-
-        /// <summary>
-        /// URL of the user's profile page (can be remote)
-        /// </summary>
-        [JsonProperty("url")]
-        public string ProfileUrl { get; set; }
-
-        /// <summary>
-        /// URL to the avatar image
-        /// </summary>
-        [JsonProperty("avatar")]
-        public string AvatarUrl { get; set; }
-
-        /// <summary>
-        /// URL to the header image
-        /// </summary>
-        [JsonProperty("header")]
-        public string HeaderUrl { get; set; }
-
-        /// <summary>
         /// Boolean for when the account cannot be followed without waiting for approval first
         /// </summary>
         [JsonProperty("locked")]
@@ -82,5 +58,41 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("statuses_count")]
         public int StatusesCount { get; set; }
+        
+        /// <summary>
+        /// Biography of user
+        /// </summary>
+        [JsonProperty("note")]
+        public string Note { get; set; }
+
+        /// <summary>
+        /// URL of the user's profile page (can be remote)
+        /// </summary>
+        [JsonProperty("url")]
+        public string ProfileUrl { get; set; }
+
+        /// <summary>
+        /// URL to the avatar image
+        /// </summary>
+        [JsonProperty("avatar")]
+        public string AvatarUrl { get; set; }
+
+        /// <summary>
+        /// URL to the avatar static image (gif)
+        /// </summary>
+        [JsonProperty("avatar_static")]
+        public string StaticAvatarUrl { get; set; }
+
+        /// <summary>
+        /// URL to the header image
+        /// </summary>
+        [JsonProperty("header")]
+        public string HeaderUrl { get; set; }
+
+        /// <summary>
+        /// URL to the header image
+        /// </summary>
+        [JsonProperty("header_static")]
+        public string StaticHeaderUrl { get; set; }
     }
 }
