@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Mastonet
@@ -39,7 +40,6 @@ namespace Mastonet
         protected async Task<string> Get(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             string url = "https://" + this.Instance + route;
-
             if (data != null)
             {
                 var querystring = "?" + String.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
@@ -57,6 +57,49 @@ namespace Mastonet
         {
             var content = await Get(route, data);
             return TryDeserialize<T>(content);
+        }
+
+        private Regex idFinderRegex = new Regex("_id=([0-9]+)");
+        protected async Task<MastodonList<T>> GetList<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        {
+            string url = "https://" + this.Instance + route;
+            if (data != null)
+            {
+                var querystring = "?" + String.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
+                url += querystring;
+            }
+
+            var client = new HttpClient();
+            AddHttpHeader(client);
+            var response = await client.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
+            var items = TryDeserialize<IEnumerable<T>>(content);
+
+            var result = new MastodonList<T>
+            {
+                Items = items
+            };
+
+            // TODO : get `Link` header
+            IEnumerable<string> linkHeader;
+            if (response.Headers.TryGetValues("Link", out linkHeader))
+            {
+                var links = linkHeader.Single().Split(',');
+                foreach (var link in links)
+                {
+                    if (link.Contains("rel=\"next\""))
+                    {
+                        result.NextPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                    }
+
+                    if (link.Contains("rel=\"prev\""))
+                    {
+                        result.PreviousPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                    }
+                }
+            }
+
+            return result;
         }
 
         protected async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data = null)

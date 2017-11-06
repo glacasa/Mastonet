@@ -16,7 +16,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetHomeTimeline(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Status>> GetHomeTimeline(long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetHomeTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -26,14 +26,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetHomeTimeline(ArrayOptions options)
+        public Task<MastodonList<Status>> GetHomeTimeline(ArrayOptions options)
         {
             string url = "/api/v1/timelines/home";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Status>>(url);
+            return GetList<Status>(url);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Mastonet
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetPublicTimeline(long? maxId = null, long? sinceId = null, int? limit = null, bool local = false)
+        public Task<MastodonList<Status>> GetPublicTimeline(long? maxId = null, long? sinceId = null, int? limit = null, bool local = false)
         {
             return GetPublicTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, local);
         }
@@ -55,7 +55,7 @@ namespace Mastonet
         /// <param name="options">Define the first and last items to get</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<IEnumerable<Status>> GetPublicTimeline(ArrayOptions options, bool local = false)
+        public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false)
         {
             string url = "/api/v1/timelines/public";
 
@@ -77,7 +77,7 @@ namespace Mastonet
                 queryParams += options.ToQueryString();
             }
 
-            return Get<IEnumerable<Status>>(url + queryParams);
+            return GetList<Status>(url + queryParams);
         }
 
         /// <summary>
