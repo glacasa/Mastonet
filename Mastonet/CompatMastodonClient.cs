@@ -94,7 +94,75 @@ namespace Mastonet.Compat
             return (await base.GetFollowRequests(options)).Items;
         }
 
+        public new async Task<IEnumerable<Status>> GetFavourites(long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return (await base.GetFavourites(maxId, sinceId, limit)).Items;
+        }
+
+        public new async Task<IEnumerable<Status>> GetFavourites(ArrayOptions options)
+        {
+            return (await base.GetFavourites(options)).Items;
+        }
+
         #endregion
 
+        #region MastodonClient.AccountActions.cs
+
+        public new async Task<IEnumerable<Account>> GetBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return (await base.GetBlocks(maxId, sinceId, limit)).Items;
+        }
+
+        public new async Task<IEnumerable<Account>> GetBlocks(ArrayOptions options)
+        {
+            return (await base.GetBlocks(options)).Items;
+        }
+
+        public new async Task<IEnumerable<Account>> GetMutes(long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return (await base.GetMutes(maxId, sinceId, limit)).Items;
+        }
+
+        public new async Task<IEnumerable<Account>> GetMutes(ArrayOptions options)
+        {
+            return (await base.GetMutes(options)).Items;
+        }
+
+        public new async Task<IEnumerable<string>> GetDomainBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return (await base.GetDomainBlocks(maxId, sinceId, limit)).Items;
+        }
+
+        public new async Task<IEnumerable<string>> GetDomainBlocks(ArrayOptions options)
+        {
+            return (await base.GetDomainBlocks(options)).Items;
+        }
+
+        #endregion
+
+        #region MastodonClient.Status.cs
+
+        public new async Task<IEnumerable<Account>> GetRebloggedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return (await base.GetRebloggedBy(statusId, maxId, sinceId, limit)).Items;
+        }
+
+        public new async Task<IEnumerable<Account>> GetRebloggedBy(long statusId, ArrayOptions options)
+        {
+            return (await base.GetRebloggedBy(statusId, options)).Items;
+        }
+
+        public new async Task<IEnumerable<Account>> GetFavouritedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return (await base.GetFavouritedBy(statusId, maxId, sinceId, limit)).Items;
+        }
+
+        public new async Task<IEnumerable<Account>> GetFavouritedBy(long statusId, ArrayOptions options)
+        {
+            return (await base.GetFavouritedBy(statusId, options)).Items;
+        }
+
+        #endregion
+        
     }
 }

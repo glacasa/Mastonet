@@ -75,7 +75,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetBlocks(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -85,14 +85,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetBlocks(ArrayOptions options)
+        public Task<MastodonList<Account>> GetBlocks(ArrayOptions options)
         {
             var url = "/api/v1/blocks";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Account>>(url);
+            return GetList<Account>(url);
         }
         #endregion
 
@@ -124,7 +124,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetMutes(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetMutes(long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetMutes(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -134,14 +134,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetMutes(ArrayOptions options)
+        public Task<MastodonList<Account>> GetMutes(ArrayOptions options)
         {
             var url = "/api/v1/mutes";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Account>>(url);
+            return GetList<Account>(url);
         }
         #endregion
 
@@ -153,7 +153,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of strings</returns>
-        public Task<IEnumerable<string>> GetDomainBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<string>> GetDomainBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetDomainBlocks(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -163,14 +163,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of strings</returns>
-        public Task<IEnumerable<string>> GetDomainBlocks(ArrayOptions options)
+        public Task<MastodonList<string>> GetDomainBlocks(ArrayOptions options)
         {
             var url = "/api/v1/domain_blocks";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<string>>(url);
+            return GetList<string>(url);
         }
 
         /// <summary>
@@ -192,6 +192,7 @@ namespace Mastonet
             var url = "/api/v1/domain_blocks?domain=" + Uri.EscapeUriString(domain);
             return Delete(url);
         }
+
         #endregion
 
     }

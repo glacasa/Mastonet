@@ -51,7 +51,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetRebloggedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetRebloggedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetRebloggedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -62,14 +62,14 @@ namespace Mastonet
         /// <param name="statusId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetRebloggedBy(long statusId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetRebloggedBy(long statusId, ArrayOptions options)
         {
             var url = $"/api/v1/statuses/{statusId}/reblogged_by";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Account>>(url);
+            return GetList<Account>(url);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetFavouritedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetFavouritedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetFavouritedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -91,14 +91,14 @@ namespace Mastonet
         /// <param name="statusId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetFavouritedBy(long statusId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetFavouritedBy(long statusId, ArrayOptions options)
         {
             var url = $"/api/v1/statuses/{statusId}/favourited_by";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Account>>(url);
+            return GetList<Account>(url);
         }
         /// <summary>
         /// Posting a new status
