@@ -11,11 +11,11 @@ If you prefer to browse code, you can go the the sample project : https://github
 
 ## Nuget
 
-A preview version is available on Nuget : https://www.nuget.org/packages/Mastonet 
+The package is available on Nuget : https://www.nuget.org/packages/Mastonet 
 
 Run the following command in the Package Manager Console  :
 
-    Install-Package Mastonet -Pre 
+    Install-Package Mastonet
 
 ## How to use
 
