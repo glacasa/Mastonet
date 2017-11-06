@@ -77,7 +77,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowers(long accountId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetAccountFollowers(long accountId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetAccountFollowers(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -88,14 +88,14 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowers(long accountId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetAccountFollowers(long accountId, ArrayOptions options)
         {
             var url = $"/api/v1/accounts/{accountId}/followers";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Account>>(url);
+            return GetList<Account>(url);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowing(long accountId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetAccountFollowing(long accountId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetAccountFollowing(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -117,14 +117,14 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<IEnumerable<Account>> GetAccountFollowing(long accountId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetAccountFollowing(long accountId, ArrayOptions options)
         {
             var url = $"/api/v1/accounts/{accountId}/following";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Account>>(url);
+            return GetList<Account>(url);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<IEnumerable<Status>> GetAccountStatuses(long accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false)
         {
             return GetAccountStatuses(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, onlyMedia, excludeReplies);
         }
@@ -150,7 +150,7 @@ namespace Mastonet
         /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<IEnumerable<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false)
         {
             var url = $"/api/v1/accounts/{accountId}/statuses";
 
@@ -184,7 +184,7 @@ namespace Mastonet
                 queryParams += options.ToQueryString();
             }
 
-            return Get<IEnumerable<Status>>(url + queryParams);
+            return GetList<Status>(url + queryParams);
         }
         
         /// <summary>
@@ -211,7 +211,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetFollowRequests(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetFollowRequests(long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetFollowRequests(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -221,14 +221,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-        public Task<IEnumerable<Account>> GetFollowRequests(ArrayOptions options)
+        public Task<MastodonList<Account>> GetFollowRequests(ArrayOptions options)
         {
             var url = "/api/v1/follow_requests";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return this.Get<IEnumerable<Account>>(url);
+            return this.GetList<Account>(url);
         }
 
         /// <summary>
