@@ -10,7 +10,7 @@ If a method is missing, please [submit an issue](https://github.com/glacasa/Mast
 
 Several Mastodon methods returns arrays of different types of items. Default usage will usually return the last 20 or 40 items, and you can add params to you request to handle pagination.
 
-Those methods contains 3 parameters : `maxId`, `sinceId, and `limit` ; and return a `MastodonList<T>`.  
+Those methods contains 3 parameters : `maxId`, `sinceId`, and `limit` ; and return a `MastodonList<T>`.  
 `MastodonList<T>` inherits `List<T>` and can be used the same way, and contains 2 more properties : `NextPageMaxId` and `PreviousPageSinceId`.
 
 The default behaviour of a client app should be like this :
@@ -21,7 +21,7 @@ The default behaviour of a client app should be like this :
 
 You can always let the `limit` to its default value or define the number of items you want to load.
 
-All the methods can be called with the 3 params `maxId`, `sinceId, and `limit`, or using an `ArrayOptions` object. The result will be the same. Only the methods with `ArrayOptions` are presented below.
+All the methods can be called with the 3 params `maxId`, `sinceId`, and `limit`, or using an `ArrayOptions` object. The result will be the same. Only the methods with `ArrayOptions` are presented below.
 
 ## Methods
 
