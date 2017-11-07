@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mastonet
 {
-    public class AuthenticationClient : BaseHttpClient
+    public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     {
         public AuthenticationClient(string instance)
         {
