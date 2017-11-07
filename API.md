@@ -2,9 +2,9 @@
 
 ## How to use
 
-To use Mastonet, you need a `MastodonClient` object (see [README.md]{https://github.com/glacasa/Mastonet/blob/master/README.md}), and you have C# methods to call every [Mastodon API]{https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md} method.
+To use Mastonet, you need a `MastodonClient` object (see [README.md](https://github.com/glacasa/Mastonet/blob/master/README.md) ), and you have C# methods to call every [Mastodon API](https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md) method.
 
-If a method is missing, please [submit an issue]{https://github.com/glacasa/Mastonet/issues}
+If a method is missing, please [submit an issue](https://github.com/glacasa/Mastonet/issues)
 
 ## Working with lists
 
@@ -139,5 +139,3 @@ All the methods can be called with the 3 params `maxId`, `sinceId, and `limit`, 
 	public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false)
 
 	public Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false)
-
-

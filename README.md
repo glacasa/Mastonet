@@ -64,7 +64,7 @@ When you have the access token, you should save it in the app, and use it every 
 
 	var client = new MastodonClient(appRegistration, auth);
 
-Now you can call all the API methods. [Mastonet API]{https://github.com/glacasa/Mastonet/blob/master/API.md} [Mastodon API overview](https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md)
+Now you can call all the API methods. [Mastonet API](https://github.com/glacasa/Mastonet/blob/master/API.md) [Mastodon API overview](https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md)
 
 ## Streaming
 
