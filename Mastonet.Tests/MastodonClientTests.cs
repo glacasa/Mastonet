@@ -17,18 +17,18 @@ namespace Mastonet.Tests
 
         private static string testAccessToken = "9843b3248aa210fd6156218ce2384fdf84ee7f555e158b835c596ebdd1b89952";
 
-        protected Compat.MastodonClient GetTestClient()
+        protected MastodonClient GetTestClient()
         {
-            return new Compat.MastodonClient(app, new Auth() { AccessToken = testAccessToken });
+            return new MastodonClient(app, new Auth() { AccessToken = testAccessToken });
         }
 
         
 
         private static string privateAccessToken = "c9ba4e2788ae3d756f54de22083dad7fcde659003646e99664d4fe3b163abf94";
 
-        protected Compat.MastodonClient GetPrivateClient()
+        protected MastodonClient GetPrivateClient()
         {
-            return new Compat.MastodonClient(app, new Auth() { AccessToken = privateAccessToken });
+            return new MastodonClient(app, new Auth() { AccessToken = privateAccessToken });
         }
 
 

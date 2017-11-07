@@ -73,14 +73,9 @@ namespace Mastonet
             AddHttpHeader(client);
             var response = await client.GetAsync(url);
             var content = await response.Content.ReadAsStringAsync();
-            var items = TryDeserialize<IEnumerable<T>>(content);
-
-            var result = new MastodonList<T>
-            {
-                Items = items
-            };
-
-            // TODO : get `Link` header
+            var result = TryDeserialize<MastodonList<T>>(content);
+            
+            // Read `Link` header
             IEnumerable<string> linkHeader;
             if (response.Headers.TryGetValues("Link", out linkHeader))
             {
@@ -89,12 +84,12 @@ namespace Mastonet
                 {
                     if (link.Contains("rel=\"next\""))
                     {
-                        result.NextPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        result.NextPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
                     }
 
                     if (link.Contains("rel=\"prev\""))
                     {
-                        result.PreviousPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
                     }
                 }
             }
