@@ -61,7 +61,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<IEnumerable<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -71,14 +71,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<IEnumerable<Notification>> GetNotifications(ArrayOptions options)
+        public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options)
         {
             var url = "/api/v1/notifications";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Notification>>(url);
+            return GetList<Notification>(url);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns a list of Reports made by the authenticated user</returns>
-        public Task<IEnumerable<Report>> GetReports(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Report>> GetReports(long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetReports(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -121,14 +121,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns a list of Reports made by the authenticated user</returns>
-        public Task<IEnumerable<Report>> GetReports(ArrayOptions options)
+        public Task<MastodonList<Report>> GetReports(ArrayOptions options)
         {
             var url = "/api/v1/reports";
             if (options != null)
             {
                 url += "?" + options.ToQueryString();
             }
-            return Get<IEnumerable<Report>>(url);
+            return GetList<Report>(url);
         }
 
         /// <summary>
@@ -183,11 +183,11 @@ namespace Mastonet
         /// <param name="q">What to search for</param>
         /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
-        public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null)
+        public Task<List<Account>> SearchAccounts(string q, int? limit = null)
         {
             if (string.IsNullOrEmpty(q))
             {
-                return Task.FromResult(Enumerable.Empty<Account>());
+                return Task.FromResult(new List<Account>());
             }
 
             string url = "/api/v1/accounts/search?q=" + Uri.EscapeUriString(q);
@@ -196,17 +196,17 @@ namespace Mastonet
                 url += "&limit=" + limit.Value;
             }
 
-            return Get<IEnumerable<Account>>(url);
+            return Get<List<Account>>(url);
         }
 
         [Obsolete("maxId ans sinceId are not used for account search. Use SearchAccounts(string q, int? limit) instead")]
-        public Task<IEnumerable<Account>> SearchAccounts(string q, long? maxId, long? sinceId, int? limit = null)
+        public Task<List<Account>> SearchAccounts(string q, long? maxId, long? sinceId, int? limit = null)
         {
             return SearchAccounts(q, limit);
         }
 
         [Obsolete("options are not used for account search. Use SearchAccounts(string q, int? limit) instead")]
-        public Task<IEnumerable<Account>> SearchAccounts(string q, ArrayOptions options)
+        public Task<List<Account>> SearchAccounts(string q, ArrayOptions options)
         {
             return SearchAccounts(q, options?.Limit);
         }

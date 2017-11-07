@@ -1,17 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.0
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mastonet", "Mastonet\Mastonet.csproj", "{B7D19AF3-B6AB-46B1-AAEE-35B0D74E1724}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC55DEDB-D3CD-492F-96BB-575CA3B0A0F7}"
 	ProjectSection(SolutionItems) = preProject
+		API.md = API.md
 		oauth.png = oauth.png
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastonet.Tests", "Mastonet.Tests\Mastonet.Tests.csproj", "{23AE9428-F63B-4FB5-91C0-4325F602CDFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mastonet.Tests", "Mastonet.Tests\Mastonet.Tests.csproj", "{23AE9428-F63B-4FB5-91C0-4325F602CDFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +31,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B95FB2E9-21E8-4F55-A944-CB3B7ECDF1C6}
 	EndGlobalSection
 EndGlobal

@@ -70,6 +70,21 @@ namespace Mastonet
         }
 
         /// <summary>
+        /// Getting an account's relationships
+        /// </summary>
+        /// <param name="id">Account IDs</param>
+        /// <returns>Returns an array of Relationships of the current user to a list of given accounts</returns>
+        public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<long> ids)
+        {
+            var data = new List<KeyValuePair<string, string>>();
+            foreach (var id in ids)
+            {
+                data.Add(new KeyValuePair<string, string>("id[]", id.ToString()));
+            }
+            return Get<IEnumerable<Relationship>>("/api/v1/accounts/relationships", data);
+        }
+
+        /// <summary>
         /// Getting an account's followers
         /// </summary>
         /// <param name="accountId"></param>        
@@ -186,21 +201,7 @@ namespace Mastonet
 
             return GetList<Status>(url + queryParams);
         }
-        
-        /// <summary>
-        /// Getting an account's relationships
-        /// </summary>
-        /// <param name="id">Account IDs</param>
-        /// <returns>Returns an array of Relationships of the current user to a list of given accounts</returns>
-        public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<long> ids)
-        {
-            var data = new List<KeyValuePair<string, string>>();
-            foreach (var id in ids)
-            {
-                data.Add(new KeyValuePair<string, string>("id[]", id.ToString()));
-            }
-            return Get<IEnumerable<Relationship>>("/api/v1/accounts/relationships", data);
-        }
+    
         
          #region Follow Requests
 
