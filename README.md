@@ -22,5 +22,5 @@ Run the following command in the Package Manager Console  :
 
 Read the docs :
 
-[How to use](https://github.com/glacasa/Mastonet/blob/master/DOC.md)
-[API Overview](https://github.com/glacasa/Mastonet/blob/master/API.md)
+- [How to use](https://github.com/glacasa/Mastonet/blob/master/DOC.md)
+- [API Overview](https://github.com/glacasa/Mastonet/blob/master/API.md)
