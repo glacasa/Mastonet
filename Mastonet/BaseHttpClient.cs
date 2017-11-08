@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Mastonet
 {
-    public abstract class BaseHttpClient
+    public abstract class BaseHttpClient : IBaseHttpClient
     {
         public string Instance { get; protected set; }
         public AppRegistration AppRegistration { get; set; }
