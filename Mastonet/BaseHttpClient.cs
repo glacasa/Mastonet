@@ -84,12 +84,12 @@ namespace Mastonet
                 {
                     if (link.Contains("rel=\"next\""))
                     {
-                        result.NextPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        result.NextPageSinceID = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
                     }
 
                     if (link.Contains("rel=\"prev\""))
                     {
-                        result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        result.PreviousPageMaxID = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
                     }
                 }
             }
