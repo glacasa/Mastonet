@@ -76,20 +76,18 @@ namespace Mastonet
             var result = TryDeserialize<MastodonList<T>>(content);
             
             // Read `Link` header
-            IEnumerable<string> linkHeader;
-            if (response.Headers.TryGetValues("Link", out linkHeader))
+            if (response.Headers.TryGetValues("Link", out IEnumerable<string> linkHeader))
             {
-                var links = linkHeader.Single().Split(',');
-                foreach (var link in links)
+                foreach (var link in linkHeader.Single().Split(','))
                 {
                     if (link.Contains("rel=\"next\""))
                     {
-                        result.NextPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        result.NextPageSinceID = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
                     }
 
                     if (link.Contains("rel=\"prev\""))
                     {
-                        result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        result.PreviousPageMaxID = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
                     }
                 }
             }
