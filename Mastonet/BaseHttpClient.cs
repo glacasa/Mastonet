@@ -76,11 +76,9 @@ namespace Mastonet
             var result = TryDeserialize<MastodonList<T>>(content);
             
             // Read `Link` header
-            IEnumerable<string> linkHeader;
-            if (response.Headers.TryGetValues("Link", out linkHeader))
+            if (response.Headers.TryGetValues("Link", out IEnumerable<string> linkHeader))
             {
-                var links = linkHeader.Single().Split(',');
-                foreach (var link in links)
+                foreach (var link in linkHeader.Single().Split(','))
                 {
                     if (link.Contains("rel=\"next\""))
                     {
