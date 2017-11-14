@@ -9,10 +9,14 @@ using Xunit;
 
 namespace _InitTest
 {
-    public class InitTest
+    public partial class InitTest
     {
         // Add instance name, email and password of a test account, and run this test to get authentication tokens
         // The test will throw an Exception with the token data, just copy and paste it on the class below
+        // /!\ DO NOT COMMIT YOUR E-MAIL, PASSWORD OR ACCESS TOKENS /!\
+
+        // The tests were initially written for a set of known accounts, most of them will fail on different accounts, 
+        // don't just "Run all", but you can use them for custom testing
 
         [Fact]
         public async Task GetTokens()
@@ -53,7 +57,7 @@ namespace _InitTest
 
 namespace Mastonet.Tests
 {
-    public class MastodonClientTests
+    public partial class MastodonClientTests
     {
         //####################
         //##  REPLACE HERE  ##
