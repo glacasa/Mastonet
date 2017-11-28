@@ -31,7 +31,7 @@ All the methods can be called with the 3 params `maxId`, `sinceId`, and `limit`,
 
 ### Media
 
-    public Task<Attachment> UploadMedia(Stream data, string fileName = "file")
+    public Task<Attachment> UploadMedia(MediaDefinition media)
 
 ### Notifications
 
@@ -59,7 +59,7 @@ All the methods can be called with the 3 params `maxId`, `sinceId`, and `limit`,
 
 	public Task<Account> GetCurrentUser()
 
-	public Task<Account> UpdateCredentials(string display_name = null, string note = null, string avatar = null, string header = null)
+	public Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null)
 
 	public Task<IEnumerable<Relationship>> GetAccountRelationships(long id)
 	public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<long> ids)
