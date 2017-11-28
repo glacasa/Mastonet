@@ -2,16 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
+    <Title>Mastonet</Title>
     <Authors>Guillaume Lacasa</Authors>
     <Description>A .net client library for Mastodon</Description>
     <PackageProjectUrl>https://github.com/glacasa/Mastonet</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/glacasa/Mastonet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="MastodonClient.Account.cs" />
-    <None Include="MastodonClient.Status.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
