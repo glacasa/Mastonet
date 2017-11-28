@@ -128,7 +128,7 @@ namespace Mastonet
         /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
         /// <param name="header">A base64 encoded image to display as the user's header image</param>
         /// <returns>Returns the authenticated user's Account</returns>
-        Task<Account> UpdateCredentials(string display_name = null, string note = null, string avatar = null, string header = null);
+        Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null);
 
         /// <summary>
         /// Getting an account's relationships
