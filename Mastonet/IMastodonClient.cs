@@ -24,6 +24,13 @@ namespace Mastonet
         Task<Attachment> UploadMedia(Stream data, string fileName = "file");
 
         /// <summary>
+        /// Uploading a media attachment
+        /// </summary>
+        /// <param name="media">Media to be uploaded</param>
+        /// <returns>Returns an Attachment that can be used when creating a status</returns>
+        Task<Attachment> UploadMedia(MediaDefinition media);
+
+        /// <summary>
         /// Fetching a user's notifications
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>

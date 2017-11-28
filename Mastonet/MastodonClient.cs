@@ -43,11 +43,19 @@ namespace Mastonet
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
         public Task<Attachment> UploadMedia(Stream data, string fileName = "file")
         {
-            var media = new List<Tuple<string, Stream, string>>() {
-                new Tuple<string, Stream, string>("file", data, fileName),
-            };
+            return UploadMedia(new MediaDefinition(data, fileName));
+        }
 
-            return this.Post<Attachment>("/api/v1/media", null, media);
+        /// <summary>
+        /// Uploading a media attachment
+        /// </summary>
+        /// <param name="media">Media to be uploaded</param>
+        /// <returns>Returns an Attachment that can be used when creating a status</returns>
+        public Task<Attachment> UploadMedia(MediaDefinition media)
+        {
+            media.ParamName = "file";
+            var list = new List<MediaDefinition>() { media };
+            return this.Post<Attachment>("/api/v1/media", null, list);
         }
 
         #endregion
@@ -173,7 +181,7 @@ namespace Mastonet
             {
                 url += "&resolve=true";
             }
-            
+
             return Get<Results>(url);
         }
 
@@ -213,7 +221,7 @@ namespace Mastonet
         #endregion
 
 
-        
+
 
 
     }

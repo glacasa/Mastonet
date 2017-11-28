@@ -109,7 +109,7 @@ namespace Mastonet
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<Tuple<string, Stream, string>> media = null)
+        protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
         {
             string url = "https://" + this.Instance + route;
 
@@ -118,9 +118,9 @@ namespace Mastonet
 
             var content = new MultipartFormDataContent();
 
-            foreach (var tuple in media)
+            foreach (var m in media)
             {
-                content.Add(new StreamContent(tuple.Item2), tuple.Item1, tuple.Item3);
+                content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
             }
             if (data != null)
             {
@@ -134,7 +134,7 @@ namespace Mastonet
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<Tuple<string, Stream, string>> media = null)
+        protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
             where T : class
         {
             var content = media == null ? await Post(route, data) : await PostMedia(route, data, media);
