@@ -100,10 +100,5 @@ namespace Mastonet
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
         Task<List<Account>> SearchAccounts(string q, int? limit = null);
 
-        [Obsolete("maxId ans sinceId are not used for account search. Use SearchAccounts(string q, int? limit) instead")]
-        Task<List<Account>> SearchAccounts(string q, long? maxId, long? sinceId, int? limit = null);
-
-        [Obsolete("options are not used for account search. Use SearchAccounts(string q, int? limit) instead")]
-        Task<List<Account>> SearchAccounts(string q, ArrayOptions options);
     }
 }

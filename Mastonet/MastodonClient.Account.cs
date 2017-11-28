@@ -36,9 +36,10 @@ namespace Mastonet
         /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
         /// <param name="header">A base64 encoded image to display as the user's header image</param>
         /// <returns>Returns the authenticated user's Account</returns>
-        public Task<Account> UpdateCredentials(string display_name = null, string note = null, string avatar = null, string header = null)
+        public Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null)
         {
             var data = new List<KeyValuePair<string, string>>();
+            var media = new List<MediaDefinition>();
 
             if (display_name != null)
             {
@@ -48,45 +49,21 @@ namespace Mastonet
             {
                 data.Add(new KeyValuePair<string, string>("note", note));
             }
+
             if (avatar != null)
             {
-                data.Add(new KeyValuePair<string, string>("avatar", avatar));
+                avatar.ParamName = "avatar";
+                media.Add(avatar);
             }
             if (header != null)
             {
-                data.Add(new KeyValuePair<string, string>("header", header));
+                avatar.ParamName = "header";
+                media.Add(header);
             }
 
-            return Patch<Account>($"/api/v1/accounts/update_credentials", data);
+            return Patch<Account>($"/api/v1/accounts/update_credentials", data, media);
         }
 
-        //public Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null)
-        //{
-        //    var data = new List<KeyValuePair<string, string>>();
-        //    var media = new List<Tuple<string, Stream, string>>();
-
-        //    if (display_name != null)
-        //    {
-        //        data.Add(new KeyValuePair<string, string>("display_name", display_name));
-        //    }
-        //    if (note != null)
-        //    {
-        //        data.Add(new KeyValuePair<string, string>("note", note));
-        //    }
-
-        //    if (avatar != null)
-        //    {
-        //        new Tuple<string, Stream, string>("file", avatar.Media, avatar.FileName);                //data.Add(new KeyValuePair<string, string>("avatar", avatar));
-        //    }
-        //    if (header != null)
-        //    {
-        //        new Tuple<string, Stream, string>("file", header.Media, header.FileName);
-        //        //data.Add(new KeyValuePair<string, string>("header", header));
-        //    }
-
-        //    return Patch<Account>($"/api/v1/accounts/update_credentials", data, media);
-        //}
-        
         /// <summary>
         /// Getting an account's relationships
         /// </summary>

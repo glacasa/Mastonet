@@ -74,7 +74,7 @@ namespace Mastonet
             var response = await client.GetAsync(url);
             var content = await response.Content.ReadAsStringAsync();
             var result = TryDeserialize<MastodonList<T>>(content);
-            
+
             // Read `Link` header
             IEnumerable<string> linkHeader;
             if (response.Headers.TryGetValues("Link", out linkHeader))
@@ -137,7 +137,7 @@ namespace Mastonet
         protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
             where T : class
         {
-            var content = media == null ? await Post(route, data) : await PostMedia(route, data, media);
+            var content = media != null && media.Any() ? await PostMedia(route, data, media) : await Post(route, data);
             return TryDeserialize<T>(content);
         }
 
@@ -156,10 +156,37 @@ namespace Mastonet
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<string> PatchMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
+        {
+            string url = "https://" + this.Instance + route;
+
+            var client = new HttpClient();
+            var method = new HttpMethod("PATCH");
+            AddHttpHeader(client);
+
+            var content = new MultipartFormDataContent();
+            foreach (var m in media)
+            {
+                content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
+            }
+            if (data != null)
+            {
+                foreach (var pair in data)
+                {
+                    content.Add(new StringContent(pair.Value), pair.Key);
+                }
+            }
+
+            var message = new HttpRequestMessage(method, url);
+            message.Content = content;
+            var response = await client.SendAsync(message);
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        protected async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
             where T : class
         {
-            var content = await Patch(route, data);
+            var content = media != null && media.Any() ? await PatchMedia(route, data, media) : await Patch(route, data);
             return TryDeserialize<T>(content);
         }
 
