@@ -57,7 +57,7 @@ namespace Mastonet
             }
             if (header != null)
             {
-                avatar.ParamName = "header";
+                header.ParamName = "header";
                 media.Add(header);
             }
 
