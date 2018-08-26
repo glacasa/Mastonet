@@ -86,17 +86,17 @@ namespace Mastonet.Tests
             await testClient.Follow(11);
 
             var requests = await privateClient.GetFollowRequests();
-            Assert.True(requests.Any(r => r.Id == 3));
+            Assert.Contains(requests, r => r.Id == 3);
 
             // Authorize
             await privateClient.AuthorizeRequest(3);
 
             // Check if it's ok
             requests = await privateClient.GetFollowRequests();
-            Assert.False(requests.Any(r => r.Id == 3));
+            Assert.DoesNotContain(requests, r => r.Id == 3);
 
             var followers = await privateClient.GetAccountFollowers(11);
-            Assert.True(followers.Any(f => f.Id == 3));
+            Assert.Contains(followers, f => f.Id == 3);
         }
 
         [Fact]
@@ -111,17 +111,17 @@ namespace Mastonet.Tests
             await testClient.Follow(11);
 
             var requests = await privateClient.GetFollowRequests();
-            Assert.True(requests.Any(r => r.Id == 3));
+            Assert.Contains(requests, r => r.Id == 3);
 
             // Authorize
             await privateClient.RejectRequest(3);
 
             // Check if it's ok
             requests = await privateClient.GetFollowRequests();
-            Assert.False(requests.Any(r => r.Id == 3));
+            Assert.DoesNotContain(requests, r => r.Id == 3);
 
             var followers = await privateClient.GetAccountFollowers(11);
-            Assert.False(followers.Any(f => f.Id == 3));
+            Assert.DoesNotContain(followers, f => f.Id == 3);
         }
     }
 }

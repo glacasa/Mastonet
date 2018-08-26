@@ -48,8 +48,8 @@ namespace Mastonet.Tests
             var status2 = await client.PostStatus("Yo 2", Visibility.Private, replyStatusId: status.Id);
 
             var context = await client.GetStatusContext(status2.Id);
-            Assert.Equal(1, context.Ancestors.Count());
-            Assert.Equal(0, context.Descendants.Count());
+            Assert.Single(context.Ancestors);
+            Assert.Empty(context.Descendants);
         }
 
         [Fact]
