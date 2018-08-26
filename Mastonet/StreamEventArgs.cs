@@ -17,6 +17,6 @@ namespace Mastonet
 
     public class StreamDeleteEventArgs : EventArgs
     {
-        public int StatusId { get; set; }
+        public long StatusId { get; set; }
     }
 }

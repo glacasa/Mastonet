@@ -69,7 +69,7 @@ namespace Mastonet
                             OnNotification?.Invoke(this, new StreamNotificationEventArgs() { Notification = notification });
                             break;
                         case "delete":
-                            var statusId = int.Parse(data);
+                            var statusId = long.Parse(data);
                             OnDelete?.Invoke(this, new StreamDeleteEventArgs() { StatusId = statusId });
                             break;
                     }
