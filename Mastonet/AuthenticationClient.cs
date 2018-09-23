@@ -1,6 +1,7 @@
 ﻿using Mastonet.Entities;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -96,6 +97,15 @@ namespace Mastonet
 
         public string OAuthUrl(string redirectUri = null)
         {
+            if (!string.IsNullOrEmpty(redirectUri))
+            {
+                redirectUri = WebUtility.UrlEncode(WebUtility.UrlDecode(redirectUri));
+            }
+            else
+            {
+                redirectUri = "urn:ietf:wg:oauth:2.0:oob";
+            }
+
             return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
         }
 
