@@ -110,6 +110,12 @@ namespace Mastonet.Entities
         public Visibility Visibility { get; set; }
 
         /// <summary>
+        /// An array of Emojis
+        /// </summary>
+        [JsonProperty("emojis")]
+        public IEnumerable<Emoji> Emojis { get; set; }
+
+        /// <summary>
         /// An array of Attachments
         /// </summary>
         [JsonProperty("media_attachments")]
