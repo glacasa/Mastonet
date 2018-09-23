@@ -62,6 +62,12 @@ namespace Mastonet.Entities
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
+        /// The number of replies for the status
+        /// </summary>
+        [JsonProperty("replies_count")]
+        public int RepliesCount { get; set; }
+
+        /// <summary>
         /// The number of reblogs for the status
         /// </summary>
         [JsonProperty("reblogs_count")]
