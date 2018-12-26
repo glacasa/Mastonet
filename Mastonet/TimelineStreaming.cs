@@ -20,24 +20,25 @@ namespace Mastonet
         public event EventHandler<StreamNotificationEventArgs> OnNotification;
         public event EventHandler<StreamDeleteEventArgs> OnDelete;
 
-        internal TimelineStreaming(string url, string accessToken)
+        internal TimelineStreaming(string url, Auth? authToken)
         {
-            this.url = url;
-            this.accessToken = accessToken;
+            this.url = url ?? throw new ArgumentException("Url must be provided");
+            this.accessToken = authToken?.AccessToken ?? throw new ArgumentException("Access token must be provided");
+
+            this.client = new HttpClient();
         }
 
 
         public async Task Start()
         {
-            client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
 
             var stream = await client.GetStreamAsync(url);
 
             var reader = new StreamReader(stream);
 
-            string eventName = null;
-            string data = null;
+            string? eventName = null;
+            string? data = null;
 
             while (client != null)
             {
@@ -83,7 +84,6 @@ namespace Mastonet
             if (client != null)
             {
                 client.Dispose();
-                client = null;
             }
         }
     }

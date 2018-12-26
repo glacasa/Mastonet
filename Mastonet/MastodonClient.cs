@@ -12,9 +12,8 @@ namespace Mastonet
         #region Ctor
 
         public MastodonClient(AppRegistration appRegistration, Auth accessToken)
+            :base(appRegistration)
         {
-            this.Instance = appRegistration.Instance;
-            this.AppRegistration = appRegistration;
             this.AuthToken = accessToken;
         }
 

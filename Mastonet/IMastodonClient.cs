@@ -128,7 +128,7 @@ namespace Mastonet
         /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
         /// <param name="header">A base64 encoded image to display as the user's header image</param>
         /// <returns>Returns the authenticated user's Account</returns>
-        Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null);
+        Task<Account> UpdateCredentials(string? display_name = null, string? note = null, MediaDefinition? avatar = null, MediaDefinition? header = null);
 
         /// <summary>
         /// Getting an account's relationships
@@ -430,7 +430,7 @@ namespace Mastonet
         /// <param name="sensitive">set this to mark the media of the status as NSFW</param>
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
         /// <returns></returns>
-        Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null);
+        Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long>? mediaIds = null, bool sensitive = false, string? spoilerText = null);
 
         /// <summary>
         /// Deleting a status

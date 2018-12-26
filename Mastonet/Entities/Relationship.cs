@@ -11,8 +11,16 @@ namespace Mastonet.Entities
         /// Target account id
         /// </summary>
         [JsonProperty("id")]
-        public long Id { get; set; }
-        
+        public long AccountId { get; set; }
+
+        [JsonIgnore]
+        [Obsolete("Id has been renamed to AccountId to reflec actual usage")]
+        public long Id
+        {
+            get { return AccountId; }
+            set { AccountId = value; }
+        }
+
         /// <summary>
         /// Whether the user is currently following the account
         /// </summary>
@@ -38,6 +46,12 @@ namespace Mastonet.Entities
         public bool Muting { get; set; }
 
         /// <summary>
+        /// Whether the user is also muting notifications
+        /// </summary>
+        [JsonProperty("muting_notifications")]
+        public bool MutingNotifications { get; set; }
+
+        /// <summary>
         /// Whether the user has requested to follow the account
         /// </summary>
         [JsonProperty("requested")]
@@ -48,5 +62,17 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("domain_blocking")]
         public bool DomainBlocking { get; set; }
+
+        /// <summary>
+        /// Whether the user's reblogs will show up in the home timeline
+        /// </summary>
+        [JsonProperty("showing_reblogs")]
+        public bool ShowingReblogs { get; set; }
+
+        /// <summary>
+        /// Whether the user is currently endorsing the account
+        /// </summary>
+        [JsonProperty("endorsed")]
+        public bool Endorsed { get; set; }
     }
 }

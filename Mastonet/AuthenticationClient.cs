@@ -10,14 +10,13 @@ namespace Mastonet
     public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     {
         public AuthenticationClient(string instance)
+            : base(new AppRegistration { Instance = instance })
         {
-            this.Instance = instance;
         }
 
         public AuthenticationClient(AppRegistration app)
+            : base(app)
         {
-            this.Instance = app.Instance;
-            this.AppRegistration = app;
         }
 
         #region Apps
@@ -30,7 +29,7 @@ namespace Mastonet
         /// <param name="scope">The rights needed by your application</param>
         /// <param name="website">URL to the homepage of your app</param>
         /// <returns></returns>
-        public async Task<AppRegistration> CreateApp(string appName, Scope scope, string website = null, string redirectUri = null)
+        public async Task<AppRegistration> CreateApp(string appName, Scope scope, string? website = null, string? redirectUri = null)
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("client_name", appName),
@@ -79,7 +78,7 @@ namespace Mastonet
             return auth;
         }
 
-        public async Task<Auth> ConnectWithCode(string code, string redirect_uri = null)
+        public async Task<Auth> ConnectWithCode(string code, string? redirect_uri = null)
         {
             var data = new List<KeyValuePair<string, string>>()
             {
@@ -95,7 +94,7 @@ namespace Mastonet
             return auth;
         }
 
-        public string OAuthUrl(string redirectUri = null)
+        public string OAuthUrl(string? redirectUri = null)
         {
             if (!string.IsNullOrEmpty(redirectUri))
             {

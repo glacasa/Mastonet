@@ -151,7 +151,7 @@ namespace Mastonet
         {
             string url = "https://" + StreamingApiUrl + "/api/v1/streaming/public";
 
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(url, AuthToken);
         }
 
         [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
@@ -159,14 +159,14 @@ namespace Mastonet
         {
             string url = "https://" + streamingApiUrl + "/api/v1/streaming/public";
 
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(url, AuthToken);
         }
 
         public TimelineStreaming GetUserStreaming()
         {
             string url = "https://" + StreamingApiUrl + "/api/v1/streaming/user";
 
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(url, AuthToken);
         }
 
         [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
@@ -174,7 +174,7 @@ namespace Mastonet
         {
             string url = "https://" + streamingApiUrl + "/api/v1/streaming/user";
 
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(url, AuthToken);
         }
 
         public TimelineStreaming GetHashtagStreaming(string hashtag)
@@ -186,7 +186,7 @@ namespace Mastonet
 
             string url = "https://" + StreamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
 
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(url, AuthToken);
         }
 
         [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
@@ -199,7 +199,7 @@ namespace Mastonet
 
             string url = "https://" + streamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
 
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(url, AuthToken);
         }
 
         #endregion

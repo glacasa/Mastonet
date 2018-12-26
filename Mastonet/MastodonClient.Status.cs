@@ -110,7 +110,7 @@ namespace Mastonet
         /// <param name="sensitive">set this to mark the media of the status as NSFW</param>
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
         /// <returns></returns>
-        public Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null)
+        public Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long>? mediaIds = null, bool sensitive = false, string? spoilerText = null)
         {
 			if (string.IsNullOrEmpty(status))
             {

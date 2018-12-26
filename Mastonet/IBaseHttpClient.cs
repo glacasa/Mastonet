@@ -9,6 +9,6 @@ namespace Mastonet
     {
         string Instance { get; }
         AppRegistration AppRegistration { get; }
-        Auth AuthToken { get; }
+        Auth? AuthToken { get; }
     }
 }

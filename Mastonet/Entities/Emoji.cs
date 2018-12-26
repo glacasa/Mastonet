@@ -5,30 +5,31 @@ using Newtonsoft.Json;
 
 namespace Mastonet.Entities
 {
+    // https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#emoji
     public class Emoji
     {
         /// <summary>
         /// The shortcode of the emoji
         /// </summary>
         [JsonProperty("shortcode")]
-        public string Shortcode { get; set; }
+        public string Shortcode { get; set; } = string.Empty;
 
         /// <summary>
         /// URL to the emoji static image
         /// </summary>
         [JsonProperty("static_url")]
-        public string StaticUrl { get; set; }
+        public string StaticUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// URL to the emoji image
         /// </summary>
         [JsonProperty("url")]
-        public string Url { get; set; }
+        public string Url { get; set; } = string.Empty;
 
         /// <summary>
         /// Boolean that indicates if the emoji is visible in picker
         /// </summary>
         [JsonProperty("visible_in_picker")]
-        public bool VisibleInPicker { get; set; }
+        public bool VisibleInPicker { get; set; } 
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Mastonet.Entities
 {
+    // https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#report
     public class Report
     {
         /// <summary>
@@ -17,6 +18,6 @@ namespace Mastonet.Entities
         /// The action taken in response to the report
         /// </summary>
         [JsonProperty("action_taken")]
-        public string ActionTaken { get; set; }
+        public string ActionTaken { get; set; } = string.Empty;
     }
 }

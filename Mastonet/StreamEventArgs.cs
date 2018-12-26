@@ -7,12 +7,12 @@ namespace Mastonet
 {
     public class StreamUpdateEventArgs : EventArgs
     {
-        public Status Status { get; set; }
+        public Status Status { get; set; } = new Status();
     }
 
     public class StreamNotificationEventArgs : EventArgs
     {
-        public Notification Notification { get; set; }
+        public Notification Notification { get; set; } = new Notification();
     }
 
     public class StreamDeleteEventArgs : EventArgs

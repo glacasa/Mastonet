@@ -36,7 +36,7 @@ namespace Mastonet
         /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
         /// <param name="header">A base64 encoded image to display as the user's header image</param>
         /// <returns>Returns the authenticated user's Account</returns>
-        public Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null)
+        public Task<Account> UpdateCredentials(string? display_name = null, string? note = null, MediaDefinition? avatar = null, MediaDefinition? header = null)
         {
             var data = new List<KeyValuePair<string, string>>();
             var media = new List<MediaDefinition>();
