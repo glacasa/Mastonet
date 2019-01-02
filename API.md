@@ -27,11 +27,11 @@ All the methods can be called with the 3 params `maxId`, `sinceId`, and `limit`,
 
 ### Instance
 ```cs
-public Task<Instance> GetInstance()
+public Task<Instance> GetInstance();
 ```
 ### Media
 ```cs
-public Task<Attachment> UploadMedia(MediaDefinition media)
+public Task<Attachment> UploadMedia(MediaDefinition media);
 ```
 ### Notifications
 ```cs
@@ -39,19 +39,19 @@ public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options);
 
 public Task<Notification> GetNotification(long notificationId);
 
-public Task ClearNotifications()
+public Task ClearNotifications();
 ```
 ### Reports
 ```cs
 public Task<MastodonList<Report>> GetReports(ArrayOptions options);
 
-public Task<Report> Report(long accountId, IEnumerable<long> statusIds, string comment)
+public Task<Report> Report(long accountId, IEnumerable<long> statusIds, string comment);
 ```
 ### Search
  ```cs
 public Task<Results> Search(string q, bool resolve = false);
 
-public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null)
+public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null);
 ```
 ### Account
 ```cs
@@ -138,5 +138,5 @@ public Task<MastodonList<Status>> GetHomeTimeline(ArrayOptions options);
 
 public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false);
 
-public Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false)
+public Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false);
 ```
