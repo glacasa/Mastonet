@@ -19,4 +19,8 @@ namespace Mastonet
     {
         public long StatusId { get; set; }
     }
+
+    public class StreamFiltersChangedEventArgs : EventArgs
+    {
+    }
 }

@@ -19,6 +19,7 @@ namespace Mastonet
         public event EventHandler<StreamUpdateEventArgs> OnUpdate;
         public event EventHandler<StreamNotificationEventArgs> OnNotification;
         public event EventHandler<StreamDeleteEventArgs> OnDelete;
+        public event EventHandler<StreamFiltersChangedEventArgs> OnFiltersChanged;
 
         internal TimelineStreaming(string url, string accessToken)
         {
@@ -71,6 +72,9 @@ namespace Mastonet
                         case "delete":
                             var statusId = long.Parse(data);
                             OnDelete?.Invoke(this, new StreamDeleteEventArgs() { StatusId = statusId });
+                            break;
+                        case "filters_changed":
+                            OnFiltersChanged?.Invoke(this, new StreamFiltersChangedEventArgs());
                             break;
                     }
                 }
