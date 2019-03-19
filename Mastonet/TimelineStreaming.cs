@@ -20,6 +20,7 @@ namespace Mastonet
         public event EventHandler<StreamNotificationEventArgs> OnNotification;
         public event EventHandler<StreamDeleteEventArgs> OnDelete;
         public event EventHandler<StreamFiltersChangedEventArgs> OnFiltersChanged;
+        public event EventHandler<StreamConversationEvenTargs> OnConversation;
 
         internal TimelineStreaming(string url, string accessToken)
         {
@@ -75,6 +76,11 @@ namespace Mastonet
                             break;
                         case "filters_changed":
                             OnFiltersChanged?.Invoke(this, new StreamFiltersChangedEventArgs());
+                            break;
+                        case "conversation":
+                            var conversation = JsonConvert.DeserializeObject<Conversation>(data);
+                            OnConversation?.Invoke(this,
+                                new StreamConversationEvenTargs() {Conversation = conversation});
                             break;
                     }
                 }

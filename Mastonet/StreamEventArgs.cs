@@ -23,4 +23,9 @@ namespace Mastonet
     public class StreamFiltersChangedEventArgs : EventArgs
     {
     }
+
+    public class StreamConversationEvenTargs : EventArgs
+    {
+        public Conversation Conversation { get; set; }
+    }
 }
