@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Mastonet.Entities
 {
@@ -94,5 +95,83 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("header_static")]
         public string StaticHeaderUrl { get; set; }
+
+        /// <summary>
+        /// Emojis used in the account info
+        /// </summary>
+        [JsonProperty("emojis")]
+        public IEnumerable<Emoji> Emojis { get; set; }
+
+        /// <summary>
+        /// If moved, the new account for the account
+        /// </summary>
+        [JsonProperty("moved")]
+        public Account Moved { get; set; }
+
+        /// <summary>
+        /// The custom fields of the account
+        /// </summary>
+        [JsonProperty("Fields")]
+        public IEnumerable<Field> Fields { get; set; }
+
+        /// <summary>
+        /// Whether the account is a bot
+        /// </summary>
+        [JsonProperty("bot")]
+        public bool? Bot { get; set; }
+    }
+
+    public class Field
+    {
+        /// <summary>
+        /// The name of the field
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The value of the field (HTML)
+        /// </summary>
+        [JsonProperty("value")]
+        public string Value { get; set; }
+
+        /// <summary>
+        /// The datetime when the account is verified if the field value is a link
+        /// </summary>
+        [JsonProperty("verified_at")]
+        public DateTime? VerifiedAt { get; set; }
+    }
+    
+    public class Source
+    {
+        /// <summary>
+        /// The default visibility for the account
+        /// </summary>
+        [JsonProperty("privacy")]
+        public Visibility Privacy { get; set; }
+
+        /// <summary>
+        /// The default media sensitiveness setting for the account
+        /// </summary>
+        [JsonProperty("sensitive")]
+        public bool? Sensitive { get; set; }
+
+        /// <summary>
+        /// The language setting for the account (ISO6391)
+        /// </summary>
+        [JsonProperty("language")]
+        public string Language { get; set; }
+
+        /// <summary>
+        /// Biography of the user (in plain text)
+        /// </summary>
+        [JsonProperty("note")]
+        public string Note { get; set; }
+
+        /// <summary>
+        /// The custom fields of the account (in plain text)
+        /// </summary>
+        [JsonProperty("sensitive")]
+        public IEnumerable<Field> Fields { get; set; }
     }
 }

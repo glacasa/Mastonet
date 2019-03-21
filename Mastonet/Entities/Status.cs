@@ -62,6 +62,12 @@ namespace Mastonet.Entities
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
+        /// An array of Emojis
+        /// </summary>
+        [JsonProperty("emojis")]
+        public IEnumerable<Emoji> Emojis { get; set; }
+
+        /// <summary>
         /// The number of replies for the status
         /// </summary>
         [JsonProperty("replies_count")]
@@ -116,12 +122,6 @@ namespace Mastonet.Entities
         public Visibility Visibility { get; set; }
 
         /// <summary>
-        /// An array of Emojis
-        /// </summary>
-        [JsonProperty("emojis")]
-        public IEnumerable<Emoji> Emojis { get; set; }
-
-        /// <summary>
         /// An array of Attachments
         /// </summary>
         [JsonProperty("media_attachments")]
@@ -140,6 +140,12 @@ namespace Mastonet.Entities
         public IEnumerable<Tag> Tags { get; set; }
 
         /// <summary>
+        /// Attached card, if any
+        /// </summary>
+        [JsonProperty("card")]
+        public Card Card { get; set; }
+
+        /// <summary>
         /// Application from which the status was posted
         /// </summary>
         [JsonProperty("application")]
@@ -151,5 +157,10 @@ namespace Mastonet.Entities
         [JsonProperty("language")]
         public string Language { get; set; }
 
+        /// <summary>
+        /// Whether the status is pinned
+        /// </summary>
+        [JsonProperty("pinned")]
+        public bool? Pinned { get; set; }
     }
 }

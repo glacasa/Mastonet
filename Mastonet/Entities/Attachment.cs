@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,6 +44,16 @@ namespace Mastonet.Entities
         [JsonProperty("text_url")]
         public string TextUrl { get; set; }
 
+        ///<summary>
+        /// Metadata of the attachment
+        ///</summary>
+        [JsonProperty("meta")]
+        public JObject Meta { get; set; }
 
+        /// <summary>
+        /// Description of the attachment
+        /// </summary>
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 }
