@@ -46,31 +46,4 @@ namespace Mastonet.Entities
         [JsonProperty("accounts")]
         public int Accounts { get; set; }
     }
-
-    public class Conversation
-    {
-        /// <summary>
-        /// Conversation ID
-        /// </summary>
-        [JsonProperty("id")]
-        public long Id { get; set; }
-
-        /// <summary>
-        /// Participant accounts
-        /// </summary>
-        [JsonProperty("accounts")]
-        public IEnumerable<Account> Accounts { get; set; }
-
-        /// <summary>
-        /// Last status in the conversation
-        /// </summary>
-        [JsonProperty("last_status")]
-        public Status LastStatus { get; set; }
-
-        /// <summary>
-        /// Whether the account has read the last status
-        /// </summary>
-        [JsonProperty("unread")]
-        public bool Unread { get; set; }
-    }
 }

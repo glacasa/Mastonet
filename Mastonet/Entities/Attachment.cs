@@ -48,7 +48,7 @@ namespace Mastonet.Entities
         /// Metadata of the attachment
         ///</summary>
         [JsonProperty("meta")]
-        public JObject Meta { get; set; }
+        public AttachmentMeta Meta { get; set; }
 
         /// <summary>
         /// Description of the attachment
