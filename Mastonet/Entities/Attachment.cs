@@ -56,4 +56,51 @@ namespace Mastonet.Entities
         [JsonProperty("description")]
         public string Description { get; set; }
     }
+
+    public class AttachmentMeta
+    {
+        [JsonProperty("original")]
+        public AttachmentSizeData Original { get; set; }
+
+        [JsonProperty("small")]
+        public AttachmentSizeData Small { get; set; }
+
+        [JsonProperty("focus")]
+        public AttachmentFocusData Focus { get; set; }
+    }
+
+    public class AttachmentSizeData
+    {
+
+        [JsonProperty("width")]
+        public int? Width { get; set; }
+
+        [JsonProperty("height")]
+        public int? Height { get; set; }
+
+
+        [JsonProperty("size")]
+        public string Size { get; set; }
+
+        [JsonProperty("aspect")]
+        public float? Aspect { get; set; }
+
+        [JsonProperty("frame_rate")]
+        public string FrameRate { get; set; }
+
+        [JsonProperty("duration")]
+        public float? Duration { get; set; }
+
+        [JsonProperty("bitrate")]
+        public int? BitRate { get; set; }
+    }
+
+    public class AttachmentFocusData
+    {
+        [JsonProperty("x")]
+        public float X { get; set; }
+
+        [JsonProperty("y")]
+        public float Y { get; set; }
+    }
 }
