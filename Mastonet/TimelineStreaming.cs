@@ -11,8 +11,10 @@ namespace Mastonet
 {
     public class TimelineStreaming
     {
-        private string url;
-        private string accessToken;
+        private readonly string instance;
+        private readonly string path;
+
+        private readonly string accessToken;
         private HttpClient client;
 
 
@@ -22,14 +24,21 @@ namespace Mastonet
         public event EventHandler<StreamFiltersChangedEventArgs> OnFiltersChanged;
         public event EventHandler<StreamConversationEvenTargs> OnConversation;
 
-        internal TimelineStreaming(string url, string accessToken)
+        internal TimelineStreaming(string instance, string path, string accessToken)
         {
-            this.url = url;
+            this.instance = instance;
+            this.path = path;
             this.accessToken = accessToken;
         }
 
-
         public async Task Start()
+        {
+            //TODO : get Streaming url from GetInstance() ; use websocket instead of http server-sent event
+            var url = "https://" + instance + this.path;
+            await StartHttp(url);
+        }
+
+        private async Task StartHttp(string url)
         {
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
@@ -80,12 +89,18 @@ namespace Mastonet
                         case "conversation":
                             var conversation = JsonConvert.DeserializeObject<Conversation>(data);
                             OnConversation?.Invoke(this,
-                                new StreamConversationEvenTargs() {Conversation = conversation});
+                                new StreamConversationEvenTargs() { Conversation = conversation });
                             break;
                     }
                 }
             }
             this.Stop();
+        }
+
+        private Task StartWebSocket(string url)
+        {
+            // TODO : use web sockets
+            throw new NotImplementedException();
         }
 
         public void Stop()

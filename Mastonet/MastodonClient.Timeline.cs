@@ -125,56 +125,17 @@ namespace Mastonet
 
             return GetList<Status>(url + queryParams);
         }
-
-
-
+               
         #region Streaming
-
-        private string StreamingApiUrl
-        {
-            get
-            {
-                // mstdn.jp uses a different url for its streaming API, althoug it's supposed to be a dev feature.
-                // if other instances have the same problem, they will be added there, until the API is updated to
-                // allow us get the correct url
-                switch (this.Instance)
-                {
-                    case "mstdn.jp":
-                        return "streaming.mstdn.jp";
-                    default:
-                        return Instance;
-                }
-            }
-        }
-
+        
         public TimelineStreaming GetPublicStreaming()
         {
-            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/public";
-
-            return new TimelineStreaming(url, AuthToken.AccessToken);
-        }
-
-        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
-        public TimelineStreaming GetPublicStreaming(string streamingApiUrl)
-        {
-            string url = "https://" + streamingApiUrl + "/api/v1/streaming/public";
-
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(Instance, "/api/v1/streaming/public", AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetUserStreaming()
         {
-            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/user";
-
-            return new TimelineStreaming(url, AuthToken.AccessToken);
-        }
-
-        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
-        public TimelineStreaming GetUserStreaming(string streamingApiUrl)
-        {
-            string url = "https://" + streamingApiUrl + "/api/v1/streaming/user";
-
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(Instance, "/api/v1/streaming/user", AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetHashtagStreaming(string hashtag)
@@ -184,30 +145,25 @@ namespace Mastonet
                 throw new ArgumentException("You must specify a hashtag", "hashtag");
             }
 
-            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
-
-            return new TimelineStreaming(url, AuthToken.AccessToken);
-        }
-
-        [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
-        public TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag)
-        {
-            if (string.IsNullOrEmpty(hashtag))
-            {
-                throw new ArgumentException("You must specify a hashtag", "hashtag");
-            }
-
-            string url = "https://" + streamingApiUrl + "/api/v1/streaming/hashtag?tag=" + hashtag;
-
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(Instance, "/api/v1/streaming/hashtag?tag=" + hashtag, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetDirectMessagesStreaming()
         {
-            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/direct";
-
-            return new TimelineStreaming(url, AuthToken.AccessToken);
+            return new TimelineStreaming(Instance, "/api/v1/streaming/direct", AuthToken.AccessToken);
         }
+
+
+        [Obsolete("The url is not used, please use GetPublicStreaming() method")]
+        public TimelineStreaming GetPublicStreaming(string streamingApiUrl) => GetPublicStreaming();
+
+
+        [Obsolete("The url is not used, please use GetUserStreaming() method")]
+        public TimelineStreaming GetUserStreaming(string streamingApiUrl) => GetUserStreaming();
+
+
+        [Obsolete("The url is not used, please use GetHashtagStreaming(string hashtag) method")]
+        public TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag) => GetHashtagStreaming(hashtag);
 
         #endregion
     }
