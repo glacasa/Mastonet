@@ -112,7 +112,7 @@ namespace Mastonet.Entities
         /// The custom fields of the account
         /// </summary>
         [JsonProperty("Fields")]
-        public IEnumerable<Field> Fields { get; set; }
+        public IEnumerable<AccountField> Fields { get; set; }
 
         /// <summary>
         /// Whether the account is a bot
@@ -121,7 +121,7 @@ namespace Mastonet.Entities
         public bool? Bot { get; set; }
     }
 
-    public class Field
+    public class AccountField
     {
         /// <summary>
         /// The name of the field
@@ -142,7 +142,7 @@ namespace Mastonet.Entities
         public DateTime? VerifiedAt { get; set; }
     }
     
-    public class Source
+    public class AccountSource
     {
         /// <summary>
         /// The default visibility for the account
@@ -172,6 +172,6 @@ namespace Mastonet.Entities
         /// The custom fields of the account (in plain text)
         /// </summary>
         [JsonProperty("sensitive")]
-        public IEnumerable<Field> Fields { get; set; }
+        public IEnumerable<AccountField> Fields { get; set; }
     }
 }

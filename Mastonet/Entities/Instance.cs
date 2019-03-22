@@ -47,13 +47,13 @@ namespace Mastonet.Entities
         /// URLs related to the instance
         /// </summary>
         [JsonProperty("urls")]
-        public URLs Urls { get; set; }
+        public InstanceUrls Urls { get; set; }
 
         /// <summary>
         /// The instance's stats
         /// </summary>
         [JsonProperty("stats")]
-        public Stats Stats { get; set; }
+        public InstanceStats Stats { get; set; }
 
         /// <summary>
         /// Array that consists of the instance's default locale
@@ -68,7 +68,7 @@ namespace Mastonet.Entities
         public Account ContactAccount { get; set; }
     }
 
-    public class URLs
+    public class InstanceUrls
     {
         /// <summary>
         /// Websocket base URL for streaming API
@@ -77,7 +77,7 @@ namespace Mastonet.Entities
         public string StreamingAPI { get; set; }
     }
 
-    public class Stats
+    public class InstanceStats
     {
         /// <summary>
         /// Number of users that belongs to the instance
