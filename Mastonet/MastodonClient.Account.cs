@@ -115,7 +115,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Account>(url);
+            return GetMastodonList<Account>(url);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Account>(url);
+            return GetMastodonList<Account>(url);
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Mastonet
                 queryParams += options.ToQueryString();
             }
 
-            return GetList<Status>(url + queryParams);
+            return GetMastodonList<Status>(url + queryParams);
         }
     
         
@@ -234,7 +234,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return this.GetList<Account>(url);
+            return this.GetMastodonList<Account>(url);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Status>(url);
+            return GetMastodonList<Status>(url);
         }
 
         #endregion

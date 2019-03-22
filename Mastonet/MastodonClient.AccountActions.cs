@@ -92,7 +92,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Account>(url);
+            return GetMastodonList<Account>(url);
         }
         #endregion
 
@@ -141,7 +141,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Account>(url);
+            return GetMastodonList<Account>(url);
         }
         #endregion
 
@@ -170,7 +170,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<string>(url);
+            return GetMastodonList<string>(url);
         }
 
         /// <summary>

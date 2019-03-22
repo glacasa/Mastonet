@@ -33,6 +33,139 @@ namespace Mastonet
 
         #endregion
 
+        #region Lists
+
+        /// <summary>
+        /// User’s lists.
+        /// </summary>
+        /// <returns>Returns array of List</returns>
+        public Task<IEnumerable<List>> GetLists()
+        {
+            return this.Get<IEnumerable<List>>("/api/v1/lists");
+        }
+
+        public Task<List> GetList(long listId)
+        {
+            return this.Get<List>("/api/v1/lists/" + listId);
+        }
+
+        /// <summary>
+        /// User’s lists that a given account is part of.
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns array of List</returns>
+        public Task<IEnumerable<List>> GetListsContainingAccount(long accountId)
+        {
+            return this.Get<IEnumerable<List>>($"/api/v1/accounts/{accountId}/lists");
+        }
+
+        /// <summary>
+        /// Accounts that are in a given list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns>Returns array of Account</returns>
+        public Task<IEnumerable<Account>> GetListAccounts(long listId, int? limit = null)
+        {
+            return this.Get<IEnumerable<Account>>($"/api/v1/lists/{listId}/accounts");
+        }
+
+        /// <summary>
+        /// Create a new list.
+        /// </summary>
+        /// <param name="title">The title of the list</param>
+        /// <returns>The list created</returns>
+        public Task<List> CreateList(string title)
+        {
+            if (string.IsNullOrEmpty(title))
+            {
+                throw new ArgumentException("The title is required", nameof(title));
+            }
+
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("title", title),
+            };
+
+            return this.Post<List>("/api/v1/lists", data);
+        }
+
+        /// <summary>
+        /// Create a new list.
+        /// </summary>
+        /// <param name="title">The title of the list</param>
+        /// <returns>The list created</returns>
+        public Task<List> UpdateList(long listId, string newTitle)
+        {
+            if (string.IsNullOrEmpty(newTitle))
+            {
+                throw new ArgumentException("The title is required", nameof(newTitle));
+            }
+
+            var data = new List<KeyValuePair<string, string>>() {
+                new KeyValuePair<string, string>("title", newTitle),
+            };
+
+            return this.Put<List>("/api/v1/lists/" + listId, data);
+        }
+
+        public Task DeleteList(long listId)
+        {
+            return this.Delete("/api/v1/lists/" + listId);
+        }
+
+        public Task AddAccountsToList(long listId, IEnumerable<long> accountIds)
+        {
+            if (accountIds == null || !accountIds.Any())
+            {
+                throw new ArgumentException("Accounts are required", nameof(accountIds));
+            }
+
+            var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
+
+            return this.Post($"/api/v1/lists/{listId}/accounts", data);
+        }
+
+        public Task AddAccountsToList(long listId, IEnumerable<Account> accounts)
+        {
+            if (accounts == null || !accounts.Any())
+            {
+                throw new ArgumentException("Accounts are required", nameof(accounts));
+            }
+
+            var data = accounts.Select(act => new KeyValuePair<string, string>("account_ids[]", act.Id.ToString()));
+
+            return this.Post($"/api/v1/lists/{listId}/accounts", data);
+        }
+
+        private Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds)
+        {
+            throw new NotImplementedException();
+            //if (accountIds == null || !accountIds.Any())
+            //{
+            //    throw new ArgumentException("Accounts are required", nameof(accountIds));
+            //}
+
+            //var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
+
+            //TODO : Delete with data
+            //return this.Delete($"/api/v1/lists/{listId}/accounts", data);
+        }
+
+        private Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts)
+        {
+            throw new NotImplementedException();
+            //if (accounts == null || !accounts.Any())
+            //{
+            //    throw new ArgumentException("Accounts are required", nameof(accounts));
+            //}
+
+            //var data = accounts.Select(act => new KeyValuePair<string, string>("account_ids[]", act.Id.ToString()));
+
+            //TODO : Delete with data
+            //return this.Delete($"/api/v1/lists/{listId}/accounts", data);
+        }
+
+        #endregion
+
         #region Media
 
         /// <summary>
@@ -56,6 +189,19 @@ namespace Mastonet
             media.ParamName = "file";
             var list = new List<MediaDefinition>() { media };
             return this.Post<Attachment>("/api/v1/media", null, list);
+        }
+
+        #endregion
+
+        #region Emojis
+
+        /// <summary>
+        /// Custom emojis that are available on the server.
+        /// </summary>
+        /// <returns></returns>
+        public Task<IEnumerable<Emoji>> GetCustomEmojis()
+        {
+            return this.Get<IEnumerable<Emoji>>("/api/v1/custom_emojis");
         }
 
         #endregion
@@ -86,7 +232,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Notification>(url);
+            return GetMastodonList<Notification>(url);
         }
 
         /// <summary>
@@ -136,7 +282,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Report>(url);
+            return GetMastodonList<Report>(url);
         }
 
         /// <summary>

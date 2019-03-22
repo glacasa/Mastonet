@@ -33,7 +33,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Status>(url);
+            return GetMastodonList<Status>(url);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Mastonet
                 queryParams += options.ToQueryString();
             }
 
-            return GetList<Status>(url + queryParams);
+            return GetMastodonList<Status>(url + queryParams);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Mastonet
                 queryParams += options.ToQueryString();
             }
 
-            return GetList<Status>(url + queryParams);
+            return GetMastodonList<Status>(url + queryParams);
         }
                
         #region Streaming
@@ -153,6 +153,10 @@ namespace Mastonet
             return new TimelineStreaming(Instance, "/api/v1/streaming/direct", AuthToken.AccessToken);
         }
 
+        public TimelineStreaming GetListStreaming(long listId)
+        {
+            return new TimelineStreaming(Instance, "/api/v1/streaming/list?list=" + listId, AuthToken.AccessToken);
+        }
 
         [Obsolete("The url is not used, please use GetPublicStreaming() method")]
         public TimelineStreaming GetPublicStreaming(string streamingApiUrl) => GetPublicStreaming();

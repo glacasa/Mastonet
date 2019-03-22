@@ -69,7 +69,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Account>(url);
+            return GetMastodonList<Account>(url);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Mastonet
             {
                 url += "?" + options.ToQueryString();
             }
-            return GetList<Account>(url);
+            return GetMastodonList<Account>(url);
         }
         /// <summary>
         /// Posting a new status

@@ -60,7 +60,7 @@ namespace Mastonet
         }
 
         private Regex idFinderRegex = new Regex("_id=([0-9]+)");
-        protected async Task<MastodonList<T>> GetList<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<MastodonList<T>> GetMastodonList<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             string url = "https://" + this.Instance + route;
             if (data != null)
@@ -139,6 +139,23 @@ namespace Mastonet
         {
             var content = media != null && media.Any() ? await PostMedia(route, data, media) : await Post(route, data);
             return TryDeserialize<T>(content);
+        }
+
+        protected async Task<string> Put(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        {
+            string url = "https://" + this.Instance + route;
+
+            var client = new HttpClient();
+            AddHttpHeader(client);
+
+            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+            var response = await client.PutAsync(url, content);
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        protected async Task<T> Put<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        {
+            return TryDeserialize<T>(await Put(route, data));
         }
 
         protected async Task<string> Patch(string route, IEnumerable<KeyValuePair<string, string>> data = null)
