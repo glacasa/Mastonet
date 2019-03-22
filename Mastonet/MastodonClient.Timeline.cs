@@ -202,6 +202,13 @@ namespace Mastonet
             return new TimelineStreaming(url, AuthToken.AccessToken);
         }
 
+        public TimelineStreaming GetDirectMessagesStreaming()
+        {
+            string url = "https://" + StreamingApiUrl + "/api/v1/streaming/direct";
+
+            return new TimelineStreaming(url, AuthToken.AccessToken);
+        }
+
         #endregion
     }
 }

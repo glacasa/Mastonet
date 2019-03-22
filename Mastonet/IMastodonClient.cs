@@ -552,7 +552,9 @@ namespace Mastonet
 
         [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
         TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag);
-        
+
+        TimelineStreaming GetDirectMessagesStreaming();
+                       
         #endregion
     }
 }
