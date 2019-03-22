@@ -6,8 +6,8 @@
     <Authors>Guillaume Lacasa</Authors>
     <Description>A .net client library for Mastodon</Description>
     <PackageProjectUrl>https://github.com/glacasa/Mastonet</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/glacasa/Mastonet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/glacasa/Mastonet.git</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
