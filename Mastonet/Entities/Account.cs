@@ -111,7 +111,7 @@ namespace Mastonet.Entities
         /// <summary>
         /// The custom fields of the account
         /// </summary>
-        [JsonProperty("Fields")]
+        [JsonProperty("fields")]
         public IEnumerable<AccountField> Fields { get; set; }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Mastonet.Entities
         /// <summary>
         /// The custom fields of the account (in plain text)
         /// </summary>
-        [JsonProperty("sensitive")]
+        [JsonProperty("fields")]
         public IEnumerable<AccountField> Fields { get; set; }
     }
 }
