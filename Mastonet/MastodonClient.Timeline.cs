@@ -125,12 +125,17 @@ namespace Mastonet
 
             return GetMastodonList<Status>(url + queryParams);
         }
-               
+
         #region Streaming
-        
+
         public TimelineStreaming GetPublicStreaming()
         {
             return new TimelineStreaming(Instance, "/api/v1/streaming/public", AuthToken.AccessToken);
+        }
+
+        public TimelineStreaming GetPublicLocalStreaming()
+        {
+            return new TimelineStreaming(Instance, "/api/v1/streaming/public/local", AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetUserStreaming()
@@ -142,10 +147,20 @@ namespace Mastonet
         {
             if (string.IsNullOrEmpty(hashtag))
             {
-                throw new ArgumentException("You must specify a hashtag", "hashtag");
+                throw new ArgumentException("You must specify a hashtag", nameof(hashtag));
             }
 
             return new TimelineStreaming(Instance, "/api/v1/streaming/hashtag?tag=" + hashtag, AuthToken.AccessToken);
+        }
+
+        public TimelineStreaming GetHashtagLocalStreaming(string hashtag)
+        {
+            if (string.IsNullOrEmpty(hashtag))
+            {
+                throw new ArgumentException("You must specify a hashtag", nameof(hashtag));
+            }
+
+            return new TimelineStreaming(Instance, "/api/v1/streaming/hashtag/local?tag=" + hashtag, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetDirectMessagesStreaming()
