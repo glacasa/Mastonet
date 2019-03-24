@@ -74,7 +74,7 @@ namespace Mastonet.Entities
         /// Websocket base URL for streaming API
         /// </summary>
         [JsonProperty("streaming_api")]
-        public string StreamingAPI { get; set; }
+        public Uri StreamingAPI { get; set; }
     }
 
     public class InstanceStats

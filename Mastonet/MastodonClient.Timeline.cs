@@ -128,19 +128,21 @@ namespace Mastonet
 
         #region Streaming
 
+        private Lazy<Task<Instance>> instanceGetter;
+
         public TimelineStreaming GetPublicStreaming()
         {
-            return new TimelineStreaming(Instance, "/api/v1/streaming/public", AuthToken.AccessToken);
+            return new TimelineStreaming(StreamingType.Public, instanceGetter.Value, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetPublicLocalStreaming()
         {
-            return new TimelineStreaming(Instance, "/api/v1/streaming/public/local", AuthToken.AccessToken);
+            return new TimelineStreaming(StreamingType.PublicLocal, instanceGetter.Value, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetUserStreaming()
         {
-            return new TimelineStreaming(Instance, "/api/v1/streaming/user", AuthToken.AccessToken);
+            return new TimelineStreaming(StreamingType.User, instanceGetter.Value, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetHashtagStreaming(string hashtag)
@@ -150,7 +152,7 @@ namespace Mastonet
                 throw new ArgumentException("You must specify a hashtag", nameof(hashtag));
             }
 
-            return new TimelineStreaming(Instance, "/api/v1/streaming/hashtag?tag=" + hashtag, AuthToken.AccessToken);
+            return new TimelineStreaming(StreamingType.Hashtag, hashtag, instanceGetter.Value, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetHashtagLocalStreaming(string hashtag)
@@ -160,27 +162,25 @@ namespace Mastonet
                 throw new ArgumentException("You must specify a hashtag", nameof(hashtag));
             }
 
-            return new TimelineStreaming(Instance, "/api/v1/streaming/hashtag/local?tag=" + hashtag, AuthToken.AccessToken);
+            return new TimelineStreaming(StreamingType.HashtagLocal, hashtag, instanceGetter.Value, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetDirectMessagesStreaming()
         {
-            return new TimelineStreaming(Instance, "/api/v1/streaming/direct", AuthToken.AccessToken);
+            return new TimelineStreaming(StreamingType.Direct, instanceGetter.Value, AuthToken.AccessToken);
         }
 
         public TimelineStreaming GetListStreaming(long listId)
         {
-            return new TimelineStreaming(Instance, "/api/v1/streaming/list?list=" + listId, AuthToken.AccessToken);
+            return new TimelineStreaming(StreamingType.List, listId.ToString(), instanceGetter.Value, AuthToken.AccessToken);
         }
 
         [Obsolete("The url is not used, please use GetPublicStreaming() method")]
         public TimelineStreaming GetPublicStreaming(string streamingApiUrl) => GetPublicStreaming();
-
-
+        
         [Obsolete("The url is not used, please use GetUserStreaming() method")]
         public TimelineStreaming GetUserStreaming(string streamingApiUrl) => GetUserStreaming();
-
-
+        
         [Obsolete("The url is not used, please use GetHashtagStreaming(string hashtag) method")]
         public TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag) => GetHashtagStreaming(hashtag);
 

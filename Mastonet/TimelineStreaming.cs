@@ -11,9 +11,9 @@ namespace Mastonet
 {
     public class TimelineStreaming
     {
-        private readonly string instance;
-        private readonly string path;
-
+        private readonly StreamingType streamingType;
+        private readonly string param;
+        private readonly Task<Instance> instanceGetter;
         private readonly string accessToken;
         private HttpClient client;
 
@@ -23,23 +23,72 @@ namespace Mastonet
         public event EventHandler<StreamDeleteEventArgs> OnDelete;
         public event EventHandler<StreamFiltersChangedEventArgs> OnFiltersChanged;
         public event EventHandler<StreamConversationEvenTargs> OnConversation;
-
-        internal TimelineStreaming(string instance, string path, string accessToken)
+        
+        internal TimelineStreaming(StreamingType type, Task<Instance> instanceGetter, string accessToken)
         {
-            this.instance = instance;
-            this.path = path;
+            this.streamingType = type;
+            this.instanceGetter = instanceGetter;
+            this.accessToken = accessToken;
+        }
+
+        internal TimelineStreaming(StreamingType type, string param, Task<Instance> instanceGetter, string accessToken)
+        {
+            this.streamingType = type;
+            this.param = param;
+            this.instanceGetter = instanceGetter;
             this.accessToken = accessToken;
         }
 
         public async Task Start()
         {
-            //TODO : get Streaming url from GetInstance() ; use websocket instead of http server-sent event
-            var url = "https://" + instance + this.path;
-            await StartHttp(url);
+            await StartHttp();
+//#if NETSTANDARD2_0
+//            await StartWebSocket();
+//#else
+//            await StartHttp();
+//#endif
         }
 
-        private async Task StartHttp(string url)
+        private async Task StartWebSocket()
         {
+            var instance = await instanceGetter;
+            //TODO : is websocket supported ?
+            var streamApiUrl = instance.Urls.StreamingAPI;
+
+        }
+
+        private async Task StartHttp()
+        {
+            var instance = await instanceGetter;
+            string url = "https://" + instance.Uri;
+            switch (streamingType)
+            {
+                case StreamingType.User:
+                    url += "/api/v1/streaming/user";
+                    break;
+                case StreamingType.Public:
+                    url += "/api/v1/streaming/public";
+                    break;
+                case StreamingType.PublicLocal:
+                    url += "/api/v1/streaming/public/local";
+                    break;
+                case StreamingType.Hashtag:
+                    url += "/api/v1/streaming/hashtag?tag="+param;
+                    break;
+                case StreamingType.HashtagLocal:
+                    url += "/api/v1/streaming/hashtag/local?tag="+param;
+                    break;
+                case StreamingType.List:
+                    url += "/api/v1/streaming/list?list="+param;
+                    break;
+                case StreamingType.Direct:
+                    url += "/api/v1/streaming/direct";
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
 
@@ -97,19 +146,13 @@ namespace Mastonet
             this.Stop();
         }
 
-        private Task StartWebSocket(string url)
-        {
-            // TODO : use web sockets
-            throw new NotImplementedException();
-        }
-
         public void Stop()
         {
-            if (client != null)
-            {
-                client.Dispose();
-                client = null;
-            }
+            //if (client != null)
+            //{
+            //    client.Dispose();
+            //    client = null;
+            //}
         }
     }
 }
