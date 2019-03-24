@@ -17,7 +17,9 @@ namespace Mastonet
             this.AppRegistration = appRegistration;
             this.AuthToken = accessToken;
 
+#if NETSTANDARD2_0
             this.instanceGetter = new Lazy<Task<Instance>>(this.GetInstance);
+#endif
         }
 
         #endregion
