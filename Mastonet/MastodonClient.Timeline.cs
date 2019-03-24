@@ -175,6 +175,8 @@ namespace Mastonet
             return new TimelineStreaming(StreamingType.List, listId.ToString(), instanceGetter.Value, AuthToken.AccessToken);
         }
 
+        public TimelineStreaming GetListStreaming(List list) => GetListStreaming(list.Id);
+
         [Obsolete("The url is not used, please use GetPublicStreaming() method")]
         public TimelineStreaming GetPublicStreaming(string streamingApiUrl) => GetPublicStreaming();
         
