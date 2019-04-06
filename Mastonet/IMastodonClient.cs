@@ -480,6 +480,20 @@ namespace Mastonet
         /// <returns>Returns the target Status</returns>
         Task<Status> UnmuteConversation(long statusId);
 
+        /// <summary>
+        /// Pinning a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        Task<Status> Pin(long statusId);
+
+        /// <summary>
+        /// Unpinning a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        Task<Status> Unpin(long statusId);
+
         #endregion
 
         #region MastodonClient.Timeline

@@ -213,6 +213,24 @@ namespace Mastonet
             return Post<Status>($"/api/v1/statuses/{statusId}/unmute");
         }
 
+        /// <summary>
+        /// Pinning a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Pin(long statusId)
+        {
+            return Post<Status>($"/api/v1/statuses/{statusId}/pin");
+        }
 
+        /// <summary>
+        /// Unpinning a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Unpin(long statusId)
+        {
+            return Post<Status>($"/api/v1/statuses/{statusId}/unpin");
+        }
     }
 }
