@@ -271,8 +271,9 @@ namespace Mastonet
         /// Following an account
         /// </summary>
         /// <param name="accountId"></param>
+        /// <param name="reblogs">Whether the followed account’s reblogs will show up in the home timeline</param>
         /// <returns>Returns the target Account</returns>
-        Task<Relationship> Follow(long accountId);
+        Task<Relationship> Follow(long accountId, bool reblogs = true);
 
         /// <summary>
         /// Unfollowing an account

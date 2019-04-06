@@ -17,10 +17,12 @@ namespace Mastonet
         /// Following an account
         /// </summary>
         /// <param name="accountId"></param>
+        /// <param name="reblogs">Whether the followed account’s reblogs will show up in the home timeline</param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Follow(long accountId)
+        public Task<Relationship> Follow(long accountId, bool reblogs = true)
         {
-            return this.Post<Relationship>($"/api/v1/accounts/{accountId}/follow");
+            var data = reblogs ? null : Enumerable.Repeat(new KeyValuePair<string, string>("reblogs", "false"), 1);
+            return this.Post<Relationship>($"/api/v1/accounts/{accountId}/follow", data);
         }
 
         /// <summary>
