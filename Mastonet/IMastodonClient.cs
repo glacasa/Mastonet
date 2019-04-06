@@ -199,11 +199,13 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="onlyMedia">Only return statuses that have media attachments</param>
         /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
+        /// <param name="pinned">Only return statuses that have been pinned</param>
+        /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Statuses</returns>
-        Task<MastodonList<Status>> GetAccountStatuses(long accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false);
+        Task<MastodonList<Status>> GetAccountStatuses(long accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false);
 
         /// <summary>
         /// Getting an account's statuses
@@ -211,9 +213,11 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="onlyMedia">Only return statuses that have media attachments</param>
         /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
+        /// <param name="pinned">Only return statuses that have been pinned</param>
+        /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses</returns>
-        Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false);
+        Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false);
 
         /// <summary>
         /// Fetching a list of follow requests
@@ -581,7 +585,7 @@ namespace Mastonet
         TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag);
 
         TimelineStreaming GetDirectMessagesStreaming();
-                       
+
         #endregion
     }
 }

@@ -195,13 +195,15 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="onlyMedia">Only return statuses that have media attachments</param>
         /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
+        /// <param name="pinned">Only return statuses that have been pinned</param>
+        /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
         {
-            return GetAccountStatuses(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, onlyMedia, excludeReplies);
+            return GetAccountStatuses(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, onlyMedia, pinned, excludeReplies, excludeReblogs);
         }
 
         /// <summary>
@@ -210,9 +212,11 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="onlyMedia">Only return statuses that have media attachments</param>
         /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
+        /// <param name="pinned">Only return statuses that have been pinned</param>
+        /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false)
+        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
         {
             var url = $"/api/v1/accounts/{accountId}/statuses";
 
@@ -220,6 +224,18 @@ namespace Mastonet
             if (onlyMedia)
             {
                 queryParams = "?only_media=true";
+            }
+            if (pinned)
+            {
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += "pinned=true";
             }
             if (excludeReplies)
             {
@@ -232,6 +248,18 @@ namespace Mastonet
                     queryParams += "?";
                 }
                 queryParams += "exclude_replies=true";
+            }
+            if (excludeReblogs)
+            {
+                if (queryParams != "")
+                {
+                    queryParams += "&";
+                }
+                else
+                {
+                    queryParams += "?";
+                }
+                queryParams += "exclude_reblogs=true";
             }
             if (options != null)
             {
