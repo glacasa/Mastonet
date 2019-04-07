@@ -379,6 +379,25 @@ namespace Mastonet
         /// <param name="domain">Domain to block</param>
         Task UnblockDomain(string domain);
 
+        /// <summary>
+        /// Getting accounts the user chose to endorse
+        /// </summary>
+        /// <returns>Returns an array of Accounts endorsed by the authenticated user</returns>
+        Task<MastodonList<Account>> GetEndorsements();
+
+        /// <summary>
+        /// Endorsing an account
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns the updated Relationships with the target Account</returns>
+        Task<Relationship> Endorse(long accountId);
+
+        /// <summary>
+        /// Undoing endorse of an account
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns the updated Relationships with the target Account</returns>
+        Task<Relationship> Unendorse(long accountId);
         #endregion
 
         #region MastodonClient.Status

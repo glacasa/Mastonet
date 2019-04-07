@@ -147,6 +147,37 @@ namespace Mastonet
         }
         #endregion
 
+        #region Endorsements
+        /// <summary>
+        /// Getting accounts the user chose to endorse
+        /// </summary>
+        /// <returns>Returns an array of Accounts endorsed by the authenticated user</returns>
+        public Task<MastodonList<Account>> GetEndorsements()
+        {
+            return GetMastodonList<Account>("/api/v1/endorsements");
+        }
+
+        /// <summary>
+        /// Endorsing an account
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns the updated Relationships with the target Account</returns>
+        public Task<Relationship> Endorse(long accountId)
+        {
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/pin");
+        }
+
+        /// <summary>
+        /// Undoing endorse of an account
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns the updated Relationships with the target Account</returns>
+        public Task<Relationship> Unendorse(long accountId)
+        {
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/unpin");
+        }
+        #endregion
+
         #region Domain blocks
         /// <summary>
         /// Fetching a user's blocked domains
