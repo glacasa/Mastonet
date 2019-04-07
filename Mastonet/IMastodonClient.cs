@@ -99,8 +99,10 @@ namespace Mastonet
         /// </summary>
         /// <param name="q">What to search for</param>
         /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
+        /// <param name="resolve">Attempt WebFinger look-up (default: false)</param>
+        /// <param name="following">Only who the user is following (default: false)</param>
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
-        Task<List<Account>> SearchAccounts(string q, int? limit = null);
+        Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false);
 
 
         #endregion
