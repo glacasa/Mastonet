@@ -327,6 +327,26 @@ namespace Mastonet
 
         #endregion
 
+        #region Follow Suggestions
+        /// <summary>
+        /// Listing accounts the user had past positive interactions with, but is not following yet
+        /// </summary>
+        /// <returns>Returns array of Account</returns>
+        public Task<IEnumerable<Account>> GetFollowSuggestions()
+        {
+            return Get<IEnumerable<Account>>("/api/v1/suggestions");
+        }
+
+        /// <summary>
+        /// Removing account from suggestions
+        /// </summary>
+        /// <param name="accountId">The account ID to remove</param>
+        public Task DeleteFollowSuggestion(long accountId)
+        {
+            return Delete($"/api/v1/suggestions/{accountId}");
+        }
+        #endregion
+
         #region Favourites
 
         /// <summary>

@@ -291,6 +291,18 @@ namespace Mastonet
         Task RejectRequest(long accountId);
 
         /// <summary>
+        /// Listing accounts the user had past positive interactions with, but is not following yet
+        /// </summary>
+        /// <returns>Returns array of Account</returns>
+        Task<IEnumerable<Account>> GetFollowSuggestions();
+
+        /// <summary>
+        /// Removing account from suggestions
+        /// </summary>
+        /// <param name="accountId">The account ID to remove</param>
+        Task DeleteFollowSuggestion(long accountId);
+
+        /// <summary>
         /// Fetching a user's favourites
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
