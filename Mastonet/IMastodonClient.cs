@@ -18,6 +18,94 @@ namespace Mastonet
         Task<Instance> GetInstance();
 
         /// <summary>
+        /// User’s lists.
+        /// </summary>
+        /// <returns>Returns array of List</returns>
+        Task<IEnumerable<List>> GetLists();
+
+        /// <summary>
+        /// User’s lists that a given account is part of.
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns array of List</returns>
+        Task<IEnumerable<List>> GetListsContainingAccount(long accountId);
+
+        /// <summary>
+        /// Accounts that are in a given list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="maxId">Get items with ID less than or equal this value</param>
+        /// <param name="sinceId">Get items with ID greater than this value</param>
+        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <returns>Returns array of Account</returns>
+        Task<MastodonList<Account>> GetListAccounts(long listId, long? maxId = null, long? sinceId = null, int? limit = null);
+
+        /// <summary>
+        /// Accounts that are in a given list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="options">Define the first and last items to get</param>
+        /// <returns>Returns array of Account</returns>
+        Task<MastodonList<Account>> GetListAccounts(long listId, ArrayOptions options);
+
+        /// <summary>
+        /// Get a list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns>Returns List</returns>
+        Task<List> GetList(long listId);
+
+        /// <summary>
+        /// Create a new list.
+        /// </summary>
+        /// <param name="title">The title of the list</param>
+        /// <returns>The list created</returns>
+        Task<List> CreateList(string title);
+
+        /// <summary>
+        /// Update a list.
+        /// </summary>
+        /// <param name="title">The title of the list</param>
+        /// <returns>The list updated</returns>
+        Task<List> UpdateList(long listId, string newTitle);
+
+        /// <summary>
+        /// Remove a list.
+        /// </summary>
+        /// <param name="listId"></param>
+        Task DeleteList(long listId);
+
+        /// <summary>
+        /// Add accounts to a list.
+        /// Only accounts already followed by the user can be added to a list.
+        /// </summary>
+        /// <param name="listId">List ID</param>
+        /// <param name="accountIds">Array of account IDs</param>
+        Task AddAccountsToList(long listId, IEnumerable<long> accountIds);
+
+        /// <summary>
+        /// Add accounts to a list.
+        /// Only accounts already followed by the user can be added to a list.
+        /// </summary>
+        /// <param name="listId">List ID</param>
+        /// <param name="accounts">Array of Accounts</param>
+        Task AddAccountsToList(long listId, IEnumerable<Account> accounts):
+
+        /// <summary>
+        /// Remove accounts from a list.
+        /// </summary>
+        /// <param name="listId">List Id</param>
+        /// <param name="accountIds">Array of Account IDs</param>
+        Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds);
+
+        /// <summary>
+        /// Remove accounts from a list.
+        /// </summary>
+        /// <param name="listId">List Id</param>
+        /// <param name="accountIds">Array of Accounts</param>
+        Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts);
+
+        /// <summary>
         /// Uploading a media attachment
         /// </summary>
         /// <param name="data">Media stream to be uploaded</param>

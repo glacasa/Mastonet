@@ -48,11 +48,6 @@ namespace Mastonet
             return this.Get<IEnumerable<List>>("/api/v1/lists");
         }
 
-        public Task<List> GetList(long listId)
-        {
-            return this.Get<List>("/api/v1/lists/" + listId);
-        }
-
         /// <summary>
         /// User’s lists that a given account is part of.
         /// </summary>
@@ -67,10 +62,39 @@ namespace Mastonet
         /// Accounts that are in a given list.
         /// </summary>
         /// <param name="listId"></param>
+        /// <param name="maxId">Get items with ID less than or equal this value</param>
+        /// <param name="sinceId">Get items with ID greater than this value</param>
+        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns array of Account</returns>
-        public Task<IEnumerable<Account>> GetListAccounts(long listId, int? limit = null)
+        public Task<MastodonList<Account>> GetListAccounts(long listId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
-            return this.Get<IEnumerable<Account>>($"/api/v1/lists/{listId}/accounts");
+            return GetListAccounts(listId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
+        }
+
+        /// <summary>
+        /// Accounts that are in a given list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="options">Define the first and last items to get</param>
+        /// <returns>Returns array of Account</returns>
+        public Task<MastodonList<Account>> GetListAccounts(long listId, ArrayOptions options)
+        {
+            var url = $"/api/v1/lists/{listId}/accounts";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return GetMastodonList<Account>(url);
+        }
+
+        /// <summary>
+        /// Get a list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns>Returns List</returns>
+        public Task<List> GetList(long listId)
+        {
+            return this.Get<List>("/api/v1/lists/" + listId);
         }
 
         /// <summary>
@@ -93,10 +117,10 @@ namespace Mastonet
         }
 
         /// <summary>
-        /// Create a new list.
+        /// Update a list.
         /// </summary>
         /// <param name="title">The title of the list</param>
-        /// <returns>The list created</returns>
+        /// <returns>The list updated</returns>
         public Task<List> UpdateList(long listId, string newTitle)
         {
             if (string.IsNullOrEmpty(newTitle))
@@ -111,11 +135,21 @@ namespace Mastonet
             return this.Put<List>("/api/v1/lists/" + listId, data);
         }
 
+        /// <summary>
+        /// Remove a list.
+        /// </summary>
+        /// <param name="listId"></param>
         public Task DeleteList(long listId)
         {
             return this.Delete("/api/v1/lists/" + listId);
         }
 
+        /// <summary>
+        /// Add accounts to a list.
+        /// Only accounts already followed by the user can be added to a list.
+        /// </summary>
+        /// <param name="listId">List ID</param>
+        /// <param name="accountIds">Array of account IDs</param>
         public Task AddAccountsToList(long listId, IEnumerable<long> accountIds)
         {
             if (accountIds == null || !accountIds.Any())
@@ -128,44 +162,42 @@ namespace Mastonet
             return this.Post($"/api/v1/lists/{listId}/accounts", data);
         }
 
+        /// <summary>
+        /// Add accounts to a list.
+        /// Only accounts already followed by the user can be added to a list.
+        /// </summary>
+        /// <param name="listId">List ID</param>
+        /// <param name="accounts">Array of Accounts</param>
         public Task AddAccountsToList(long listId, IEnumerable<Account> accounts)
         {
-            if (accounts == null || !accounts.Any())
+            return AddAccountsToList(listId, accounts.Select(account => account.Id));
+        }
+
+        /// <summary>
+        /// Remove accounts from a list.
+        /// </summary>
+        /// <param name="listId">List Id</param>
+        /// <param name="accountIds">Array of Account IDs</param>
+        public Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds)
+        {
+            if (accountIds == null || !accountIds.Any())
             {
-                throw new ArgumentException("Accounts are required", nameof(accounts));
+                throw new ArgumentException("Accounts are required", nameof(accountIds));
             }
 
-            var data = accounts.Select(act => new KeyValuePair<string, string>("account_ids[]", act.Id.ToString()));
+            var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
 
-            return this.Post($"/api/v1/lists/{listId}/accounts", data);
+            return this.Delete($"/api/v1/lists/{listId}/accounts", data);
         }
 
-        private Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds)
+        /// <summary>
+        /// Remove accounts from a list.
+        /// </summary>
+        /// <param name="listId">List Id</param>
+        /// <param name="accountIds">Array of Accounts</param>
+        public Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts)
         {
-            throw new NotImplementedException();
-            //if (accountIds == null || !accountIds.Any())
-            //{
-            //    throw new ArgumentException("Accounts are required", nameof(accountIds));
-            //}
-
-            //var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
-
-            //TODO : Delete with data
-            //return this.Delete($"/api/v1/lists/{listId}/accounts", data);
-        }
-
-        private Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts)
-        {
-            throw new NotImplementedException();
-            //if (accounts == null || !accounts.Any())
-            //{
-            //    throw new ArgumentException("Accounts are required", nameof(accounts));
-            //}
-
-            //var data = accounts.Select(act => new KeyValuePair<string, string>("account_ids[]", act.Id.ToString()));
-
-            //TODO : Delete with data
-            //return this.Delete($"/api/v1/lists/{listId}/accounts", data);
+            return RemoveAccountsFromList(listId, accounts.Select(account => account.Id));
         }
 
         #endregion

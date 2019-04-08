@@ -29,6 +29,28 @@ All the methods can be called with the 3 params `maxId`, `sinceId`, and `limit`,
 ```cs
 public Task<Instance> GetInstance();
 ```
+### Lists
+```cs
+public Task<IEnumerable<List>> GetLists();
+
+public Task<IEnumerable<List>> GetListsContainingAccount(long accountId);
+
+public Task<MastodonList<Account>> GetListAccounts(long listId, ArrayOptions options);
+
+public Task<List> GetList(long listId);
+
+public Task<List> CreateList(string title);
+
+public Task<List> UpdateList(long listId, string newTitle);
+
+public Task DeleteList(long listId);
+
+public Task AddAccountsToList(long listId, IEnumerable<long> accountIds);
+public Task AddAccountsToList(long listId, IEnumerable<Account> accounts);
+
+public Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds);
+public Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts);
+```
 ### Media
 ```cs
 public Task<Attachment> UploadMedia(MediaDefinition media);
