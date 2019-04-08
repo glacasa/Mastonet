@@ -104,6 +104,47 @@ namespace Mastonet
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
         Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false);
 
+        /// <summary>
+        /// Listing all text filters the user has configured that potentially must be applied client-side
+        /// </summary>
+        /// <returns>Returns an array of filters</returns>
+        Task<IEnumerable<Filter>> GetFilters();
+
+        /// <summary>
+        /// Creating a new filter
+        /// </summary>
+        /// <param name="phrase">Keyword or phrase to filter</param>
+        /// <param name="context">Filtering context. At least one context must be specified</param>
+        /// <param name="irreversible">Irreversible filtering will only work in home and notifications contexts by fully dropping the records</param>
+        /// <param name="wholeWord">Whether to consider word boundaries when matching</param>
+        /// <param name="expiresIn">Number that indicates seconds. Filter will be expire in seconds after API processed. Leave null for no expiration</param>
+        /// <returns>Returns a created filter</returns>
+        Task<Filter> CreateFilter(string phrase, FilterContext context, bool irreversible = false, bool wholeWord = false, uint? expiresIn = null);
+
+        /// <summary>
+        /// Getting a text filter
+        /// </summary>
+        /// <param name="filterId">Filter ID</param>
+        /// <returns>Returns a filter</returns>
+        Task<Filter> GetFilter(long filterId);
+
+        /// <summary>
+        /// Updating a text filter
+        /// </summary>
+        /// <param name="filterId">Filter ID</param>
+        /// <param name="phrase">A new keyword or phrase to filter, or null to keep</param>
+        /// <param name="context">A new filtering context, or null to keep</param>
+        /// <param name="irreversible">A new irreversible flag, or null to keep</param>
+        /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
+        /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
+        /// <returns>Returns an updated filter</returns>
+        Task<Filter> UpdateFilter(long filterId, string phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null);
+
+        /// <summary>
+        /// Deleting a text filter
+        /// </summary>
+        /// <param name="filterId"></param>
+        Task DeleteFilter(long filterId);
 
         #endregion
 

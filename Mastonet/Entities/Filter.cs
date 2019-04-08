@@ -23,7 +23,7 @@ namespace Mastonet.Entities
         /// Contexts to apply the filter
         /// </summary>
         [JsonProperty("context")]
-        public IEnumerable<string> Context { get; set; }
+        public FilterContext Context { get; set; }
 
         /// <summary>
         /// DateTime when the filter expires if set
@@ -34,7 +34,7 @@ namespace Mastonet.Entities
         /// <summary>
         /// Whether the filter is irreversible
         /// </summary>
-        [JsonProperty("irrevsersible")]
+        [JsonProperty("irreversible")]
         public bool Irreversible { get; set; }
 
         /// <summary>

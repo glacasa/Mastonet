@@ -380,5 +380,126 @@ namespace Mastonet
         }
         #endregion
 
+        #region Filters
+        /// <summary>
+        /// Listing all text filters the user has configured that potentially must be applied client-side
+        /// </summary>
+        /// <returns>Returns an array of filters</returns>
+        public Task<IEnumerable<Filter>> GetFilters()
+        {
+            return Get<IEnumerable<Filter>>("/api/v1/filters");
+        }
+
+        /// <summary>
+        /// Creating a new filter
+        /// </summary>
+        /// <param name="phrase">Keyword or phrase to filter</param>
+        /// <param name="context">Filtering context. At least one context must be specified</param>
+        /// <param name="irreversible">Irreversible filtering will only work in home and notifications contexts by fully dropping the records</param>
+        /// <param name="wholeWord">Whether to consider word boundaries when matching</param>
+        /// <param name="expiresIn">Number that indicates seconds. Filter will be expire in seconds after API processed. Leave null for no expiration</param>
+        /// <returns>Returns a created filter</returns>
+        public Task<Filter> CreateFilter(string phrase, FilterContext context, bool irreversible = false, bool wholeWord = false, uint? expiresIn = null)
+        {
+            if (string.IsNullOrEmpty(phrase))
+            {
+                throw new ArgumentException("The phrase is required", nameof(phrase));
+            }
+            if (context == 0)
+            {
+                throw new ArgumentException("At least one context must be specified", nameof(context));
+            }
+
+            var data = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>("phrase", phrase) };
+            foreach (FilterContext checkFlag in new[] { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread })
+            {
+                if ((context & checkFlag) == checkFlag)
+                {
+                    data.Add(new KeyValuePair<string, string>("context[]", checkFlag.ToString().ToLowerInvariant()));
+                }
+            }
+            if (irreversible)
+            {
+                data.Add(new KeyValuePair<string, string>("irreversible", "true"));
+            }
+            if (wholeWord)
+            {
+                data.Add(new KeyValuePair<string, string>("whole_word", "true"));
+            }
+            if (expiresIn.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.Value.ToString()));
+            }
+
+            return Post<Filter>("/api/v1/filters", data);
+        }
+
+        /// <summary>
+        /// Getting a text filter
+        /// </summary>
+        /// <param name="filterId">Filter ID</param>
+        /// <returns>Returns a filter</returns>
+        public Task<Filter> GetFilter(long filterId)
+        {
+            return Get<Filter>($"/api/v1/filters/{filterId}");
+        }
+
+        /// <summary>
+        /// Updating a text filter
+        /// </summary>
+        /// <param name="filterId">Filter ID</param>
+        /// <param name="phrase">A new keyword or phrase to filter, or null to keep</param>
+        /// <param name="context">A new filtering context, or null to keep</param>
+        /// <param name="irreversible">A new irreversible flag, or null to keep</param>
+        /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
+        /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
+        /// <returns>Returns an updated filter</returns>
+        public Task<Filter> UpdateFilter(long filterId, string phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
+        {
+            if (context == 0)
+            {
+                throw new ArgumentException("At least one context to filter must be specified", nameof(context));
+            }
+
+            var data = new List<KeyValuePair<string, string>>();
+            if (phrase != null)
+            {
+                data.Add(new KeyValuePair<string, string>("phrase", phrase));
+            }
+            if (context.HasValue)
+            {
+                foreach (FilterContext checkFlag in new[] { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread })
+                {
+                    if ((context & checkFlag) == checkFlag)
+                    {
+                        data.Add(new KeyValuePair<string, string>("context[]", checkFlag.ToString().ToLowerInvariant()));
+                    }
+                }
+            }
+            if (irreversible.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("irreversible", irreversible.ToString().ToLowerInvariant()));
+            }
+            if (wholeWord.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("whole_word", wholeWord.ToString().ToLowerInvariant()));
+            }
+            if (expiresIn.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.ToString()));
+            }
+
+            return Put<Filter>($"/api/v1/filters/{filterId}", data);
+        }
+
+        /// <summary>
+        /// Deleting a text filter
+        /// </summary>
+        /// <param name="filterId"></param>
+        public Task DeleteFilter(long filterId)
+        {
+            return Delete($"/api/v1/filters/{filterId}");
+        }
+        #endregion
     }
 }
