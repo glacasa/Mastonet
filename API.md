@@ -48,10 +48,22 @@ public Task<MastodonList<Report>> GetReports(ArrayOptions options);
 public Task<Report> Report(long accountId, IEnumerable<long> statusIds, string comment);
 ```
 ### Search
- ```cs
+```cs
 public Task<Results> Search(string q, bool resolve = false);
 
-public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null);
+public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false);
+```
+### Filters
+```cs
+public Task<IEnumerable<Filter>> GetFilters();
+
+public Task<Filter> CreateFilter(string phrase, FilterContext context, bool irreversible = false, bool wholeWord = false, uint? expiresIn = null);
+
+public Task<Filter> GetFilter(long filterId);
+
+public Task<Filter> UpdateFilter(long filterId, string phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null);
+
+public Task DeleteFilter(long filterId);
 ```
 ### Account
 ```cs
@@ -59,7 +71,7 @@ public Task<Account> GetAccount(long accountId);
 
 public Task<Account> GetCurrentUser();
 
-public Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null);
+public Task<Account> UpdateCredentials(string display_name = null, string note = null, MediaDefinition avatar = null, MediaDefinition header = null, bool? locked = null, Visibility? source_privacy = null, bool? source_sensitive = null, string source_language = null, IEnumerable<AccountField> fields_attributes = null);
 
 public Task<IEnumerable<Relationship>> GetAccountRelationships(long id);
 public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<long> ids);
@@ -68,7 +80,7 @@ public Task<MastodonList<Account>> GetAccountFollowers(long accountId, ArrayOpti
 
 public Task<MastodonList<Account>> GetAccountFollowing(long accountId, ArrayOptions options);
 
-public Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false);
+public Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false);
 
 public Task<MastodonList<Account>> GetFollowRequests(ArrayOptions options);
 
@@ -80,7 +92,7 @@ public Task<MastodonList<Status>> GetFavourites(ArrayOptions options);
 ```
 ### Account actions
 ```cs
-public Task<Relationship> Follow(long accountId);
+public Task<Relationship> Follow(long accountId, bool reblogs = true);
 
 public Task<Relationship> Unfollow(long accountId);
 
@@ -103,6 +115,12 @@ public Task<MastodonList<string>> GetDomainBlocks(ArrayOptions options);
 public Task BlockDomain(string domain);
 
 public Task UnblockDomain(string domain);
+
+public Task<MastodonList<Account>> GetEndorsements();
+
+public Task<Relationship> Endorse(long accountId);
+
+public Task<Relationship> Unendorse(long accountId);
 ```
 ### Statuses
 ```cs
@@ -131,6 +149,10 @@ public Task<Status> Unfavourite(long statusId);
 public Task<Status> MuteConversation(long statusId);
 
 public Task<Status> UnmuteConversation(long statusId);
+
+public Task<Status> Pin(long statusId);
+
+public Task<Status> Unpin(long statusId);
 ```
 ### Timelines
 ```cs
