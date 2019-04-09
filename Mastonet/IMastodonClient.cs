@@ -479,8 +479,9 @@ namespace Mastonet
         /// Muting an account
         /// </summary>
         /// <param name="accountId"></param>
+        /// <param name="notifications">Whether the mute will mute notifications or not</param>
         /// <returns>Returns the target Account</returns>
-        Task<Relationship> Mute(long accountId);
+        Task<Relationship> Mute(long accountId, bool notifications = true);
 
         /// <summary>
         /// Unmuting an account

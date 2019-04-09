@@ -130,7 +130,7 @@ public Task<Relationship> Unblock(long accountId);
 
 public Task<MastodonList<Account>> GetBlocks(ArrayOptions options);
 
-public Task<Relationship> Mute(long accountId);
+public Task<Relationship> Mute(long accountId, bool notifications = true);
 
 public Task<Relationship> Unmute(long accountId);
 

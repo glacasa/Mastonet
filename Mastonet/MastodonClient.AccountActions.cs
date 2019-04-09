@@ -103,10 +103,12 @@ namespace Mastonet
         /// Muting an account
         /// </summary>
         /// <param name="accountId"></param>
+        /// <param name="notifications">Whether the mute will mute notifications or not</param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Mute(long accountId)
+        public Task<Relationship> Mute(long accountId, bool notifications = true)
         {
-            return Post<Relationship>($"/api/v1/accounts/{accountId}/mute");
+            var data = notifications ? null : new[] { new KeyValuePair<string, string>("notifications", "false") };
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/mute", data);
         }
 
         /// <summary>
