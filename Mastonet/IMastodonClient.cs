@@ -89,7 +89,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="listId">List ID</param>
         /// <param name="accounts">Array of Accounts</param>
-        Task AddAccountsToList(long listId, IEnumerable<Account> accounts):
+        Task AddAccountsToList(long listId, IEnumerable<Account> accounts);
 
         /// <summary>
         /// Remove accounts from a list.
