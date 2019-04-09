@@ -73,6 +73,8 @@ public Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, s
 ```cs
 public Task<Results> Search(string q, bool resolve = false);
 
+public Task<ResultsV2> SearchV2(string q, bool resolve = false);
+
 public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false);
 ```
 ### Filters

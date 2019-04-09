@@ -440,6 +440,28 @@ namespace Mastonet
         }
 
         /// <summary>
+        /// Searching for content
+        /// </summary>
+        /// <param name="q">The search query</param>
+        /// <param name="resolve">Whether to resolve non-local accounts</param>
+        /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
+        public Task<ResultsV2> SearchV2(string q, bool resolve = false)
+        {
+            if (string.IsNullOrEmpty(q))
+            {
+                return Task.FromResult(new ResultsV2());
+            }
+
+            string url = "/api/v2/search?q=" + Uri.EscapeUriString(q);
+            if (resolve)
+            {
+                url += "&resolve=true";
+            }
+
+            return Get<ResultsV2>(url);
+        }
+
+        /// <summary>
         /// Searching for accounts
         /// </summary>
         /// <param name="q">What to search for</param>

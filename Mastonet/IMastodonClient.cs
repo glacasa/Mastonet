@@ -206,6 +206,14 @@ namespace Mastonet
         Task<Results> Search(string q, bool resolve = false);
 
         /// <summary>
+        /// Searching for content
+        /// </summary>
+        /// <param name="q">The search query</param>
+        /// <param name="resolve">Whether to resolve non-local accounts</param>
+        /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
+        Task<ResultsV2> SearchV2(string q, bool resolve = false);
+
+        /// <summary>
         /// Searching for accounts
         /// </summary>
         /// <param name="q">What to search for</param>
