@@ -283,26 +283,45 @@ namespace Mastonet
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
-        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="limit">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = 0)
         {
-            return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
+            return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, excludeTypes);
         }
 
         /// <summary>
         /// Fetching a user's notifications
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
+        /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options)
+        public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = 0)
         {
             var url = "/api/v1/notifications";
+            var queryParams = "";
             if (options != null)
             {
-                url += "?" + options.ToQueryString();
+                queryParams += "?" + options.ToQueryString();
             }
-            return GetMastodonList<Notification>(url);
+            if ((excludeTypes & NotificationType.Follow) == NotificationType.Follow)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=follow";
+            }
+            if ((excludeTypes & NotificationType.Favourite) == NotificationType.Favourite)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=favourite";
+            }
+            if ((excludeTypes & NotificationType.Reblog) == NotificationType.Reblog)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=reblog";
+            }
+            if ((excludeTypes & NotificationType.Mention) == NotificationType.Mention)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=mention";
+            }
+            return GetMastodonList<Notification>(url + queryParams);
         }
 
         /// <summary>
@@ -322,6 +341,17 @@ namespace Mastonet
         public Task ClearNotifications()
         {
             return Post("/api/v1/notifications/clear");
+        }
+
+        /// <summary>
+        /// Delete a single notification from the server.
+        /// </summary>
+        /// <param name="notificationId"></param>
+        /// <returns></returns>
+        public Task DismissNotification(long notificationId)
+        {
+            var data = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("id", notificationId.ToString()) };
+            return Post("/api/v1/notifications/dismiss", data);
         }
 
         #endregion

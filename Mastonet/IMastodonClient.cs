@@ -138,16 +138,18 @@ namespace Mastonet
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
-        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="limit">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null);
+        Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = 0);
 
         /// <summary>
         /// Fetching a user's notifications
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
+        /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        Task<MastodonList<Notification>> GetNotifications(ArrayOptions options);
+        Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = 0);
 
         /// <summary>
         /// Getting a single notification
@@ -161,6 +163,13 @@ namespace Mastonet
         /// </summary>
         /// <returns></returns>
         Task ClearNotifications();
+
+        /// <summary>
+        /// Delete a single notification from the server.
+        /// </summary>
+        /// <param name="notificationId"></param>
+        /// <returns></returns>
+        Task DismissNotification(long notificationId);
 
         /// <summary>
         /// Fetching a user's reports
