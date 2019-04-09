@@ -110,15 +110,28 @@ namespace Mastonet
         /// </summary>
         /// <param name="data">Media stream to be uploaded</param>
         /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        Task<Attachment> UploadMedia(Stream data, string fileName = "file");
+        Task<Attachment> UploadMedia(Stream data, string fileName = "file", string description = null, AttachmentFocusData focus = null);
 
         /// <summary>
         /// Uploading a media attachment
         /// </summary>
         /// <param name="media">Media to be uploaded</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        Task<Attachment> UploadMedia(MediaDefinition media);
+        Task<Attachment> UploadMedia(MediaDefinition media, string description = null, AttachmentFocusData focus = null);
+
+        /// <summary>
+        /// Update a media attachment. Can only be done before the media is attached to a status.
+        /// </summary>
+        /// <param name="mediaId">Media ID</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
+        /// <returns>Returns an Attachment that can be used when creating a status</returns>
+        Task<Attachment> UpdateMedia(long mediaId, string description = null, AttachmentFocusData focus = null);
 
         /// <summary>
         /// Fetching a user's notifications

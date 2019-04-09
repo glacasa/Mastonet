@@ -209,22 +209,56 @@ namespace Mastonet
         /// </summary>
         /// <param name="data">Media stream to be uploaded</param>
         /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(Stream data, string fileName = "file")
+        public Task<Attachment> UploadMedia(Stream data, string fileName = "file", string description = null, AttachmentFocusData focus = null)
         {
-            return UploadMedia(new MediaDefinition(data, fileName));
+            return UploadMedia(new MediaDefinition(data, fileName), description, focus);
         }
 
         /// <summary>
         /// Uploading a media attachment
         /// </summary>
         /// <param name="media">Media to be uploaded</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(MediaDefinition media)
+        public Task<Attachment> UploadMedia(MediaDefinition media, string description = null, AttachmentFocusData focus = null)
         {
             media.ParamName = "file";
             var list = new List<MediaDefinition>() { media };
-            return this.Post<Attachment>("/api/v1/media", null, list);
+            var data = new Dictionary<string, string>();
+            if (description != null)
+            {
+                data.Add("description", description);
+            }
+            if (focus != null)
+            {
+                data.Add("focus", $"{focus.X},{focus.Y}");
+            }
+            return this.Post<Attachment>("/api/v1/media", data, list);
+        }
+
+        /// <summary>
+        /// Update a media attachment. Can only be done before the media is attached to a status.
+        /// </summary>
+        /// <param name="mediaId">Media ID</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
+        /// <returns>Returns an Attachment that can be used when creating a status</returns>
+        public Task<Attachment> UpdateMedia(long mediaId, string description = null, AttachmentFocusData focus = null)
+        {
+            var data = new Dictionary<string, string>();
+            if (description != null)
+            {
+                data.Add("description", description);
+            }
+            if (focus != null)
+            {
+                data.Add("focus", $"{focus.X},{focus.Y}");
+            }
+            return Put<Attachment>("/api/v1/media/" + mediaId, data);
         }
 
         #endregion
