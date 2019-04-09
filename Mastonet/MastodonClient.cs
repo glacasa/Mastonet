@@ -391,16 +391,24 @@ namespace Mastonet
         /// <param name="accountId">The ID of the account to report</param>
         /// <param name="statusIds">The IDs of statuses to report</param>
         /// <param name="comment">A comment to associate with the report</param>
+        /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
         /// <returns>Returns the finished Report</returns>
-        public Task<Report> Report(long accountId, IEnumerable<long> statusIds, string comment)
+        public Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, string comment = null, bool? forward = null)
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("account_id", accountId.ToString()),
-                new KeyValuePair<string, string>("comment", comment),
             };
-            foreach (var statusId in statusIds)
+            foreach (var statusId in statusIds ?? Enumerable.Empty<long>())
             {
                 data.Add(new KeyValuePair<string, string>("status_ids[]", statusId.ToString()));
+            }
+            if (!string.IsNullOrEmpty(comment))
+            {
+                data.Add(new KeyValuePair<string, string>("comment", comment));
+            }
+            if (forward.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("forward", forward.Value.ToString().ToLowerInvariant()));
             }
 
             return Post<Report>("/api/v1/reports", data);

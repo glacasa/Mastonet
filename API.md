@@ -67,7 +67,7 @@ public Task ClearNotifications();
 ```cs
 public Task<MastodonList<Report>> GetReports(ArrayOptions options);
 
-public Task<Report> Report(long accountId, IEnumerable<long> statusIds, string comment);
+public Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, string comment = null, bool? forward = null);
 ```
 ### Search
 ```cs

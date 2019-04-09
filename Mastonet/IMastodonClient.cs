@@ -193,8 +193,9 @@ namespace Mastonet
         /// <param name="accountId">The ID of the account to report</param>
         /// <param name="statusIds">The IDs of statuses to report</param>
         /// <param name="comment">A comment to associate with the report</param>
+        /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
         /// <returns>Returns the finished Report</returns>
-        Task<Report> Report(long accountId, IEnumerable<long> statusIds, string comment);
+        Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, string comment = null, bool? forward = null);
 
         /// <summary>
         /// Searching for content
