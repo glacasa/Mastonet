@@ -143,7 +143,7 @@ namespace Mastonet
 
             return Post<Status>("/api/v1/statuses", data);
         }
-		
+
         /// <summary>
         /// Deleting a status
         /// </summary>
@@ -151,6 +151,50 @@ namespace Mastonet
         public Task DeleteStatus(long statusId)
         {
             return Delete($"/api/v1/statuses/{statusId}");
+        }
+
+        /// <summary>
+        /// Get scheduled statuses.
+        /// </summary>
+        /// <returns>Returns array of ScheduledStatus</returns>
+        public Task<IEnumerable<ScheduledStatus>> GetScheduledStatuses()
+        {
+            return Get<IEnumerable<ScheduledStatus>>("/api/v1/scheduled_statuses");
+        }
+
+        /// <summary>
+        /// Get scheduled status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        /// <returns>Returns ScheduledStatus</returns>
+        public Task<ScheduledStatus> GetScheduledStatus(long scheduledStatusId)
+        {
+            return Get<ScheduledStatus>("/api/v1/scheduled_statuses/" + scheduledStatusId);
+        }
+
+        /// <summary>
+        /// Update Scheduled status. Only scheduled_at can be changed. To change the content, delete it and post a new status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        /// <param name="scheduledAt">DateTime to schedule posting of status</param>
+        /// <returns>Returns ScheduledStatus</returns>
+        public Task<ScheduledStatus> UpdateScheduledStatus(long scheduledStatusId, DateTime? scheduledAt)
+        {
+            var data = new List<KeyValuePair<string, string>>();
+            if (scheduledAt.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.ToString()));
+            }
+            return Put<ScheduledStatus>("/api/v1/scheduled_statuses/" + scheduledStatusId, data);
+        }
+
+        /// <summary>
+        /// Remove Scheduled status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        public Task DeleteScheduledStatus(long scheduledStatusId)
+        {
+            return Delete("/api/v1/scheduled_statuses/" + scheduledStatusId);
         }
 
         /// <summary>

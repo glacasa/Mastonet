@@ -68,7 +68,7 @@ namespace Mastonet.Entities
         /// Visibility of the scheduled status
         /// </summary>
         [JsonProperty("visibility")]
-        public Visibility Visibility { get; set; }
+        public Visibility? Visibility { get; set; }
 
         /// <summary>
         /// DateTime to publish the scheduled status

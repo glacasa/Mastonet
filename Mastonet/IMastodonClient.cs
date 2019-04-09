@@ -643,6 +643,33 @@ namespace Mastonet
         Task DeleteStatus(long statusId);
 
         /// <summary>
+        /// Get scheduled statuses.
+        /// </summary>
+        /// <returns>Returns array of ScheduledStatus</returns>
+        Task<IEnumerable<ScheduledStatus>> GetScheduledStatuses();
+
+        /// <summary>
+        /// Get scheduled status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        /// <returns>Returns ScheduledStatus</returns>
+        Task<ScheduledStatus> GetScheduledStatus(long scheduledStatusId);
+
+        /// <summary>
+        /// Update Scheduled status. Only scheduled_at can be changed. To change the content, delete it and post a new status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        /// <param name="scheduledAt">DateTime to schedule posting of status</param>
+        /// <returns>Returns ScheduledStatus</returns>
+        Task<ScheduledStatus> UpdateScheduledStatus(long scheduledStatusId, DateTime? scheduledAt);
+
+        /// <summary>
+        /// Remove Scheduled status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        Task DeleteScheduledStatus(long scheduledStatusId);
+
+        /// <summary>
         /// Reblogging a status
         /// </summary>
         /// <param name="statusId"></param>

@@ -164,6 +164,14 @@ public Task<Status> PostStatus(string status, Visibility visibility, long? reply
 
 public Task DeleteStatus(long statusId);
 
+public Task<IEnumerable<ScheduledStatus>> GetScheduledStatuses();
+
+public Task<ScheduledStatus> GetScheduledStatus(long scheduledStatusId);
+
+public Task<ScheduledStatus> UpdateScheduledStatus(long scheduledStatusId, DateTime? scheduledAt);
+
+public Task DeleteScheduledStatus(long scheduledStatusId);
+
 public Task<Status> Reblog(long statusId);
 
 public Task<Status> Unreblog(long statusId);
