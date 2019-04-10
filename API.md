@@ -194,7 +194,11 @@ public Task<Status> Unpin(long statusId);
 ```cs
 public Task<MastodonList<Status>> GetHomeTimeline(ArrayOptions options);
 
-public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false);
+public Task<MastodonList<Conversation>> GetConversations(ArrayOptions options);
 
-public Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false);
+public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false, bool onlyMedia = false);
+
+public Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false, bool onlyMedia = false);
+
+public Task<MastodonList<Status>> GetListTimeline(long listId, ArrayOptions options);
 ```

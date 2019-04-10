@@ -756,6 +756,22 @@ namespace Mastonet
         Task<MastodonList<Status>> GetHomeTimeline(ArrayOptions options);
 
         /// <summary>
+        /// Conversations (direct messages) for an account
+        /// </summary>
+        /// <param name="maxId">Get items with ID less than or equal this value</param>
+        /// <param name="sinceId">Get items with ID greater than this value</param>
+        /// <param name="limit">Maximum number of items to get (Default 20)</param>
+        /// <returns>Returns array of Conversation</returns>
+        Task<MastodonList<Conversation>> GetConversations(long? maxId = null, long? sinceId = null, int? limit = null);
+
+        /// <summary>
+        /// Conversations (direct messages) for an account
+        /// </summary>
+        /// <param name="options">Define the first and last items to get</param>
+        /// <returns>Returns array of Conversation</returns>
+        Task<MastodonList<Conversation>> GetConversations(ArrayOptions options);
+
+        /// <summary>
         /// Retrieving Public timeline
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
@@ -763,7 +779,7 @@ namespace Mastonet
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        Task<MastodonList<Status>> GetPublicTimeline(long? maxId = null, long? sinceId = null, int? limit = null, bool local = false);
+        Task<MastodonList<Status>> GetPublicTimeline(long? maxId = null, long? sinceId = null, int? limit = null, bool local = false, bool onlyMedia = false);
 
         /// <summary>
         /// Retrieving Public timeline
@@ -771,7 +787,7 @@ namespace Mastonet
         /// <param name="options">Define the first and last items to get</param>
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false);
+        Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false, bool onlyMedia = false);
 
         /// <summary>
         /// Retrieving Tag timeline
@@ -782,7 +798,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        Task<MastodonList<Status>> GetTagTimeline(string hashtag, long? maxId = null, long? sinceId = null, int? limit = null, bool local = false);
+        Task<MastodonList<Status>> GetTagTimeline(string hashtag, long? maxId = null, long? sinceId = null, int? limit = null, bool local = false, bool onlyMedia = false);
 
         /// <summary>
         /// Retrieving Tag timeline
@@ -791,7 +807,25 @@ namespace Mastonet
         /// <param name="local">Only return statuses originating from this instance</param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false);
+        Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false, bool onlyMedia = false);
+
+        /// <summary>
+        /// Retrieving List timeline
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="maxId">Get items with ID less than or equal this value</param>
+        /// <param name="sinceId">Get items with ID greater than this value</param>
+        /// <param name="limit">Maximum number of items to get (Default 20)</param>
+        /// <returns>Returns an array of Statuses, most recent ones first</returns>
+        Task<MastodonList<Status>> GetListTimeline(long listId, long? maxId = null, long? sinceId = null, int? limit = null);
+
+        /// <summary>
+        /// Retrieving List timeline
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="options">Define the first and last items to get</param>
+        /// <returns>Returns an array of Statuses, most recent ones first</returns>
+        Task<MastodonList<Status>> GetListTimeline(long listId, ArrayOptions options);
 
         TimelineStreaming GetPublicStreaming();
 
