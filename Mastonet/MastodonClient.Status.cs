@@ -109,12 +109,14 @@ namespace Mastonet
         /// <param name="mediaIds">array of media IDs to attach to the status (maximum 4)</param>
         /// <param name="sensitive">set this to mark the media of the status as NSFW</param>
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
+        /// <param name="scheduledAt">DateTime to schedule posting of status</param>
+        /// <param name="language">Override language code of the toot (ISO 639-2)</param>
         /// <returns></returns>
-        public Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null)
+        public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null)
         {
-			if (string.IsNullOrEmpty(status))
+            if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
             {
-                throw new ArgumentNullException("status");
+                throw new ArgumentException("A status must have either text (status) or media (mediaIds)", nameof(status));
             }
 
             var data = new List<KeyValuePair<string, string>>() {
@@ -138,8 +140,18 @@ namespace Mastonet
             {
                 data.Add(new KeyValuePair<string, string>("spoiler_text", spoilerText));
             }
-
-            data.Add(new KeyValuePair<string, string>("visibility", visibility.ToString().ToLower()));
+            if (visibility.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("visibility", visibility.ToString().ToLowerInvariant()));
+            }
+            if (scheduledAt.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.Value.ToString("o")));
+            }
+            if (language != null)
+            {
+                data.Add(new KeyValuePair<string, string>("language", language));
+            }
 
             return Post<Status>("/api/v1/statuses", data);
         }

@@ -162,7 +162,7 @@ public Task<MastodonList<Account>> GetRebloggedBy(long statusId, ArrayOptions op
 
 public Task<MastodonList<Account>> GetFavouritedBy(long statusId, ArrayOptions options);
 
-public Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null);
+public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null);
 
 public Task DeleteStatus(long statusId);
 

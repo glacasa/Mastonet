@@ -641,8 +641,10 @@ namespace Mastonet
         /// <param name="mediaIds">array of media IDs to attach to the status (maximum 4)</param>
         /// <param name="sensitive">set this to mark the media of the status as NSFW</param>
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
+        /// <param name="scheduledAt">DateTime to schedule posting of status</param>
+        /// <param name="language">Override language code of the toot (ISO 639-2)</param>
         /// <returns></returns>
-        Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null);
+        Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null);
 
         /// <summary>
         /// Deleting a status
