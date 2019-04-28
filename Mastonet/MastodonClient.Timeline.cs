@@ -14,7 +14,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
-        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="limit">Maximum number of items to get (Default 20)</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
         public Task<MastodonList<Status>> GetHomeTimeline(long? maxId = null, long? sinceId = null, int? limit = null)
         {
@@ -37,16 +37,44 @@ namespace Mastonet
         }
 
         /// <summary>
+        /// Conversations (direct messages) for an account
+        /// </summary>
+        /// <param name="maxId">Get items with ID less than or equal this value</param>
+        /// <param name="sinceId">Get items with ID greater than this value</param>
+        /// <param name="limit">Maximum number of items to get (Default 20)</param>
+        /// <returns>Returns array of Conversation</returns>
+        public Task<MastodonList<Conversation>> GetConversations(long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return GetConversations(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
+        }
+
+        /// <summary>
+        /// Conversations (direct messages) for an account
+        /// </summary>
+        /// <param name="options">Define the first and last items to get</param>
+        /// <returns>Returns array of Conversation</returns>
+        public Task<MastodonList<Conversation>> GetConversations(ArrayOptions options)
+        {
+            string url = "/api/v1/conversations";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return GetMastodonList<Conversation>(url);
+        }
+
+        /// <summary>
         /// Retrieving Public timeline
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
-        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="limit">Maximum number of items to get (Default 20)</param>
         /// <param name="local">Only return statuses originating from this instance</param>
+        /// <param name="onlyMedia">Only statuses with media attachments</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<MastodonList<Status>> GetPublicTimeline(long? maxId = null, long? sinceId = null, int? limit = null, bool local = false)
+        public Task<MastodonList<Status>> GetPublicTimeline(long? maxId = null, long? sinceId = null, int? limit = null, bool local = false, bool onlyMedia = false)
         {
-            return GetPublicTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, local);
+            return GetPublicTimeline(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, local, onlyMedia);
         }
 
         /// <summary>
@@ -54,8 +82,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
         /// <param name="local">Only return statuses originating from this instance</param>
+        /// <param name="onlyMedia">Only statuses with media attachments</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false)
+        public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false, bool onlyMedia = false)
         {
             string url = "/api/v1/timelines/public";
 
@@ -64,17 +93,13 @@ namespace Mastonet
             {
                 queryParams += "?local=true";
             }
+            if (onlyMedia)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "only_media=true";
+            }
             if (options != null)
             {
-                if (queryParams != "")
-                {
-                    queryParams += "&";
-                }
-                else
-                {
-                    queryParams += "?";
-                }
-                queryParams += options.ToQueryString();
+                queryParams += (queryParams != "" ? "&" : "?") + options.ToQueryString();
             }
 
             return GetMastodonList<Status>(url + queryParams);
@@ -84,24 +109,26 @@ namespace Mastonet
         /// Retrieving Tag timeline
         /// </summary>
         /// <param name="hashtag">The tag to retieve</param>
-        /// <param name="local">Only return statuses originating from this instance</param>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
-        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="limit">Maximum number of items to get (Default 20)</param>
+        /// <param name="local">Only return statuses originating from this instance</param>
+        /// <param name="onlyMedia">Only statuses with media attachments</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<MastodonList<Status>> GetTagTimeline(string hashtag, long? maxId = null, long? sinceId = null, int? limit = null, bool local = false)
+        public Task<MastodonList<Status>> GetTagTimeline(string hashtag, long? maxId = null, long? sinceId = null, int? limit = null, bool local = false, bool onlyMedia = false)
         {
-            return GetTagTimeline(hashtag, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, local);
+            return GetTagTimeline(hashtag, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, local, onlyMedia);
         }
 
         /// <summary>
         /// Retrieving Tag timeline
         /// </summary>
         /// <param name="hashtag">The tag to retieve</param>
-        /// <param name="local">Only return statuses originating from this instance</param>
         /// <param name="options">Define the first and last items to get</param>
+        /// <param name="local">Only return statuses originating from this instance</param>
+        /// <param name="onlyMedia">Only statuses with media attachments</param>
         /// <returns>Returns an array of Statuses, most recent ones first</returns>
-        public Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false)
+        public Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false, bool onlyMedia = false)
         {
             string url = "/api/v1/timelines/tag/" + hashtag;
 
@@ -110,20 +137,47 @@ namespace Mastonet
             {
                 queryParams += "?local=true";
             }
+            if (onlyMedia)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "only_media=true";
+            }
             if (options != null)
             {
-                if (queryParams != "")
-                {
-                    queryParams += "&";
-                }
-                else
-                {
-                    queryParams += "?";
-                }
-                queryParams += options.ToQueryString();
+                queryParams += (queryParams != "" ? "&" : "?") + options.ToQueryString();
             }
 
             return GetMastodonList<Status>(url + queryParams);
+        }
+
+        /// <summary>
+        /// Retrieving List timeline
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="maxId">Get items with ID less than or equal this value</param>
+        /// <param name="sinceId">Get items with ID greater than this value</param>
+        /// <param name="limit">Maximum number of items to get (Default 20)</param>
+        /// <returns>Returns an array of Statuses, most recent ones first</returns>
+        public Task<MastodonList<Status>> GetListTimeline(long listId, long? maxId = null, long? sinceId = null, int? limit = null)
+        {
+            return GetListTimeline(listId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
+        }
+
+        /// <summary>
+        /// Retrieving List timeline
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="options">Define the first and last items to get</param>
+        /// <returns>Returns an array of Statuses, most recent ones first</returns>
+        public Task<MastodonList<Status>> GetListTimeline(long listId, ArrayOptions options)
+        {
+            string url = "/api/v1/timelines/list/" + listId;
+
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+
+            return GetMastodonList<Status>(url);
         }
 
         #region Streaming

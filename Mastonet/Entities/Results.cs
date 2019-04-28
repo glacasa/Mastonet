@@ -14,7 +14,7 @@ namespace Mastonet.Entities
         public IEnumerable<Account> Accounts { get; set; }
 
         /// <summary>
-        /// An array of matchhed Statuses
+        /// An array of matched Statuses
         /// </summary>
         [JsonProperty("statuses")]
         public IEnumerable<Status> Statuses { get; set; }
@@ -24,5 +24,26 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("hashtags")]
         public IEnumerable<string> Hashtags { get; set; }
+    }
+
+    public class ResultsV2
+    {
+        /// <summary>
+        /// An array of matched Accounts
+        /// </summary>
+        [JsonProperty("accounts")]
+        public IEnumerable<Account> Accounts { get; set; }
+
+        /// <summary>
+        /// An array of matched Statuses
+        /// </summary>
+        [JsonProperty("statuses")]
+        public IEnumerable<Status> Statuses { get; set; }
+
+        /// <summary>
+        /// An array of matched hashtags, as Tag instances
+        /// </summary>
+        [JsonProperty("hashtags")]
+        public IEnumerable<Tag> Hashtags { get; set; }
     }
 }

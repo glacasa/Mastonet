@@ -119,6 +119,12 @@ namespace Mastonet.Entities
         /// </summary>
         [JsonProperty("bot")]
         public bool? Bot { get; set; }
+
+        /// <summary>
+        /// Source of the authorized account's profile (returned only from *_credentials endpoints)
+        /// </summary>
+        [JsonProperty("source")]
+        public AccountSource Source { get; set; }
     }
 
     public class AccountField

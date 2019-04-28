@@ -48,11 +48,6 @@ namespace Mastonet
             return this.Get<IEnumerable<List>>("/api/v1/lists");
         }
 
-        public Task<List> GetList(long listId)
-        {
-            return this.Get<List>("/api/v1/lists/" + listId);
-        }
-
         /// <summary>
         /// User’s lists that a given account is part of.
         /// </summary>
@@ -67,10 +62,39 @@ namespace Mastonet
         /// Accounts that are in a given list.
         /// </summary>
         /// <param name="listId"></param>
+        /// <param name="maxId">Get items with ID less than or equal this value</param>
+        /// <param name="sinceId">Get items with ID greater than this value</param>
+        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns array of Account</returns>
-        public Task<IEnumerable<Account>> GetListAccounts(long listId, int? limit = null)
+        public Task<MastodonList<Account>> GetListAccounts(long listId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
-            return this.Get<IEnumerable<Account>>($"/api/v1/lists/{listId}/accounts");
+            return GetListAccounts(listId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
+        }
+
+        /// <summary>
+        /// Accounts that are in a given list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="options">Define the first and last items to get</param>
+        /// <returns>Returns array of Account</returns>
+        public Task<MastodonList<Account>> GetListAccounts(long listId, ArrayOptions options)
+        {
+            var url = $"/api/v1/lists/{listId}/accounts";
+            if (options != null)
+            {
+                url += "?" + options.ToQueryString();
+            }
+            return GetMastodonList<Account>(url);
+        }
+
+        /// <summary>
+        /// Get a list.
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns>Returns List</returns>
+        public Task<List> GetList(long listId)
+        {
+            return this.Get<List>("/api/v1/lists/" + listId);
         }
 
         /// <summary>
@@ -93,10 +117,10 @@ namespace Mastonet
         }
 
         /// <summary>
-        /// Create a new list.
+        /// Update a list.
         /// </summary>
         /// <param name="title">The title of the list</param>
-        /// <returns>The list created</returns>
+        /// <returns>The list updated</returns>
         public Task<List> UpdateList(long listId, string newTitle)
         {
             if (string.IsNullOrEmpty(newTitle))
@@ -111,11 +135,21 @@ namespace Mastonet
             return this.Put<List>("/api/v1/lists/" + listId, data);
         }
 
+        /// <summary>
+        /// Remove a list.
+        /// </summary>
+        /// <param name="listId"></param>
         public Task DeleteList(long listId)
         {
             return this.Delete("/api/v1/lists/" + listId);
         }
 
+        /// <summary>
+        /// Add accounts to a list.
+        /// Only accounts already followed by the user can be added to a list.
+        /// </summary>
+        /// <param name="listId">List ID</param>
+        /// <param name="accountIds">Array of account IDs</param>
         public Task AddAccountsToList(long listId, IEnumerable<long> accountIds)
         {
             if (accountIds == null || !accountIds.Any())
@@ -128,44 +162,42 @@ namespace Mastonet
             return this.Post($"/api/v1/lists/{listId}/accounts", data);
         }
 
+        /// <summary>
+        /// Add accounts to a list.
+        /// Only accounts already followed by the user can be added to a list.
+        /// </summary>
+        /// <param name="listId">List ID</param>
+        /// <param name="accounts">Array of Accounts</param>
         public Task AddAccountsToList(long listId, IEnumerable<Account> accounts)
         {
-            if (accounts == null || !accounts.Any())
+            return AddAccountsToList(listId, accounts.Select(account => account.Id));
+        }
+
+        /// <summary>
+        /// Remove accounts from a list.
+        /// </summary>
+        /// <param name="listId">List Id</param>
+        /// <param name="accountIds">Array of Account IDs</param>
+        public Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds)
+        {
+            if (accountIds == null || !accountIds.Any())
             {
-                throw new ArgumentException("Accounts are required", nameof(accounts));
+                throw new ArgumentException("Accounts are required", nameof(accountIds));
             }
 
-            var data = accounts.Select(act => new KeyValuePair<string, string>("account_ids[]", act.Id.ToString()));
+            var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
 
-            return this.Post($"/api/v1/lists/{listId}/accounts", data);
+            return this.Delete($"/api/v1/lists/{listId}/accounts", data);
         }
 
-        private Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds)
+        /// <summary>
+        /// Remove accounts from a list.
+        /// </summary>
+        /// <param name="listId">List Id</param>
+        /// <param name="accountIds">Array of Accounts</param>
+        public Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts)
         {
-            throw new NotImplementedException();
-            //if (accountIds == null || !accountIds.Any())
-            //{
-            //    throw new ArgumentException("Accounts are required", nameof(accountIds));
-            //}
-
-            //var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
-
-            //TODO : Delete with data
-            //return this.Delete($"/api/v1/lists/{listId}/accounts", data);
-        }
-
-        private Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts)
-        {
-            throw new NotImplementedException();
-            //if (accounts == null || !accounts.Any())
-            //{
-            //    throw new ArgumentException("Accounts are required", nameof(accounts));
-            //}
-
-            //var data = accounts.Select(act => new KeyValuePair<string, string>("account_ids[]", act.Id.ToString()));
-
-            //TODO : Delete with data
-            //return this.Delete($"/api/v1/lists/{listId}/accounts", data);
+            return RemoveAccountsFromList(listId, accounts.Select(account => account.Id));
         }
 
         #endregion
@@ -177,22 +209,56 @@ namespace Mastonet
         /// </summary>
         /// <param name="data">Media stream to be uploaded</param>
         /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(Stream data, string fileName = "file")
+        public Task<Attachment> UploadMedia(Stream data, string fileName = "file", string description = null, AttachmentFocusData focus = null)
         {
-            return UploadMedia(new MediaDefinition(data, fileName));
+            return UploadMedia(new MediaDefinition(data, fileName), description, focus);
         }
 
         /// <summary>
         /// Uploading a media attachment
         /// </summary>
         /// <param name="media">Media to be uploaded</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(MediaDefinition media)
+        public Task<Attachment> UploadMedia(MediaDefinition media, string description = null, AttachmentFocusData focus = null)
         {
             media.ParamName = "file";
             var list = new List<MediaDefinition>() { media };
-            return this.Post<Attachment>("/api/v1/media", null, list);
+            var data = new Dictionary<string, string>();
+            if (description != null)
+            {
+                data.Add("description", description);
+            }
+            if (focus != null)
+            {
+                data.Add("focus", $"{focus.X},{focus.Y}");
+            }
+            return this.Post<Attachment>("/api/v1/media", data, list);
+        }
+
+        /// <summary>
+        /// Update a media attachment. Can only be done before the media is attached to a status.
+        /// </summary>
+        /// <param name="mediaId">Media ID</param>
+        /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+        /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
+        /// <returns>Returns an Attachment that can be used when creating a status</returns>
+        public Task<Attachment> UpdateMedia(long mediaId, string description = null, AttachmentFocusData focus = null)
+        {
+            var data = new Dictionary<string, string>();
+            if (description != null)
+            {
+                data.Add("description", description);
+            }
+            if (focus != null)
+            {
+                data.Add("focus", $"{focus.X},{focus.Y}");
+            }
+            return Put<Attachment>("/api/v1/media/" + mediaId, data);
         }
 
         #endregion
@@ -217,26 +283,45 @@ namespace Mastonet
         /// </summary>
         /// <param name="maxId">Get items with ID less than or equal this value</param>
         /// <param name="sinceId">Get items with ID greater than this value</param>
-        /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="limit">Maximum number of items to get (Default 40, Max 80)</param>
+        /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = 0)
         {
-            return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
+            return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, excludeTypes);
         }
 
         /// <summary>
         /// Fetching a user's notifications
         /// </summary>
         /// <param name="options">Define the first and last items to get</param>
+        /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options)
+        public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = 0)
         {
             var url = "/api/v1/notifications";
+            var queryParams = "";
             if (options != null)
             {
-                url += "?" + options.ToQueryString();
+                queryParams += "?" + options.ToQueryString();
             }
-            return GetMastodonList<Notification>(url);
+            if ((excludeTypes & NotificationType.Follow) == NotificationType.Follow)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=follow";
+            }
+            if ((excludeTypes & NotificationType.Favourite) == NotificationType.Favourite)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=favourite";
+            }
+            if ((excludeTypes & NotificationType.Reblog) == NotificationType.Reblog)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=reblog";
+            }
+            if ((excludeTypes & NotificationType.Mention) == NotificationType.Mention)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=mention";
+            }
+            return GetMastodonList<Notification>(url + queryParams);
         }
 
         /// <summary>
@@ -256,6 +341,17 @@ namespace Mastonet
         public Task ClearNotifications()
         {
             return Post("/api/v1/notifications/clear");
+        }
+
+        /// <summary>
+        /// Delete a single notification from the server.
+        /// </summary>
+        /// <param name="notificationId"></param>
+        /// <returns></returns>
+        public Task DismissNotification(long notificationId)
+        {
+            var data = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("id", notificationId.ToString()) };
+            return Post("/api/v1/notifications/dismiss", data);
         }
 
         #endregion
@@ -295,16 +391,24 @@ namespace Mastonet
         /// <param name="accountId">The ID of the account to report</param>
         /// <param name="statusIds">The IDs of statuses to report</param>
         /// <param name="comment">A comment to associate with the report</param>
+        /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
         /// <returns>Returns the finished Report</returns>
-        public Task<Report> Report(long accountId, IEnumerable<long> statusIds, string comment)
+        public Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, string comment = null, bool? forward = null)
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("account_id", accountId.ToString()),
-                new KeyValuePair<string, string>("comment", comment),
             };
-            foreach (var statusId in statusIds)
+            foreach (var statusId in statusIds ?? Enumerable.Empty<long>())
             {
                 data.Add(new KeyValuePair<string, string>("status_ids[]", statusId.ToString()));
+            }
+            if (!string.IsNullOrEmpty(comment))
+            {
+                data.Add(new KeyValuePair<string, string>("comment", comment));
+            }
+            if (forward.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("forward", forward.Value.ToString().ToLowerInvariant()));
             }
 
             return Post<Report>("/api/v1/reports", data);
@@ -336,12 +440,36 @@ namespace Mastonet
         }
 
         /// <summary>
+        /// Searching for content
+        /// </summary>
+        /// <param name="q">The search query</param>
+        /// <param name="resolve">Whether to resolve non-local accounts</param>
+        /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
+        public Task<ResultsV2> SearchV2(string q, bool resolve = false)
+        {
+            if (string.IsNullOrEmpty(q))
+            {
+                return Task.FromResult(new ResultsV2());
+            }
+
+            string url = "/api/v2/search?q=" + Uri.EscapeUriString(q);
+            if (resolve)
+            {
+                url += "&resolve=true";
+            }
+
+            return Get<ResultsV2>(url);
+        }
+
+        /// <summary>
         /// Searching for accounts
         /// </summary>
         /// <param name="q">What to search for</param>
         /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
+        /// <param name="resolve">Attempt WebFinger look-up (default: false)</param>
+        /// <param name="following">Only who the user is following (default: false)</param>
         /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
-        public Task<List<Account>> SearchAccounts(string q, int? limit = null)
+        public Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false)
         {
             if (string.IsNullOrEmpty(q))
             {
@@ -352,6 +480,14 @@ namespace Mastonet
             if (limit.HasValue)
             {
                 url += "&limit=" + limit.Value;
+            }
+            if (resolve)
+            {
+                url += "&resolve=true";
+            }
+            if (following)
+            {
+                url += "&following=true";
             }
 
             return Get<List<Account>>(url);
@@ -370,5 +506,126 @@ namespace Mastonet
         }
         #endregion
 
+        #region Filters
+        /// <summary>
+        /// Listing all text filters the user has configured that potentially must be applied client-side
+        /// </summary>
+        /// <returns>Returns an array of filters</returns>
+        public Task<IEnumerable<Filter>> GetFilters()
+        {
+            return Get<IEnumerable<Filter>>("/api/v1/filters");
+        }
+
+        /// <summary>
+        /// Creating a new filter
+        /// </summary>
+        /// <param name="phrase">Keyword or phrase to filter</param>
+        /// <param name="context">Filtering context. At least one context must be specified</param>
+        /// <param name="irreversible">Irreversible filtering will only work in home and notifications contexts by fully dropping the records</param>
+        /// <param name="wholeWord">Whether to consider word boundaries when matching</param>
+        /// <param name="expiresIn">Number that indicates seconds. Filter will be expire in seconds after API processed. Leave null for no expiration</param>
+        /// <returns>Returns a created filter</returns>
+        public Task<Filter> CreateFilter(string phrase, FilterContext context, bool irreversible = false, bool wholeWord = false, uint? expiresIn = null)
+        {
+            if (string.IsNullOrEmpty(phrase))
+            {
+                throw new ArgumentException("The phrase is required", nameof(phrase));
+            }
+            if (context == 0)
+            {
+                throw new ArgumentException("At least one context must be specified", nameof(context));
+            }
+
+            var data = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>("phrase", phrase) };
+            foreach (FilterContext checkFlag in new[] { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread })
+            {
+                if ((context & checkFlag) == checkFlag)
+                {
+                    data.Add(new KeyValuePair<string, string>("context[]", checkFlag.ToString().ToLowerInvariant()));
+                }
+            }
+            if (irreversible)
+            {
+                data.Add(new KeyValuePair<string, string>("irreversible", "true"));
+            }
+            if (wholeWord)
+            {
+                data.Add(new KeyValuePair<string, string>("whole_word", "true"));
+            }
+            if (expiresIn.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.Value.ToString()));
+            }
+
+            return Post<Filter>("/api/v1/filters", data);
+        }
+
+        /// <summary>
+        /// Getting a text filter
+        /// </summary>
+        /// <param name="filterId">Filter ID</param>
+        /// <returns>Returns a filter</returns>
+        public Task<Filter> GetFilter(long filterId)
+        {
+            return Get<Filter>($"/api/v1/filters/{filterId}");
+        }
+
+        /// <summary>
+        /// Updating a text filter
+        /// </summary>
+        /// <param name="filterId">Filter ID</param>
+        /// <param name="phrase">A new keyword or phrase to filter, or null to keep</param>
+        /// <param name="context">A new filtering context, or null to keep</param>
+        /// <param name="irreversible">A new irreversible flag, or null to keep</param>
+        /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
+        /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
+        /// <returns>Returns an updated filter</returns>
+        public Task<Filter> UpdateFilter(long filterId, string phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
+        {
+            if (context == 0)
+            {
+                throw new ArgumentException("At least one context to filter must be specified", nameof(context));
+            }
+
+            var data = new List<KeyValuePair<string, string>>();
+            if (phrase != null)
+            {
+                data.Add(new KeyValuePair<string, string>("phrase", phrase));
+            }
+            if (context.HasValue)
+            {
+                foreach (FilterContext checkFlag in new[] { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread })
+                {
+                    if ((context & checkFlag) == checkFlag)
+                    {
+                        data.Add(new KeyValuePair<string, string>("context[]", checkFlag.ToString().ToLowerInvariant()));
+                    }
+                }
+            }
+            if (irreversible.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("irreversible", irreversible.ToString().ToLowerInvariant()));
+            }
+            if (wholeWord.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("whole_word", wholeWord.ToString().ToLowerInvariant()));
+            }
+            if (expiresIn.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.ToString()));
+            }
+
+            return Put<Filter>($"/api/v1/filters/{filterId}", data);
+        }
+
+        /// <summary>
+        /// Deleting a text filter
+        /// </summary>
+        /// <param name="filterId"></param>
+        public Task DeleteFilter(long filterId)
+        {
+            return Delete($"/api/v1/filters/{filterId}");
+        }
+        #endregion
     }
 }

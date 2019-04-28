@@ -27,9 +27,14 @@ namespace Mastonet
             }
         }
 
-        protected async Task<string> Delete(string route)
+        protected async Task<string> Delete(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             string url = "https://" + this.Instance + route;
+            if (data != null)
+            {
+                var querystring = "?" + String.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
+                url += querystring;
+            }
 
             var client = new HttpClient();
             AddHttpHeader(client);

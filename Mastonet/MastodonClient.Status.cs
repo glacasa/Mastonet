@@ -109,12 +109,14 @@ namespace Mastonet
         /// <param name="mediaIds">array of media IDs to attach to the status (maximum 4)</param>
         /// <param name="sensitive">set this to mark the media of the status as NSFW</param>
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
+        /// <param name="scheduledAt">DateTime to schedule posting of status</param>
+        /// <param name="language">Override language code of the toot (ISO 639-2)</param>
         /// <returns></returns>
-        public Task<Status> PostStatus(string status, Visibility visibility, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null)
+        public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null)
         {
-			if (string.IsNullOrEmpty(status))
+            if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
             {
-                throw new ArgumentNullException("status");
+                throw new ArgumentException("A status must have either text (status) or media (mediaIds)", nameof(status));
             }
 
             var data = new List<KeyValuePair<string, string>>() {
@@ -138,12 +140,22 @@ namespace Mastonet
             {
                 data.Add(new KeyValuePair<string, string>("spoiler_text", spoilerText));
             }
-
-            data.Add(new KeyValuePair<string, string>("visibility", visibility.ToString().ToLower()));
+            if (visibility.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("visibility", visibility.ToString().ToLowerInvariant()));
+            }
+            if (scheduledAt.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.Value.ToString("o")));
+            }
+            if (language != null)
+            {
+                data.Add(new KeyValuePair<string, string>("language", language));
+            }
 
             return Post<Status>("/api/v1/statuses", data);
         }
-		
+
         /// <summary>
         /// Deleting a status
         /// </summary>
@@ -151,6 +163,50 @@ namespace Mastonet
         public Task DeleteStatus(long statusId)
         {
             return Delete($"/api/v1/statuses/{statusId}");
+        }
+
+        /// <summary>
+        /// Get scheduled statuses.
+        /// </summary>
+        /// <returns>Returns array of ScheduledStatus</returns>
+        public Task<IEnumerable<ScheduledStatus>> GetScheduledStatuses()
+        {
+            return Get<IEnumerable<ScheduledStatus>>("/api/v1/scheduled_statuses");
+        }
+
+        /// <summary>
+        /// Get scheduled status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        /// <returns>Returns ScheduledStatus</returns>
+        public Task<ScheduledStatus> GetScheduledStatus(long scheduledStatusId)
+        {
+            return Get<ScheduledStatus>("/api/v1/scheduled_statuses/" + scheduledStatusId);
+        }
+
+        /// <summary>
+        /// Update Scheduled status. Only scheduled_at can be changed. To change the content, delete it and post a new status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        /// <param name="scheduledAt">DateTime to schedule posting of status</param>
+        /// <returns>Returns ScheduledStatus</returns>
+        public Task<ScheduledStatus> UpdateScheduledStatus(long scheduledStatusId, DateTime? scheduledAt)
+        {
+            var data = new List<KeyValuePair<string, string>>();
+            if (scheduledAt.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.ToString()));
+            }
+            return Put<ScheduledStatus>("/api/v1/scheduled_statuses/" + scheduledStatusId, data);
+        }
+
+        /// <summary>
+        /// Remove Scheduled status.
+        /// </summary>
+        /// <param name="scheduledStatusId"></param>
+        public Task DeleteScheduledStatus(long scheduledStatusId)
+        {
+            return Delete("/api/v1/scheduled_statuses/" + scheduledStatusId);
         }
 
         /// <summary>
@@ -213,6 +269,24 @@ namespace Mastonet
             return Post<Status>($"/api/v1/statuses/{statusId}/unmute");
         }
 
+        /// <summary>
+        /// Pinning a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Pin(long statusId)
+        {
+            return Post<Status>($"/api/v1/statuses/{statusId}/pin");
+        }
 
+        /// <summary>
+        /// Unpinning a status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns>Returns the target Status</returns>
+        public Task<Status> Unpin(long statusId)
+        {
+            return Post<Status>($"/api/v1/statuses/{statusId}/unpin");
+        }
     }
 }

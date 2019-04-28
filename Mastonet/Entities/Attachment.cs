@@ -83,13 +83,13 @@ namespace Mastonet.Entities
         public string Size { get; set; }
 
         [JsonProperty("aspect")]
-        public float? Aspect { get; set; }
+        public double? Aspect { get; set; }
 
         [JsonProperty("frame_rate")]
         public string FrameRate { get; set; }
 
         [JsonProperty("duration")]
-        public float? Duration { get; set; }
+        public double? Duration { get; set; }
 
         [JsonProperty("bitrate")]
         public int? BitRate { get; set; }
@@ -98,9 +98,9 @@ namespace Mastonet.Entities
     public class AttachmentFocusData
     {
         [JsonProperty("x")]
-        public float X { get; set; }
+        public double X { get; set; }
 
         [JsonProperty("y")]
-        public float Y { get; set; }
+        public double Y { get; set; }
     }
 }

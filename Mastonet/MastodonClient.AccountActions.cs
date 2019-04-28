@@ -17,10 +17,12 @@ namespace Mastonet
         /// Following an account
         /// </summary>
         /// <param name="accountId"></param>
+        /// <param name="reblogs">Whether the followed account’s reblogs will show up in the home timeline</param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Follow(long accountId)
+        public Task<Relationship> Follow(long accountId, bool reblogs = true)
         {
-            return this.Post<Relationship>($"/api/v1/accounts/{accountId}/follow");
+            var data = reblogs ? null : Enumerable.Repeat(new KeyValuePair<string, string>("reblogs", "false"), 1);
+            return this.Post<Relationship>($"/api/v1/accounts/{accountId}/follow", data);
         }
 
         /// <summary>
@@ -101,10 +103,12 @@ namespace Mastonet
         /// Muting an account
         /// </summary>
         /// <param name="accountId"></param>
+        /// <param name="notifications">Whether the mute will mute notifications or not</param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Mute(long accountId)
+        public Task<Relationship> Mute(long accountId, bool notifications = true)
         {
-            return Post<Relationship>($"/api/v1/accounts/{accountId}/mute");
+            var data = notifications ? null : new[] { new KeyValuePair<string, string>("notifications", "false") };
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/mute", data);
         }
 
         /// <summary>
@@ -142,6 +146,37 @@ namespace Mastonet
                 url += "?" + options.ToQueryString();
             }
             return GetMastodonList<Account>(url);
+        }
+        #endregion
+
+        #region Endorsements
+        /// <summary>
+        /// Getting accounts the user chose to endorse
+        /// </summary>
+        /// <returns>Returns an array of Accounts endorsed by the authenticated user</returns>
+        public Task<MastodonList<Account>> GetEndorsements()
+        {
+            return GetMastodonList<Account>("/api/v1/endorsements");
+        }
+
+        /// <summary>
+        /// Endorsing an account
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns the updated Relationships with the target Account</returns>
+        public Task<Relationship> Endorse(long accountId)
+        {
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/pin");
+        }
+
+        /// <summary>
+        /// Undoing endorse of an account
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Returns the updated Relationships with the target Account</returns>
+        public Task<Relationship> Unendorse(long accountId)
+        {
+            return Post<Relationship>($"/api/v1/accounts/{accountId}/unpin");
         }
         #endregion
 
