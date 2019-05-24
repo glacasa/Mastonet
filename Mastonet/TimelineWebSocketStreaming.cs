@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -65,27 +66,28 @@ namespace Mastonet
             socket = new ClientWebSocket();
             await socket.ConnectAsync(new Uri(url), CancellationToken.None);
 
-            StringBuilder sb = new StringBuilder();
+            byte[] buffer = new byte[receiveChunkSize];
+            MemoryStream ms = new MemoryStream();
             while (socket != null)
             {
-                byte[] buffer = new byte[receiveChunkSize];
-
                 var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-                sb.Append(Encoding.UTF8.GetString(buffer));
+                ms.Write(buffer, 0, result.Count);
 
                 if (result.EndOfMessage)
                 {
-                    var messageStr = sb.ToString();
+                    var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
                     var message = JsonConvert.DeserializeObject<Dictionary<string, string>>(messageStr);
                     var eventName = message["event"];
                     var data = message["payload"];
                     SendEvent(eventName, data);
 
-                    sb = new StringBuilder();
+                    ms.Dispose();
+                    ms = new MemoryStream();
                 }
             }
+            ms.Dispose();
 
             this.Stop();
         }
