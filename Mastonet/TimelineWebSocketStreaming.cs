@@ -67,27 +67,26 @@ namespace Mastonet
             await socket.ConnectAsync(new Uri(url), CancellationToken.None);
 
             byte[] buffer = new byte[receiveChunkSize];
-            MemoryStream ms = new MemoryStream();
             while (socket != null)
             {
-                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-                ms.Write(buffer, 0, result.Count);
-
-                if (result.EndOfMessage)
+                using (MemoryStream ms = new MemoryStream())
                 {
+                    while (true)
+                    {
+                        var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                        ms.Write(buffer, 0, result.Count);
+                        if (result.EndOfMessage)
+                            break;
+                    }
+
                     var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
                     var message = JsonConvert.DeserializeObject<Dictionary<string, string>>(messageStr);
                     var eventName = message["event"];
                     var data = message["payload"];
                     SendEvent(eventName, data);
-
-                    ms.Dispose();
-                    ms = new MemoryStream();
                 }
             }
-            ms.Dispose();
 
             this.Stop();
         }
