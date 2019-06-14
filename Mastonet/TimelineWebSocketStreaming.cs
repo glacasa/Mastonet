@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace Mastonet
 {
-    public class TimelineWebSocketStreaming : TimelineHttpStreaming
+    public class TimelineWebSocketStreaming : TimelineStreaming
     {
         private ClientWebSocket socket;
         readonly Task<Instance> instanceGetter;
         private const int receiveChunkSize = 512;
 
         public TimelineWebSocketStreaming(StreamingType type, string param, string instance, Task<Instance> instanceGetter, string accessToken)
-            : base(type, param, instance, accessToken)
+            : base(type, param, accessToken)
         {
             this.instanceGetter = instanceGetter;
         }
@@ -26,13 +26,6 @@ namespace Mastonet
         {
             var instance = await instanceGetter;
             var url = instance?.Urls?.StreamingAPI;
-
-            if (url == null)
-            {
-                // websocket disabled, fallback to http streaming
-                await base.Start();
-                return;
-            }
 
             url += "/api/v1/streaming?access_token=" + accessToken;
 
@@ -99,8 +92,6 @@ namespace Mastonet
                 socket.Dispose();
                 socket = null;
             }
-
-            base.Stop();
         }
     }
 }
