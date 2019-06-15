@@ -8,5 +8,6 @@ namespace Mastonet.Entities
     {
         public long? NextPageMaxId { get; internal set; }
         public long? PreviousPageSinceId { get; internal set; }
+        public long? PreviousPageMinId { get; internal set; }
     }
 }

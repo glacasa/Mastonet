@@ -94,7 +94,14 @@ namespace Mastonet
 
                     if (link.Contains("rel=\"prev\""))
                     {
-                        result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        if (link.Contains("since_id"))
+                        {
+                            result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        }
+                        if (link.Contains("min_id"))
+                        {
+                            result.PreviousPageMinId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        }
                     }
                 }
             }
