@@ -13,18 +13,21 @@ namespace Mastonet
 {
     public abstract class BaseHttpClient : IBaseHttpClient
     {
+        private readonly HttpClient client;
         public string Instance { get; protected set; }
         public AppRegistration AppRegistration { get; set; }
         public Auth AuthToken { get; set; }
 
+        protected BaseHttpClient(HttpClient client)
+        {
+            this.client = client;
+        }
+
         #region Http helpers
 
-        private void AddHttpHeader(HttpClient client)
+        private void AddHttpHeader(HttpRequestMessage request)
         {
-            if (AuthToken != null)
-            {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthToken.AccessToken);
-            }
+            request.Headers.Add("Authorization", "Bearer " + AuthToken.AccessToken);
         }
 
         protected async Task<string> Delete(string route, IEnumerable<KeyValuePair<string, string>> data = null)
@@ -36,9 +39,9 @@ namespace Mastonet
                 url += querystring;
             }
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.DeleteAsync(url);
+            var request = new HttpRequestMessage(HttpMethod.Delete, url);
+            AddHttpHeader(request);
+            var response = await client.SendAsync(request);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -51,9 +54,9 @@ namespace Mastonet
                 url += querystring;
             }
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.GetAsync(url);
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            AddHttpHeader(request);
+            var response = await client.SendAsync(request);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -74,9 +77,9 @@ namespace Mastonet
                 url += querystring;
             }
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.GetAsync(url);
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            AddHttpHeader(request);
+            var response = await client.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
             var result = TryDeserialize<MastodonList<T>>(content);
 
@@ -106,11 +109,10 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.PostAsync(url, content);
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            AddHttpHeader(request);
+            request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+            var response = await client.SendAsync(request);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -118,9 +120,8 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            AddHttpHeader(request);
             var content = new MultipartFormDataContent();
 
             foreach (var m in media)
@@ -134,8 +135,9 @@ namespace Mastonet
                     content.Add(new StringContent(pair.Value), pair.Key);
                 }
             }
+            request.Content = content;
 
-            var response = await client.PostAsync(url, content);
+            var response = await client.SendAsync(request);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -150,11 +152,11 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
+            var request = new HttpRequestMessage(HttpMethod.Put, url);
+            AddHttpHeader(request);
 
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.PutAsync(url, content);
+            request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+            var response = await client.SendAsync(request);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -167,14 +169,10 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            var method = new HttpMethod("PATCH");
-            AddHttpHeader(client);
-
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var message = new HttpRequestMessage(method, url);
-            message.Content = content;
-            var response = await client.SendAsync(message);
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url);
+            AddHttpHeader(request);
+            request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+            var response = await client.SendAsync(request);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -182,9 +180,8 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            var method = new HttpMethod("PATCH");
-            AddHttpHeader(client);
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url);
+            AddHttpHeader(request);
 
             var content = new MultipartFormDataContent();
             foreach (var m in media)
@@ -199,9 +196,8 @@ namespace Mastonet
                 }
             }
 
-            var message = new HttpRequestMessage(method, url);
-            message.Content = content;
-            var response = await client.SendAsync(message);
+            request.Content = content;
+            var response = await client.SendAsync(request);
             return await response.Content.ReadAsStringAsync();
         }
 

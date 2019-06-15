@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Mastonet
@@ -11,7 +12,9 @@ namespace Mastonet
     {
         #region Ctor
 
-        public MastodonClient(AppRegistration appRegistration, Auth accessToken)
+        public MastodonClient(AppRegistration appRegistration, Auth accessToken) : this(appRegistration, accessToken, DefaultHttpClient.Instance) { }
+
+        public MastodonClient(AppRegistration appRegistration, Auth accessToken, HttpClient client) : base(client)
         {
             this.Instance = appRegistration.Instance;
             this.AppRegistration = appRegistration;
