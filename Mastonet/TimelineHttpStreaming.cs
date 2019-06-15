@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mastonet
@@ -19,7 +20,7 @@ namespace Mastonet
             this.instance = instance;
         }
 
-        public override async Task Start()
+        public override async Task Start(CancellationToken token)
         {
             string url = "https://" + instance;
             switch (streamingType)
@@ -49,18 +50,17 @@ namespace Mastonet
                     throw new NotImplementedException();
             }
 
-
             client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-
-            var stream = await client.GetStreamAsync(url);
-
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Authorization", "Bearer " + accessToken);
+            var response = await client.SendAsync(request, token);
+            var stream = await response.Content.ReadAsStreamAsync();
             var reader = new StreamReader(stream);
 
             string eventName = null;
             string data = null;
 
-            while (client != null)
+            while (true)
             {
                 var line = await reader.ReadLineAsync();
 
@@ -79,17 +79,6 @@ namespace Mastonet
                     data = line.Substring("data: ".Length);
                     SendEvent(eventName, data);
                 }
-            }
-
-            this.Stop();
-        }
-
-        public override void Stop()
-        {
-            if (client != null)
-            {
-                client.Dispose();
-                client = null;
             }
         }
     }

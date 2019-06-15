@@ -1,6 +1,7 @@
 ﻿using Mastonet.Entities;
 using Newtonsoft.Json;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mastonet
@@ -24,8 +25,7 @@ namespace Mastonet
             this.accessToken = accessToken;
         }
 
-        public abstract Task Start();
-        public abstract void Stop();
+        public abstract Task Start(CancellationToken token);
 
         protected void SendEvent(string eventName, string data)
         {

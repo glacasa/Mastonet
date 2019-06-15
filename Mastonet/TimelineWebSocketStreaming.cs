@@ -12,7 +12,6 @@ namespace Mastonet
 {
     public class TimelineWebSocketStreaming : TimelineStreaming
     {
-        private ClientWebSocket socket;
         readonly Task<Instance> instanceGetter;
         private const int receiveChunkSize = 512;
 
@@ -22,7 +21,7 @@ namespace Mastonet
             this.instanceGetter = instanceGetter;
         }
 
-        public override async Task Start()
+        public override async Task Start(CancellationToken token)
         {
             var instance = await instanceGetter;
             var url = instance?.Urls?.StreamingAPI;
@@ -56,41 +55,39 @@ namespace Mastonet
                     throw new NotImplementedException();
             }
 
-            socket = new ClientWebSocket();
-            await socket.ConnectAsync(new Uri(url), CancellationToken.None);
-
-            byte[] buffer = new byte[receiveChunkSize];
-            while (socket != null)
+            using (var socket = new ClientWebSocket())
             {
-                using (MemoryStream ms = new MemoryStream())
+                try
                 {
+                    await socket.ConnectAsync(new Uri(url), token);
+
+                    byte[] buffer = new byte[receiveChunkSize];
                     while (true)
                     {
-                        var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                        ms.Write(buffer, 0, result.Count);
-                        if (result.EndOfMessage)
-                            break;
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            while (true)
+                            {
+                                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), token);
+                                ms.Write(buffer, 0, result.Count);
+                                if (result.EndOfMessage)
+                                    break;
+                            }
+
+                            var messageStr = Encoding.UTF8.GetString(ms.ToArray());
+
+                            var message = JsonConvert.DeserializeObject<Dictionary<string, string>>(messageStr);
+                            var eventName = message["event"];
+                            var data = message["payload"];
+                            SendEvent(eventName, data);
+                        }
                     }
-
-                    var messageStr = Encoding.UTF8.GetString(ms.ToArray());
-
-                    var message = JsonConvert.DeserializeObject<Dictionary<string, string>>(messageStr);
-                    var eventName = message["event"];
-                    var data = message["payload"];
-                    SendEvent(eventName, data);
                 }
-            }
-
-            this.Stop();
-        }
-
-        public override void Stop()
-        {
-            if (socket != null)
-            {
-                socket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-                socket.Dispose();
-                socket = null;
+                catch (OperationCanceledException)
+                {
+                    await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                    throw;
+                }
             }
         }
     }
