@@ -15,8 +15,11 @@ namespace Mastonet
         private HttpClient client;
 
         public TimelineHttpStreaming(StreamingType type, string param, string instance, string accessToken)
+            : this(type, param, instance, accessToken, DefaultHttpClient.Instance) { }
+        public TimelineHttpStreaming(StreamingType type, string param, string instance, string accessToken, HttpClient client)
             : base(type, param, accessToken)
         {
+            this.client = client;
             this.instance = instance;
         }
 
@@ -50,7 +53,6 @@ namespace Mastonet
                     throw new NotImplementedException();
             }
 
-            client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Authorization", "Bearer " + accessToken);
             var response = await client.SendAsync(request, token);
