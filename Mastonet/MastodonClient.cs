@@ -286,7 +286,7 @@ namespace Mastonet
         /// <param name="limit">Maximum number of items to get (Default 40, Max 80)</param>
         /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = 0)
+        public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = NotificationType.None)
         {
             return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, excludeTypes);
         }
@@ -297,7 +297,7 @@ namespace Mastonet
         /// <param name="options">Define the first and last items to get</param>
         /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = 0)
+        public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = NotificationType.None)
         {
             var url = "/api/v1/notifications";
             var queryParams = "";
@@ -320,6 +320,10 @@ namespace Mastonet
             if ((excludeTypes & NotificationType.Mention) == NotificationType.Mention)
             {
                 queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=mention";
+            }
+            if ((excludeTypes & NotificationType.Poll) == NotificationType.Poll)
+            {
+                queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=poll";
             }
             return GetMastodonList<Notification>(url + queryParams);
         }
@@ -625,6 +629,32 @@ namespace Mastonet
         public Task DeleteFilter(long filterId)
         {
             return Delete($"/api/v1/filters/{filterId}");
+        }
+        #endregion
+
+        #region Polls
+        /// <summary>
+        /// Get a poll
+        /// </summary>
+        /// <param name="id">The ID of the poll</param>
+        /// <returns>Returns Poll</returns>
+        public Task<Poll> GetPoll(long id)
+        {
+            return Get<Poll>("/api/v1/polls/" + id.ToString());
+        }
+
+        /// <summary>
+        /// Vote on a poll.
+        /// </summary>
+        /// <param name="id">The ID of the poll</param>
+        /// <param name="choices">Array of choice indices</param>
+        /// <returns>Returns Poll</returns>
+        public Task<Poll> Vote(long id, IEnumerable<int> choices)
+        {
+            var data = choices
+                .Select(index => new KeyValuePair<string, string>("choices[]", index.ToString()))
+                .ToArray();
+            return Post<Poll>("/api/v1/polls/" + id.ToString() + "/votes", data);
         }
         #endregion
     }

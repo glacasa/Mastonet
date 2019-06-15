@@ -7,17 +7,19 @@ namespace Mastonet
     [Flags]
     public enum NotificationType
     {
+        None = 0,
         Follow = 1,
         Favourite = 2,
         Reblog = 4,
-        Mention = 8
+        Mention = 8,
+        Poll = 16
     }
 
     public class NotificationTypeConverter : JsonConverter<NotificationType>
     {
         public override NotificationType ReadJson(JsonReader reader, Type objectType, NotificationType existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            NotificationType context = 0;
+            NotificationType context = NotificationType.None;
             var contextStrings = serializer.Deserialize<IEnumerable<string>>(reader);
             foreach (var contextString in contextStrings)
             {
@@ -35,6 +37,9 @@ namespace Mastonet
                     case "mention":
                         context |= NotificationType.Mention;
                         break;
+                    case "poll":
+                        context |= NotificationType.Poll;
+                        break;
                 }
             }
             return context;
@@ -47,6 +52,7 @@ namespace Mastonet
             if ((value & NotificationType.Favourite) == NotificationType.Favourite) contextStrings.Add("favourite");
             if ((value & NotificationType.Reblog) == NotificationType.Reblog) contextStrings.Add("reblog");
             if ((value & NotificationType.Mention) == NotificationType.Mention) contextStrings.Add("mention");
+            if ((value & NotificationType.Poll) == NotificationType.Poll) contextStrings.Add("poll");
             serializer.Serialize(writer, contextStrings);
         }
     }

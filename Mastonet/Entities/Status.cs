@@ -146,6 +146,12 @@ namespace Mastonet.Entities
         public Card Card { get; set; }
 
         /// <summary>
+        /// Attached poll, if any
+        /// </summary>
+        [JsonProperty("poll")]
+        public Poll Poll { get; set; }
+
+        /// <summary>
         /// Application from which the status was posted
         /// </summary>
         [JsonProperty("application")]
