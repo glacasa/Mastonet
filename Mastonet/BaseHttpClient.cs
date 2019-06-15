@@ -25,38 +25,53 @@ namespace Mastonet
 
         #region Http helpers
 
-        private void AddHttpHeader(HttpRequestMessage request)
+        private Task<HttpResponseMessage> SendAsync(HttpMethod method, string route, IEnumerable<KeyValuePair<string, string>> query = null, IEnumerable<KeyValuePair<string, string>> form = null, IEnumerable<MediaDefinition> media = null)
         {
+            // Build URL
+            var urlBuilder = new StringBuilder("https://").Append(Instance).Append(route);
+            if (query?.Any() == true)
+            {
+                urlBuilder.Append("?").Append(string.Join("&", query.Select(kvp => kvp.Key + "=" + kvp.Value)));
+            }
+            var url = urlBuilder.ToString();
+
+            // Build request
+            var request = new HttpRequestMessage(method, url);
+            if (media?.Any() == true)
+            {
+                var content = new MultipartFormDataContent();
+                foreach (var m in media)
+                {
+                    content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
+                }
+                if (form?.Any() == true)
+                {
+                    foreach (var pair in form)
+                    {
+                        content.Add(new StringContent(pair.Value), pair.Key);
+                    }
+                }
+                request.Content = content;
+            }
+            else if (form?.Any() == true)
+            {
+                request.Content = new FormUrlEncodedContent(form);
+            }
             request.Headers.Add("Authorization", "Bearer " + AuthToken.AccessToken);
+
+            // And send it
+            return client.SendAsync(request);
         }
 
         protected async Task<string> Delete(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
-            string url = "https://" + this.Instance + route;
-            if (data != null)
-            {
-                var querystring = "?" + String.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
-                url += querystring;
-            }
-
-            var request = new HttpRequestMessage(HttpMethod.Delete, url);
-            AddHttpHeader(request);
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(HttpMethod.Delete, route, query: data);
             return await response.Content.ReadAsStringAsync();
         }
 
         protected async Task<string> Get(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
-            string url = "https://" + this.Instance + route;
-            if (data != null)
-            {
-                var querystring = "?" + String.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
-                url += querystring;
-            }
-
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            AddHttpHeader(request);
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(HttpMethod.Get, route, query: data);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -70,16 +85,7 @@ namespace Mastonet
         private Regex idFinderRegex = new Regex("_id=([0-9]+)");
         protected async Task<MastodonList<T>> GetMastodonList<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
-            string url = "https://" + this.Instance + route;
-            if (data != null)
-            {
-                var querystring = "?" + String.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
-                url += querystring;
-            }
-
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            AddHttpHeader(request);
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(HttpMethod.Get, route, query: data);
             var content = await response.Content.ReadAsStringAsync();
             var result = TryDeserialize<MastodonList<T>>(content);
 
@@ -107,37 +113,13 @@ namespace Mastonet
 
         protected async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
-            string url = "https://" + this.Instance + route;
-
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            AddHttpHeader(request);
-            request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(HttpMethod.Post, route, form: data);
             return await response.Content.ReadAsStringAsync();
         }
 
         protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
         {
-            string url = "https://" + this.Instance + route;
-
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            AddHttpHeader(request);
-            var content = new MultipartFormDataContent();
-
-            foreach (var m in media)
-            {
-                content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
-            }
-            if (data != null)
-            {
-                foreach (var pair in data)
-                {
-                    content.Add(new StringContent(pair.Value), pair.Key);
-                }
-            }
-            request.Content = content;
-
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(HttpMethod.Post, route, form: data, media: media);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -150,13 +132,7 @@ namespace Mastonet
 
         protected async Task<string> Put(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
-            string url = "https://" + this.Instance + route;
-
-            var request = new HttpRequestMessage(HttpMethod.Put, url);
-            AddHttpHeader(request);
-
-            request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(HttpMethod.Put, route, form: data);
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -167,37 +143,13 @@ namespace Mastonet
 
         protected async Task<string> Patch(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
-            string url = "https://" + this.Instance + route;
-
-            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url);
-            AddHttpHeader(request);
-            request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(new HttpMethod("PATCH"), route, form: data);
             return await response.Content.ReadAsStringAsync();
         }
 
         protected async Task<string> PatchMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
         {
-            string url = "https://" + this.Instance + route;
-
-            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url);
-            AddHttpHeader(request);
-
-            var content = new MultipartFormDataContent();
-            foreach (var m in media)
-            {
-                content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
-            }
-            if (data != null)
-            {
-                foreach (var pair in data)
-                {
-                    content.Add(new StringContent(pair.Value), pair.Key);
-                }
-            }
-
-            request.Content = content;
-            var response = await client.SendAsync(request);
+            var response = await SendAsync(new HttpMethod("PATCH"), route, form: data, media: media);
             return await response.Content.ReadAsStringAsync();
         }
 
