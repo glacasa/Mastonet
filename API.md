@@ -4,24 +4,27 @@
 
 To use Mastonet, you need a `MastodonClient` object (see [README.md](https://github.com/glacasa/Mastonet/blob/master/README.md) ), and you have C# methods to call every [Mastodon API](https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md) method.
 
-If a method is missing, please [submit an issue](https://github.com/glacasa/Mastonet/issues)
+If a method is missing, please [submit an issue](https://github.com/glacasa/Mastonet/issues).
 
-## Working with lists
+## Working with pagination
 
-Several Mastodon methods returns arrays of different types of items. Default usage will usually return the last 20 or 40 items, and you can add params to you request to handle pagination.
+Some Mastodon REST APIs that return an array of items, also return pagination hint in their response header.
 
-Those methods contains 3 parameters : `maxId`, `sinceId`, and `limit` ; and return a `MastodonList<T>`.  
-`MastodonList<T>` inherits `List<T>` and can be used the same way, and contains 2 more properties : `NextPageMaxId` and `PreviousPageSinceId`.
+Methods corresponding to these APIs return `MastodonList<T>` and have 2 overloads: One takes 3 parameters: `maxId`, `sinceId` and `limit`, and the other takes a single `ArrayOptions options` parameter.
+`ArrayOptions` is basically a bundle of the 3 parameters (it has `MaxId`, `SinceId` and `Limit` properties), except it can have `MinId` property supported since Mastodon v2.6.0.
+
+The returned `MastodonList<T>` inherits `List<T>` and can be used the same way, and contains 3 more properties : `NextPageMaxId`, `PreviousPageSinceId` and `PreviousPageMinId`.
 
 The default behaviour of a client app should be like this :
 
 - On the first load, the methods is called with no params, and gets the last items
 - If you want to load older items (next page), call the method with `maxId` param, defined with the `NextPageMaxId` property from the previous list
-- To get newer items (previous page), call the method with `sinceId` param, defined with the `PreviousPageSinceId` property from the previous list
+- To get newer items (previous page), call the method with `minId` param, defined with the `PreviousPageMinId` property from the previous list
+- If you want to load newest items but don't need already fetched ones, call the method with `options` param with `MinId` property set, defined with the `PreviousPageSinceId` property from the previous list
 
 You can always let the `limit` to its default value or define the number of items you want to load.
 
-All the methods can be called with the 3 params `maxId`, `sinceId`, and `limit`, or using an `ArrayOptions` object. The result will be the same. Only the methods with `ArrayOptions` are presented below.
+Note that the 3-parameter overloads don't have `minId` for backward compatibility. Use the overloads with `ArrayOptions` if you need it.
 
 ## Methods
 
