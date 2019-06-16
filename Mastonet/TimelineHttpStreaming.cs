@@ -55,31 +55,35 @@ namespace Mastonet
 
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Authorization", "Bearer " + accessToken);
-            var response = await client.SendAsync(request, token);
-            var stream = await response.Content.ReadAsStreamAsync();
-            var reader = new StreamReader(stream);
-
-            string eventName = null;
-            string data = null;
-
-            while (true)
+            using (var response = await client.SendAsync(request, token))
             {
-                var line = await reader.ReadLineAsync();
+                request.Dispose();
+                var stream = await response.Content.ReadAsStreamAsync();
+                using (var reader = new StreamReader(stream))
+                {
+                    string eventName = null;
+                    string data = null;
 
-                if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
-                {
-                    eventName = data = null;
-                    continue;
-                }
+                    while (true)
+                    {
+                        var line = await reader.ReadLineAsync();
 
-                if (line.StartsWith("event: "))
-                {
-                    eventName = line.Substring("event: ".Length).Trim();
-                }
-                else if (line.StartsWith("data: "))
-                {
-                    data = line.Substring("data: ".Length);
-                    SendEvent(eventName, data);
+                        if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
+                        {
+                            eventName = data = null;
+                            continue;
+                        }
+
+                        if (line.StartsWith("event: "))
+                        {
+                            eventName = line.Substring("event: ".Length).Trim();
+                        }
+                        else if (line.StartsWith("data: "))
+                        {
+                            data = line.Substring("data: ".Length);
+                            SendEvent(eventName, data);
+                        }
+                    }
                 }
             }
         }
