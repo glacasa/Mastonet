@@ -111,8 +111,9 @@ namespace Mastonet
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
         /// <param name="scheduledAt">DateTime to schedule posting of status</param>
         /// <param name="language">Override language code of the toot (ISO 639-2)</param>
-        /// <returns></returns>
-        public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null)
+        /// <param name="poll">Nested parameters to attach a poll to the status</param>
+        /// <returns>Returns Status</returns>
+        public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null, PollParameters poll = null)
         {
             if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
             {
@@ -151,6 +152,19 @@ namespace Mastonet
             if (language != null)
             {
                 data.Add(new KeyValuePair<string, string>("language", language));
+            }
+            if (poll != null)
+            {
+                data.AddRange(poll.Options.Select(option => new KeyValuePair<string, string>("poll[options][]", option)));
+                data.Add(new KeyValuePair<string, string>("poll[expires_in]", poll.ExpiresIn.TotalSeconds.ToString()));
+                if (poll.Multiple.HasValue)
+                {
+                    data.Add(new KeyValuePair<string, string>("poll[multiple]", poll.Multiple.Value.ToString()));
+                }
+                if (poll.HideTotals.HasValue)
+                {
+                    data.Add(new KeyValuePair<string, string>("poll[hide_totals]", poll.HideTotals.Value.ToString()));
+                }
             }
 
             return Post<Status>("/api/v1/statuses", data);

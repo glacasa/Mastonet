@@ -141,7 +141,7 @@ namespace Mastonet
         /// <param name="limit">Maximum number of items to get (Default 40, Max 80)</param>
         /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = 0);
+        Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = NotificationType.None);
 
         /// <summary>
         /// Fetching a user's notifications
@@ -149,7 +149,7 @@ namespace Mastonet
         /// <param name="options">Define the first and last items to get</param>
         /// <param name="excludeTypes">Types to exclude</param>
         /// <returns>Returns a list of Notifications for the authenticated user</returns>
-        Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = 0);
+        Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = NotificationType.None);
 
         /// <summary>
         /// Getting a single notification
@@ -264,6 +264,21 @@ namespace Mastonet
         /// </summary>
         /// <param name="filterId"></param>
         Task DeleteFilter(long filterId);
+
+        /// <summary>
+        /// Get a poll
+        /// </summary>
+        /// <param name="id">The ID of the poll</param>
+        /// <returns>Returns Poll</returns>
+        Task<Poll> GetPoll(long id);
+
+        /// <summary>
+        /// Vote on a poll.
+        /// </summary>
+        /// <param name="id">The ID of the poll</param>
+        /// <param name="choices">Array of choice indices</param>
+        /// <returns>Returns Poll</returns>
+        Task<Poll> Vote(long id, IEnumerable<int> choices);
 
         #endregion
 
@@ -643,8 +658,9 @@ namespace Mastonet
         /// <param name="spoilerText">text to be shown as a warning before the actual content</param>
         /// <param name="scheduledAt">DateTime to schedule posting of status</param>
         /// <param name="language">Override language code of the toot (ISO 639-2)</param>
-        /// <returns></returns>
-        Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null);
+        /// <param name="poll">Nested parameters to attach a poll to the status</param>
+        /// <returns>Returns Status</returns>
+        Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null, PollParameters poll = null);
 
         /// <summary>
         /// Deleting a status
