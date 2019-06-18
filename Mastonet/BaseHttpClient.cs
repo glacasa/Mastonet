@@ -13,7 +13,7 @@ namespace Mastonet
 {
     public abstract class BaseHttpClient : IBaseHttpClient
     {
-        private readonly HttpClient client;
+        protected readonly HttpClient client;
         public string Instance { get; protected set; }
         public AppRegistration AppRegistration { get; set; }
         public Auth AuthToken { get; set; }

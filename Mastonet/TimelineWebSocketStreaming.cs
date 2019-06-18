@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -17,7 +18,9 @@ namespace Mastonet
         private const int receiveChunkSize = 512;
 
         public TimelineWebSocketStreaming(StreamingType type, string param, string instance, Task<Instance> instanceGetter, string accessToken)
-            : base(type, param, instance, accessToken)
+            : this(type, param, instance, instanceGetter, accessToken, DefaultHttpClient.Instance) { }
+        public TimelineWebSocketStreaming(StreamingType type, string param, string instance, Task<Instance> instanceGetter, string accessToken, HttpClient client)
+            : base(type, param, instance, accessToken, client)
         {
             this.instanceGetter = instanceGetter;
         }
