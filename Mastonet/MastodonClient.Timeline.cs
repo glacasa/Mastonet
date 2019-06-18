@@ -189,9 +189,9 @@ namespace Mastonet
         private TimelineStreaming GetStreaming(StreamingType streamingType, string param)
         {
 #if NETSTANDARD2_0
-            return new TimelineWebSocketStreaming(streamingType, param, Instance, instanceGetter.Value, AuthToken.AccessToken);
+            return new TimelineWebSocketStreaming(streamingType, param, Instance, instanceGetter.Value, AuthToken.AccessToken, client);
 #else
-            return new TimelineHttpStreaming(streamingType, param, Instance, AuthToken.AccessToken);
+            return new TimelineHttpStreaming(streamingType, param, Instance, AuthToken.AccessToken, client);
 #endif
         }
 

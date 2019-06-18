@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mastonet
@@ -12,10 +13,14 @@ namespace Mastonet
     {
         private string instance;
         private HttpClient client;
+        private CancellationTokenSource cts;
 
         public TimelineHttpStreaming(StreamingType type, string param, string instance, string accessToken)
+            : this(type, param, instance, accessToken, DefaultHttpClient.Instance) { }
+        public TimelineHttpStreaming(StreamingType type, string param, string instance, string accessToken, HttpClient client)
             : base(type, param, accessToken)
         {
+            this.client = client;
             this.instance = instance;
         }
 
@@ -49,47 +54,49 @@ namespace Mastonet
                     throw new NotImplementedException();
             }
 
-
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-
-            var stream = await client.GetStreamAsync(url);
-
-            var reader = new StreamReader(stream);
-
-            string eventName = null;
-            string data = null;
-
-            while (client != null)
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            using (cts = new CancellationTokenSource())
             {
-                var line = await reader.ReadLineAsync();
+                request.Headers.Add("Authorization", "Bearer " + accessToken);
+                using (var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token))
+                {
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    using (var reader = new StreamReader(stream))
+                    {
+                        string eventName = null;
+                        string data = null;
 
-                if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
-                {
-                    eventName = data = null;
-                    continue;
-                }
+                        while (true)
+                        {
+                            var line = await reader.ReadLineAsync();
 
-                if (line.StartsWith("event: "))
-                {
-                    eventName = line.Substring("event: ".Length).Trim();
-                }
-                else if (line.StartsWith("data: "))
-                {
-                    data = line.Substring("data: ".Length);
-                    SendEvent(eventName, data);
+                            if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
+                            {
+                                eventName = data = null;
+                                continue;
+                            }
+
+                            if (line.StartsWith("event: "))
+                            {
+                                eventName = line.Substring("event: ".Length).Trim();
+                            }
+                            else if (line.StartsWith("data: "))
+                            {
+                                data = line.Substring("data: ".Length);
+                                SendEvent(eventName, data);
+                            }
+                        }
+                    }
                 }
             }
-
-            this.Stop();
         }
 
         public override void Stop()
         {
-            if (client != null)
+            if (cts != null)
             {
-                client.Dispose();
-                client = null;
+                cts.Cancel();
+                cts = null;
             }
         }
     }
