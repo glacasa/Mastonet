@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,12 +10,15 @@ namespace Mastonet
 {
     public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     {
-        public AuthenticationClient(string instance)
+        public AuthenticationClient(string instance) : this(instance, DefaultHttpClient.Instance) { }
+        public AuthenticationClient(AppRegistration app) : this(app, DefaultHttpClient.Instance) { }
+
+        public AuthenticationClient(string instance, HttpClient client) : base(client)
         {
             this.Instance = instance;
         }
 
-        public AuthenticationClient(AppRegistration app)
+        public AuthenticationClient(AppRegistration app, HttpClient client) : base(client)
         {
             this.Instance = app.Instance;
             this.AppRegistration = app;

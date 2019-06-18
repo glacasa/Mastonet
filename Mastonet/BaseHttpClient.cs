@@ -13,17 +13,23 @@ namespace Mastonet
 {
     public abstract class BaseHttpClient : IBaseHttpClient
     {
+        private readonly HttpClient client;
         public string Instance { get; protected set; }
         public AppRegistration AppRegistration { get; set; }
         public Auth AuthToken { get; set; }
 
+        protected BaseHttpClient(HttpClient client)
+        {
+            this.client = client;
+        }
+
         #region Http helpers
 
-        private void AddHttpHeader(HttpClient client)
+        private void AddHttpHeader(HttpRequestMessage request)
         {
             if (AuthToken != null)
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthToken.AccessToken);
+                request.Headers.Add("Authorization", "Bearer " + AuthToken.AccessToken);
             }
         }
 
@@ -36,10 +42,12 @@ namespace Mastonet
                 url += querystring;
             }
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.DeleteAsync(url);
-            return await response.Content.ReadAsStringAsync();
+            using (var request = new HttpRequestMessage(HttpMethod.Delete, url))
+            {
+                AddHttpHeader(request);
+                using (var response = await client.SendAsync(request))
+                    return await response.Content.ReadAsStringAsync();
+            }
         }
 
         protected async Task<string> Get(string route, IEnumerable<KeyValuePair<string, string>> data = null)
@@ -51,10 +59,12 @@ namespace Mastonet
                 url += querystring;
             }
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.GetAsync(url);
-            return await response.Content.ReadAsStringAsync();
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            {
+                AddHttpHeader(request);
+                using (var response = await client.SendAsync(request))
+                    return await response.Content.ReadAsStringAsync();
+            }
         }
 
         protected async Task<T> Get<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
@@ -74,69 +84,76 @@ namespace Mastonet
                 url += querystring;
             }
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-            var response = await client.GetAsync(url);
-            var content = await response.Content.ReadAsStringAsync();
-            var result = TryDeserialize<MastodonList<T>>(content);
-
-            // Read `Link` header
-            IEnumerable<string> linkHeader;
-            if (response.Headers.TryGetValues("Link", out linkHeader))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                var links = linkHeader.Single().Split(',');
-                foreach (var link in links)
+                AddHttpHeader(request);
+                using (var response = await client.SendAsync(request))
                 {
-                    if (link.Contains("rel=\"next\""))
+                    var content = await response.Content.ReadAsStringAsync();
+                    var result = TryDeserialize<MastodonList<T>>(content);
+
+                    // Read `Link` header
+                    IEnumerable<string> linkHeader;
+                    if (response.Headers.TryGetValues("Link", out linkHeader))
                     {
-                        result.NextPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                        var links = linkHeader.Single().Split(',');
+                        foreach (var link in links)
+                        {
+                            if (link.Contains("rel=\"next\""))
+                            {
+                                result.NextPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                            }
+
+                            if (link.Contains("rel=\"prev\""))
+                            {
+                                result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                            }
+                        }
                     }
 
-                    if (link.Contains("rel=\"prev\""))
-                    {
-                        result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
-                    }
+                    return result;
                 }
             }
-
-            return result;
         }
 
         protected async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data = null)
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.PostAsync(url, content);
-            return await response.Content.ReadAsStringAsync();
+            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            {
+                AddHttpHeader(request);
+                request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+                using (var response = await client.SendAsync(request))
+                    return await response.Content.ReadAsStringAsync();
+            }
         }
 
         protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
-
-            var content = new MultipartFormDataContent();
-
-            foreach (var m in media)
+            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
             {
-                content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
-            }
-            if (data != null)
-            {
-                foreach (var pair in data)
+                AddHttpHeader(request);
+                var content = new MultipartFormDataContent();
+
+                foreach (var m in media)
                 {
-                    content.Add(new StringContent(pair.Value), pair.Key);
+                    content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
                 }
-            }
+                if (data != null)
+                {
+                    foreach (var pair in data)
+                    {
+                        content.Add(new StringContent(pair.Value), pair.Key);
+                    }
+                }
+                request.Content = content;
 
-            var response = await client.PostAsync(url, content);
-            return await response.Content.ReadAsStringAsync();
+                using (var response = await client.SendAsync(request))
+                    return await response.Content.ReadAsStringAsync();
+            }
         }
 
         protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
@@ -150,12 +167,14 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            AddHttpHeader(client);
+            using (var request = new HttpRequestMessage(HttpMethod.Put, url))
+            {
+                AddHttpHeader(request);
 
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var response = await client.PutAsync(url, content);
-            return await response.Content.ReadAsStringAsync();
+                request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+                using (var response = await client.SendAsync(request))
+                    return await response.Content.ReadAsStringAsync();
+            }
         }
 
         protected async Task<T> Put<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
@@ -167,42 +186,41 @@ namespace Mastonet
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            var method = new HttpMethod("PATCH");
-            AddHttpHeader(client);
-
-            var content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            var message = new HttpRequestMessage(method, url);
-            message.Content = content;
-            var response = await client.SendAsync(message);
-            return await response.Content.ReadAsStringAsync();
+            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), url))
+            {
+                AddHttpHeader(request);
+                request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
+                using (var response = await client.SendAsync(request))
+                    return await response.Content.ReadAsStringAsync();
+            }
         }
 
         protected async Task<string> PatchMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
         {
             string url = "https://" + this.Instance + route;
 
-            var client = new HttpClient();
-            var method = new HttpMethod("PATCH");
-            AddHttpHeader(client);
+            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), url))
+            {
 
-            var content = new MultipartFormDataContent();
-            foreach (var m in media)
-            {
-                content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
-            }
-            if (data != null)
-            {
-                foreach (var pair in data)
+                AddHttpHeader(request);
+
+                var content = new MultipartFormDataContent();
+                foreach (var m in media)
                 {
-                    content.Add(new StringContent(pair.Value), pair.Key);
+                    content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
                 }
-            }
+                if (data != null)
+                {
+                    foreach (var pair in data)
+                    {
+                        content.Add(new StringContent(pair.Value), pair.Key);
+                    }
+                }
 
-            var message = new HttpRequestMessage(method, url);
-            message.Content = content;
-            var response = await client.SendAsync(message);
-            return await response.Content.ReadAsStringAsync();
+                request.Content = content;
+                using (var response = await client.SendAsync(request))
+                    return await response.Content.ReadAsStringAsync();
+            }
         }
 
         protected async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)

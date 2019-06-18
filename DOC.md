@@ -68,6 +68,16 @@ streaming.Start();
 // Stop streaming
 streaming.Stop();
 ```
+
+# Share a single HttpClient in your entire app
+
+You should share a signle instance of HttpClient in your entire app (c.f. [You're using HttpClient wrong and it is destabilizing your software](https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/)). If you have HttpClient in other parts of your app, you can inject it from constructors:
+```cs
+    var httpClient = new HttpClient();
+    var authClient = new AuthenticationClient("instanceUrl", httpClient);
+    var mastodonClient = new MastodonClient(appRegistration, auth, httpClient);
+```
+
 # Connection issues with .net framework
 
 Some instances only accept TLS 1.2 requests, but .net Framework only support TLS 1.2 by default on version 4.6 and above
