@@ -11,6 +11,8 @@ namespace Mastonet
 
         public long? SinceId { get; set; }
 
+        public long? MinId { get; set; }
+
         public int? Limit { get; set; }
 
         internal string ToQueryString()
@@ -23,6 +25,10 @@ namespace Mastonet
             if (this.SinceId.HasValue)
             {
                 query.Add("since_id=" + this.SinceId);
+            }
+            if (this.MinId.HasValue)
+            {
+                query.Add("min_id=" + this.MinId);
             }
             if (this.Limit.HasValue)
             {
