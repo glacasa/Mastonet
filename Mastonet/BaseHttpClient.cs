@@ -58,7 +58,10 @@ namespace Mastonet
                 {
                     request.Content = new FormUrlEncodedContent(form);
                 }
-                request.Headers.Add("Authorization", "Bearer " + AuthToken.AccessToken);
+                if (AuthToken != null)
+                {
+                    request.Headers.Add("Authorization", "Bearer " + AuthToken.AccessToken);
+                }
 
                 // And send it
                 return await client.SendAsync(request);
