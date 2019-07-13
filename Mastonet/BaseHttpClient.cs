@@ -14,9 +14,33 @@ namespace Mastonet
     public abstract class BaseHttpClient : IBaseHttpClient
     {
         protected readonly HttpClient client;
-        public string Instance { get; protected set; }
         public AppRegistration AppRegistration { get; set; }
         public Auth AuthToken { get; set; }
+
+        #region Instance 
+        private string instance;
+        public string Instance
+        {
+            get
+            {
+                return instance;
+            }
+            set
+            {
+                CheckInstance(value);
+                instance = value;
+            }
+        }
+
+        private void CheckInstance(string instance)
+        {
+            if (instance.ToLowerInvariant().Contains("gab."))
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        #endregion
 
         protected BaseHttpClient(HttpClient client)
         {
@@ -104,19 +128,19 @@ namespace Mastonet
                                 result.NextPageMaxId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
                             }
 
-                    if (link.Contains("rel=\"prev\""))
-                    {
-                        if (link.Contains("since_id"))
-                        {
-                            result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
-                        }
-                        if (link.Contains("min_id"))
-                        {
-                            result.PreviousPageMinId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                            if (link.Contains("rel=\"prev\""))
+                            {
+                                if (link.Contains("since_id"))
+                                {
+                                    result.PreviousPageSinceId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                                }
+                                if (link.Contains("min_id"))
+                                {
+                                    result.PreviousPageMinId = long.Parse(idFinderRegex.Match(link).Groups[1].Value);
+                                }
+                            }
                         }
                     }
-                }
-            }
 
                     return result;
                 }
