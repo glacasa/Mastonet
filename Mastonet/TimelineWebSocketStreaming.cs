@@ -13,13 +13,13 @@ namespace Mastonet
 {
     public class TimelineWebSocketStreaming : TimelineHttpStreaming
     {
-        private ClientWebSocket socket;
+        private ClientWebSocket? socket;
         readonly Task<Instance> instanceGetter;
         private const int receiveChunkSize = 512;
 
-        public TimelineWebSocketStreaming(StreamingType type, string param, string instance, Task<Instance> instanceGetter, string accessToken)
+        public TimelineWebSocketStreaming(StreamingType type, string? param, string instance, Task<Instance> instanceGetter, string? accessToken)
             : this(type, param, instance, instanceGetter, accessToken, DefaultHttpClient.Instance) { }
-        public TimelineWebSocketStreaming(StreamingType type, string param, string instance, Task<Instance> instanceGetter, string accessToken, HttpClient client)
+        public TimelineWebSocketStreaming(StreamingType type, string? param, string instance, Task<Instance> instanceGetter, string? accessToken, HttpClient client)
             : base(type, param, instance, accessToken, client)
         {
             this.instanceGetter = instanceGetter;

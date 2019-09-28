@@ -17,6 +17,6 @@ namespace Mastonet
 
         public string FileName { get; set; }
 
-        internal string ParamName { get; set; }
+        internal string? ParamName { get; set; }
     }
 }

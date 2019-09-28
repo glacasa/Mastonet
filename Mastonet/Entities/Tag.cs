@@ -11,19 +11,19 @@ namespace Mastonet.Entities
         /// The hashtag, not including the preceding #
         /// </summary>
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// The URL of the hashtag
         /// </summary>
         [JsonProperty("url")]
-        public string Url { get; set; }
+        public string Url { get; set; } = string.Empty;
 
         /// <summary>
         /// 7-day stats of the hashtag
         /// </summary>
         [JsonProperty("history")]
-        public IEnumerable<History> History { get; set; }
+        public IEnumerable<History>? History { get; set; }
     }
 
     public class History

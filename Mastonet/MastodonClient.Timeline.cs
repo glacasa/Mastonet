@@ -186,12 +186,12 @@ namespace Mastonet
         private Lazy<Task<Instance>> instanceGetter;
 #endif
 
-        private TimelineStreaming GetStreaming(StreamingType streamingType, string param)
+        private TimelineStreaming GetStreaming(StreamingType streamingType, string? param)
         {
 #if NETSTANDARD2_0
-            return new TimelineWebSocketStreaming(streamingType, param, Instance, instanceGetter.Value, AuthToken.AccessToken, client);
+            return new TimelineWebSocketStreaming(streamingType, param, Instance, instanceGetter.Value, AuthToken?.AccessToken, client);
 #else
-            return new TimelineHttpStreaming(streamingType, param, Instance, AuthToken.AccessToken, client);
+            return new TimelineHttpStreaming(streamingType, param, Instance, AuthToken?.AccessToken, client);
 #endif
         }
 

@@ -8,16 +8,16 @@ namespace Mastonet
     public abstract class TimelineStreaming
     {
         protected readonly StreamingType streamingType;
-        protected readonly string param;
-        protected readonly string accessToken;
+        protected readonly string? param;
+        protected readonly string? accessToken;
 
-        public event EventHandler<StreamUpdateEventArgs> OnUpdate;
-        public event EventHandler<StreamNotificationEventArgs> OnNotification;
-        public event EventHandler<StreamDeleteEventArgs> OnDelete;
-        public event EventHandler<StreamFiltersChangedEventArgs> OnFiltersChanged;
-        public event EventHandler<StreamConversationEvenTargs> OnConversation;
+        public event EventHandler<StreamUpdateEventArgs>? OnUpdate;
+        public event EventHandler<StreamNotificationEventArgs>? OnNotification;
+        public event EventHandler<StreamDeleteEventArgs>? OnDelete;
+        public event EventHandler<StreamFiltersChangedEventArgs>? OnFiltersChanged;
+        public event EventHandler<StreamConversationEvenTargs>? OnConversation;
 
-        protected TimelineStreaming(StreamingType type, string param, string accessToken)
+        protected TimelineStreaming(StreamingType type, string? param, string? accessToken)
         {
             this.streamingType = type;
             this.param = param;
@@ -33,22 +33,22 @@ namespace Mastonet
             {
                 case "update":
                     var status = JsonConvert.DeserializeObject<Status>(data);
-                    OnUpdate?.Invoke(this, new StreamUpdateEventArgs() { Status = status });
+                    OnUpdate?.Invoke(this, new StreamUpdateEventArgs(status));
                     break;
                 case "notification":
                     var notification = JsonConvert.DeserializeObject<Notification>(data);
-                    OnNotification?.Invoke(this, new StreamNotificationEventArgs() { Notification = notification });
+                    OnNotification?.Invoke(this, new StreamNotificationEventArgs(notification));
                     break;
                 case "delete":
                     var statusId = long.Parse(data);
-                    OnDelete?.Invoke(this, new StreamDeleteEventArgs() { StatusId = statusId });
+                    OnDelete?.Invoke(this, new StreamDeleteEventArgs(statusId));
                     break;
                 case "filters_changed":
                     OnFiltersChanged?.Invoke(this, new StreamFiltersChangedEventArgs());
                     break;
                 case "conversation":
                     var conversation = JsonConvert.DeserializeObject<Conversation>(data);
-                    OnConversation?.Invoke(this, new StreamConversationEvenTargs() { Conversation = conversation });
+                    OnConversation?.Invoke(this, new StreamConversationEvenTargs(conversation));
                     break;
             }
         }

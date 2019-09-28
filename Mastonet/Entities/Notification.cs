@@ -17,7 +17,7 @@ namespace Mastonet.Entities
         /// One of: "mention", "reblog", "favourite", "follow"
         /// </summary>
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
         /// <summary>
         /// The time the notification was created
@@ -29,12 +29,12 @@ namespace Mastonet.Entities
         /// The Account sending the notification to the user
         /// </summary>
         [JsonProperty("account")]
-        public Account Account { get; set; }
+        public Account Account { get; set; } = new Account();
 
         /// <summary>
         /// The Status associated with the notification, if applicible
         /// </summary>
         [JsonProperty("status")]
-        public Status Status { get; set; }
+        public Status? Status { get; set; }
     }
 }

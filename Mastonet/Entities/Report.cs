@@ -17,6 +17,6 @@ namespace Mastonet.Entities
         /// The action taken in response to the report
         /// </summary>
         [JsonProperty("action_taken")]
-        public string ActionTaken { get; set; }
+        public string? ActionTaken { get; set; } 
     }
 }

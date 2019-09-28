@@ -17,19 +17,19 @@ namespace Mastonet.Entities
         /// URL of user's profile (can be remote)
         /// </summary>
         [JsonProperty("url")]
-        public string Url { get; set; }
+        public string Url { get; set; } = string.Empty;
 
         /// <summary>
         /// The username of the account
         /// </summary>
         [JsonProperty("username")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// Equals username for local users, includes @domain for remote ones
         /// </summary>
         [JsonProperty("acct")]
-        public string AccountName { get; set; }
+        public string AccountName { get; set; } = string.Empty;
 
     }
 }

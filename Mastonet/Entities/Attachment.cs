@@ -18,55 +18,55 @@ namespace Mastonet.Entities
         /// One of: "image", "video", "gifv", "unknown"
         /// </summary>
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
         /// <summary>
         /// URL of the locally hosted version of the image
         /// </summary>
         [JsonProperty("url")]
-        public string Url { get; set; }
+        public string Url { get; set; } = string.Empty;
 
         /// <summary>
         /// For remote images, the remote URL of the original image
         /// </summary>
         [JsonProperty("remote_url")]
-        public string RemoteUrl { get; set; }
+        public string? RemoteUrl { get; set; }
 
         /// <summary>
         /// URL of the preview image
         /// </summary>
         [JsonProperty("preview_url")]
-        public string PreviewUrl { get; set; }
+        public string PreviewUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// Shorter URL for the image, for insertion into text (only present on local images)
         /// </summary>
         [JsonProperty("text_url")]
-        public string TextUrl { get; set; }
+        public string? TextUrl { get; set; }
 
         ///<summary>
         /// Metadata of the attachment
         ///</summary>
         [JsonProperty("meta")]
-        public AttachmentMeta Meta { get; set; }
+        public AttachmentMeta? Meta { get; set; }
 
         /// <summary>
         /// Description of the attachment
         /// </summary>
         [JsonProperty("description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 
     public class AttachmentMeta
     {
         [JsonProperty("original")]
-        public AttachmentSizeData Original { get; set; }
+        public AttachmentSizeData? Original { get; set; }
 
         [JsonProperty("small")]
-        public AttachmentSizeData Small { get; set; }
+        public AttachmentSizeData? Small { get; set; }
 
         [JsonProperty("focus")]
-        public AttachmentFocusData Focus { get; set; }
+        public AttachmentFocusData? Focus { get; set; }
     }
 
     public class AttachmentSizeData
@@ -80,13 +80,13 @@ namespace Mastonet.Entities
 
 
         [JsonProperty("size")]
-        public string Size { get; set; }
+        public string? Size { get; set; }
 
         [JsonProperty("aspect")]
         public double? Aspect { get; set; }
 
         [JsonProperty("frame_rate")]
-        public string FrameRate { get; set; }
+        public string? FrameRate { get; set; }
 
         [JsonProperty("duration")]
         public double? Duration { get; set; }

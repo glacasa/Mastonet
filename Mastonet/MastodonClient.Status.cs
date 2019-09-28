@@ -113,7 +113,7 @@ namespace Mastonet
         /// <param name="language">Override language code of the toot (ISO 639-2)</param>
         /// <param name="poll">Nested parameters to attach a poll to the status</param>
         /// <returns>Returns Status</returns>
-        public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null, PollParameters poll = null)
+        public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null)
         {
             if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
             {
@@ -137,7 +137,7 @@ namespace Mastonet
             {
                 data.Add(new KeyValuePair<string, string>("sensitive", "true"));
             }
-            if (!string.IsNullOrEmpty(spoilerText))
+            if (spoilerText != null)
             {
                 data.Add(new KeyValuePair<string, string>("spoiler_text", spoilerText));
             }

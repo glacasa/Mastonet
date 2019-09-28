@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Mastonet.Entities
@@ -23,13 +24,13 @@ namespace Mastonet.Entities
         /// Parameters of the scheduled status
         /// </summary>
         [JsonProperty("params")]
-        public StatusParams Params { get; set; }
+        public StatusParams Params { get; set; } = new StatusParams();
 
         /// <summary>
         /// Media attached to the scheduled status
         /// </summary>
         [JsonProperty("media_attachments")]
-        public IEnumerable<Attachment> MediaAttachments { get; set; }
+        public IEnumerable<Attachment> MediaAttachments { get; set; } = Enumerable.Empty<Attachment>();
     }
 
     public class StatusParams
@@ -38,19 +39,19 @@ namespace Mastonet.Entities
         /// Content of the status in plain text
         /// </summary>
         [JsonProperty("text")]
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
 
         /// <summary>
         /// null or the ID of the status it replies to
         /// </summary>
         [JsonProperty("in_reply_to_id")]
-        public string InReplyToId { get; set; }
+        public string? InReplyToId { get; set; }
 
         /// <summary>
         /// IDs of the attachments
         /// </summary>
         [JsonProperty("media_ids")]
-        public IEnumerable<long> MediaIds { get; set; }
+        public IEnumerable<long>? MediaIds { get; set; }
 
         /// <summary>
         /// Whether to mark the attachment as sensitive, or null 
@@ -62,13 +63,13 @@ namespace Mastonet.Entities
         /// Spoiler text if any
         /// </summary>
         [JsonProperty("spoiler_text")]
-        public string SpoilerText { get; set; }
+        public string? SpoilerText { get; set; }
 
         /// <summary>
         /// Visibility of the scheduled status
         /// </summary>
         [JsonProperty("visibility")]
-        public Visibility? Visibility { get; set; }
+        public Visibility Visibility { get; set; }
 
         /// <summary>
         /// DateTime to publish the scheduled status

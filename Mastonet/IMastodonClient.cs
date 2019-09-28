@@ -113,7 +113,7 @@ namespace Mastonet
         /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
         /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        Task<Attachment> UploadMedia(Stream data, string fileName = "file", string description = null, AttachmentFocusData focus = null);
+        Task<Attachment> UploadMedia(Stream data, string fileName = "file", string? description = null, AttachmentFocusData? focus = null);
 
         /// <summary>
         /// Uploading a media attachment
@@ -122,7 +122,7 @@ namespace Mastonet
         /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
         /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        Task<Attachment> UploadMedia(MediaDefinition media, string description = null, AttachmentFocusData focus = null);
+        Task<Attachment> UploadMedia(MediaDefinition media, string? description = null, AttachmentFocusData? focus = null);
 
         /// <summary>
         /// Update a media attachment. Can only be done before the media is attached to a status.
@@ -131,7 +131,7 @@ namespace Mastonet
         /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
         /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        Task<Attachment> UpdateMedia(long mediaId, string description = null, AttachmentFocusData focus = null);
+        Task<Attachment> UpdateMedia(long mediaId, string? description = null, AttachmentFocusData? focus = null);
 
         /// <summary>
         /// Fetching a user's notifications
@@ -195,7 +195,7 @@ namespace Mastonet
         /// <param name="comment">A comment to associate with the report</param>
         /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
         /// <returns>Returns the finished Report</returns>
-        Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, string comment = null, bool? forward = null);
+        Task<Report> Report(long accountId, IEnumerable<long>? statusIds = null, string? comment = null, bool? forward = null);
 
         /// <summary>
         /// Searching for content
@@ -257,7 +257,7 @@ namespace Mastonet
         /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
         /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
         /// <returns>Returns an updated filter</returns>
-        Task<Filter> UpdateFilter(long filterId, string phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null);
+        Task<Filter> UpdateFilter(long filterId, string? phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null);
 
         /// <summary>
         /// Deleting a text filter
@@ -310,15 +310,15 @@ namespace Mastonet
         /// <param name="source_language">Override language on statuses by default (ISO6391)</param>
         /// <param name="fields_attributes">Profile metadata (max. 4)</param>
         /// <returns>Returns the authenticated user's Account</returns>
-        Task<Account> UpdateCredentials(string display_name = null,
-            string note = null,
-            MediaDefinition avatar = null,
-            MediaDefinition header = null,
-            bool? locked = null,
-            Visibility? source_privacy = null,
-            bool? source_sensitive = null,
-            string source_language = null,
-            IEnumerable<AccountField> fields_attributes = null);
+        Task<Account> UpdateCredentials(string? display_name = null,
+                                        string? note = null,
+                                        MediaDefinition? avatar = null,
+                                        MediaDefinition? header = null,
+                                        bool? locked = null,
+                                        Visibility? source_privacy = null,
+                                        bool? source_sensitive = null,
+                                        string? source_language = null,
+                                        IEnumerable<AccountField>? fields_attributes = null);
 
         /// <summary>
         /// Getting an account's relationships
@@ -660,7 +660,7 @@ namespace Mastonet
         /// <param name="language">Override language code of the toot (ISO 639-2)</param>
         /// <param name="poll">Nested parameters to attach a poll to the status</param>
         /// <returns>Returns Status</returns>
-        Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null, PollParameters poll = null);
+        Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null);
 
         /// <summary>
         /// Deleting a status

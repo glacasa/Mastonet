@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mastonet.Entities
 {
@@ -40,7 +41,7 @@ namespace Mastonet.Entities
         /// The array of options
         /// </summary>
         [JsonProperty("options")]
-        public IEnumerable<PollOption> Options { get; set; }
+        public IEnumerable<PollOption> Options { get; set; } = Enumerable.Empty<PollOption>();
 
         /// <summary>
         /// Whether the account has voted
@@ -55,7 +56,7 @@ namespace Mastonet.Entities
         /// The options' title
         /// </summary>
         [JsonProperty("title")]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         /// <summary>
         /// The number of votes for the option
@@ -69,7 +70,7 @@ namespace Mastonet.Entities
         /// <summary>
         /// The array of options
         /// </summary>
-        public IEnumerable<string> Options { get; set; }
+        public IEnumerable<string> Options { get; set; } = Enumerable.Empty<string>();
 
         /// <summary>
         /// The timespan until expiration

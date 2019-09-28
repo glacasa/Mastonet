@@ -41,15 +41,15 @@ namespace Mastonet
         /// <param name="source_language">Override language on statuses by default (ISO6391)</param>
         /// <param name="fields_attributes">Profile metadata (max. 4)</param>
         /// <returns>Returns the authenticated user's Account</returns>
-        public Task<Account> UpdateCredentials(string display_name = null,
-            string note = null,
-            MediaDefinition avatar = null,
-            MediaDefinition header = null,
+        public Task<Account> UpdateCredentials(string? display_name = null,
+            string? note = null,
+            MediaDefinition? avatar = null,
+            MediaDefinition? header = null,
             bool? locked = null,
             Visibility? source_privacy = null,
             bool? source_sensitive = null,
-            string source_language = null,
-            IEnumerable<AccountField> fields_attributes = null)
+            string? source_language = null,
+            IEnumerable<AccountField>? fields_attributes = null)
         {
             if (fields_attributes?.Count() > 4)
             {

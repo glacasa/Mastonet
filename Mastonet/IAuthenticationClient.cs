@@ -16,12 +16,12 @@ namespace Mastonet
         /// <param name="scope">The rights needed by your application</param>
         /// <param name="website">URL to the homepage of your app</param>
         /// <returns></returns>
-        Task<AppRegistration> CreateApp(string appName, Scope scope, string website = null, string redirectUri = null);
+        Task<AppRegistration> CreateApp(string appName, Scope scope, string? website = null, string? redirectUri = null);
 
         Task<Auth> ConnectWithPassword(string email, string password);
 
-        Task<Auth> ConnectWithCode(string code, string redirect_uri = null);
+        Task<Auth> ConnectWithCode(string code, string? redirect_uri = null);
 
-        string OAuthUrl(string redirectUri = null);
+        string OAuthUrl(string? redirectUri = null);
     }
 }

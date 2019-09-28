@@ -11,6 +11,6 @@ namespace Mastonet.Entities
         /// A textual description of the error
         /// </summary>
         [JsonProperty("error")]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
     }
 }

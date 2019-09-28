@@ -17,7 +17,7 @@ namespace Mastonet.Entities
         /// Keyword or phrase to filter
         /// </summary>
         [JsonProperty("phrase")]
-        public string Phrase { get; set; }
+        public string Phrase { get; set; } = string.Empty;
 
         /// <summary>
         /// Contexts to apply the filter

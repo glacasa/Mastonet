@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mastonet.Entities
 {
@@ -16,19 +17,19 @@ namespace Mastonet.Entities
         /// The username of the account
         /// </summary>
         [JsonProperty("username")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// Equals username for local users, includes @domain for remote ones
         /// </summary>
         [JsonProperty("acct")]
-        public string AccountName { get; set; }
+        public string AccountName { get; set; } = string.Empty;
 
         /// <summary>
         /// The account's display name
         /// </summary>
         [JsonProperty("display_name")]
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
 
         /// <summary>
         /// Boolean for when the account cannot be followed without waiting for approval first
@@ -64,55 +65,55 @@ namespace Mastonet.Entities
         /// Biography of user
         /// </summary>
         [JsonProperty("note")]
-        public string Note { get; set; }
+        public string Note { get; set; } = string.Empty;
 
         /// <summary>
         /// URL of the user's profile page (can be remote)
         /// </summary>
         [JsonProperty("url")]
-        public string ProfileUrl { get; set; }
+        public string ProfileUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// URL to the avatar image
         /// </summary>
         [JsonProperty("avatar")]
-        public string AvatarUrl { get; set; }
+        public string AvatarUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// URL to the avatar static image (gif)
         /// </summary>
         [JsonProperty("avatar_static")]
-        public string StaticAvatarUrl { get; set; }
+        public string StaticAvatarUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// URL to the header image
         /// </summary>
         [JsonProperty("header")]
-        public string HeaderUrl { get; set; }
+        public string HeaderUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// URL to the header image
         /// </summary>
         [JsonProperty("header_static")]
-        public string StaticHeaderUrl { get; set; }
+        public string StaticHeaderUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// Emojis used in the account info
         /// </summary>
         [JsonProperty("emojis")]
-        public IEnumerable<Emoji> Emojis { get; set; }
+        public IEnumerable<Emoji> Emojis { get; set; } = Enumerable.Empty<Emoji>();
 
         /// <summary>
         /// If moved, the new account for the account
         /// </summary>
         [JsonProperty("moved")]
-        public Account Moved { get; set; }
+        public Account? Moved { get; set; }
 
         /// <summary>
         /// The custom fields of the account
         /// </summary>
         [JsonProperty("fields")]
-        public IEnumerable<AccountField> Fields { get; set; }
+        public IEnumerable<AccountField>? Fields { get; set; }
 
         /// <summary>
         /// Whether the account is a bot
@@ -124,7 +125,7 @@ namespace Mastonet.Entities
         /// Source of the authorized account's profile (returned only from *_credentials endpoints)
         /// </summary>
         [JsonProperty("source")]
-        public AccountSource Source { get; set; }
+        public AccountSource? Source { get; set; }
     }
 
     public class AccountField
@@ -133,13 +134,13 @@ namespace Mastonet.Entities
         /// The name of the field
         /// </summary>
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// The value of the field (HTML)
         /// </summary>
         [JsonProperty("value")]
-        public string Value { get; set; }
+        public string Value { get; set; } = string.Empty;
 
         /// <summary>
         /// The datetime when the account is verified if the field value is a link
@@ -154,7 +155,7 @@ namespace Mastonet.Entities
         /// The default visibility for the account
         /// </summary>
         [JsonProperty("privacy")]
-        public Visibility Privacy { get; set; }
+        public Visibility? Privacy { get; set; }
 
         /// <summary>
         /// The default media sensitiveness setting for the account
@@ -166,18 +167,18 @@ namespace Mastonet.Entities
         /// The language setting for the account (ISO6391)
         /// </summary>
         [JsonProperty("language")]
-        public string Language { get; set; }
+        public string? Language { get; set; }
 
         /// <summary>
         /// Biography of the user (in plain text)
         /// </summary>
         [JsonProperty("note")]
-        public string Note { get; set; }
+        public string Note { get; set; } = string.Empty;
 
         /// <summary>
         /// The custom fields of the account (in plain text)
         /// </summary>
         [JsonProperty("fields")]
-        public IEnumerable<AccountField> Fields { get; set; }
+        public IEnumerable<AccountField> Fields { get; set; } = Enumerable.Empty<AccountField>();
     }
 }

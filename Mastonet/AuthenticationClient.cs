@@ -34,21 +34,15 @@ namespace Mastonet
         /// <param name="scope">The rights needed by your application</param>
         /// <param name="website">URL to the homepage of your app</param>
         /// <returns></returns>
-        public async Task<AppRegistration> CreateApp(string appName, Scope scope, string website = null, string redirectUri = null)
+        public async Task<AppRegistration> CreateApp(string appName, Scope scope, string? website = null, string? redirectUri = null)
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("client_name", appName),
                 new KeyValuePair<string, string>("scopes", GetScopeParam(scope)),
+                new KeyValuePair<string, string>("redirect_uris", redirectUri?? "urn:ietf:wg:oauth:2.0:oob")
             };
-            if (string.IsNullOrEmpty(redirectUri))
-            {
-                data.Add(new KeyValuePair<string, string>("redirect_uris", "urn:ietf:wg:oauth:2.0:oob"));
-            }
-            else
-            {
-                data.Add(new KeyValuePair<string, string>("redirect_uris", redirectUri));
-            }
-            if (!string.IsNullOrEmpty(website))
+
+            if (website != null)
             {
                 data.Add(new KeyValuePair<string, string>("website", website));
             }
@@ -68,6 +62,11 @@ namespace Mastonet
 
         public async Task<Auth> ConnectWithPassword(string email, string password)
         {
+            if (AppRegistration == null)
+            {
+                throw new Exception("The app must be registered before you can connect");
+            }
+
             var data = new List<KeyValuePair<string, string>>()
             {
                 new KeyValuePair<string, string>("client_id", AppRegistration.ClientId),
@@ -83,8 +82,13 @@ namespace Mastonet
             return auth;
         }
 
-        public async Task<Auth> ConnectWithCode(string code, string redirect_uri = null)
+        public async Task<Auth> ConnectWithCode(string code, string? redirect_uri = null)
         {
+            if (AppRegistration == null)
+            {
+                throw new Exception("The app must be registered before you can connect");
+            }
+
             var data = new List<KeyValuePair<string, string>>()
             {
                 new KeyValuePair<string, string>("client_id", AppRegistration.ClientId),
@@ -99,9 +103,14 @@ namespace Mastonet
             return auth;
         }
 
-        public string OAuthUrl(string redirectUri = null)
+        public string OAuthUrl(string? redirectUri = null)
         {
-            if (!string.IsNullOrEmpty(redirectUri))
+            if (AppRegistration == null)
+            {
+                throw new Exception("The app must be registered before you can connect");
+            }
+
+            if (redirectUri != null)
             {
                 redirectUri = WebUtility.UrlEncode(WebUtility.UrlDecode(redirectUri));
             }
@@ -110,7 +119,7 @@ namespace Mastonet
                 redirectUri = "urn:ietf:wg:oauth:2.0:oob";
             }
 
-            return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={this.AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
+            return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
         }
 
         private static string GetScopeParam(Scope scope)

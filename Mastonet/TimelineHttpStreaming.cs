@@ -13,11 +13,11 @@ namespace Mastonet
     {
         private string instance;
         private HttpClient client;
-        private CancellationTokenSource cts;
+        private CancellationTokenSource? cts;
 
-        public TimelineHttpStreaming(StreamingType type, string param, string instance, string accessToken)
+        public TimelineHttpStreaming(StreamingType type, string? param, string instance, string? accessToken)
             : this(type, param, instance, accessToken, DefaultHttpClient.Instance) { }
-        public TimelineHttpStreaming(StreamingType type, string param, string instance, string accessToken, HttpClient client)
+        public TimelineHttpStreaming(StreamingType type, string? param, string instance, string? accessToken, HttpClient client)
             : base(type, param, accessToken)
         {
             this.client = client;
@@ -63,8 +63,8 @@ namespace Mastonet
                     var stream = await response.Content.ReadAsStreamAsync();
                     using (var reader = new StreamReader(stream))
                     {
-                        string eventName = null;
-                        string data = null;
+                        string? eventName = null;
+                        string? data = null;
 
                         while (true)
                         {
@@ -83,7 +83,10 @@ namespace Mastonet
                             else if (line.StartsWith("data: "))
                             {
                                 data = line.Substring("data: ".Length);
-                                SendEvent(eventName, data);
+                                if (eventName != null)
+                                {
+                                    SendEvent(eventName, data);
+                                }
                             }
                         }
                     }

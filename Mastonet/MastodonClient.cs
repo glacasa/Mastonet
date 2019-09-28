@@ -217,7 +217,7 @@ namespace Mastonet
         /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
         /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(Stream data, string fileName = "file", string description = null, AttachmentFocusData focus = null)
+        public Task<Attachment> UploadMedia(Stream data, string fileName = "file", string? description = null, AttachmentFocusData? focus = null)
         {
             return UploadMedia(new MediaDefinition(data, fileName), description, focus);
         }
@@ -229,7 +229,7 @@ namespace Mastonet
         /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
         /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UploadMedia(MediaDefinition media, string description = null, AttachmentFocusData focus = null)
+        public Task<Attachment> UploadMedia(MediaDefinition media, string? description = null, AttachmentFocusData? focus = null)
         {
             media.ParamName = "file";
             var list = new List<MediaDefinition>() { media };
@@ -252,7 +252,7 @@ namespace Mastonet
         /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
         /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UpdateMedia(long mediaId, string description = null, AttachmentFocusData focus = null)
+        public Task<Attachment> UpdateMedia(long mediaId, string? description = null, AttachmentFocusData? focus = null)
         {
             var data = new Dictionary<string, string>();
             if (description != null)
@@ -402,7 +402,7 @@ namespace Mastonet
         /// <param name="comment">A comment to associate with the report</param>
         /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
         /// <returns>Returns the finished Report</returns>
-        public Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, string comment = null, bool? forward = null)
+        public Task<Report> Report(long accountId, IEnumerable<long>? statusIds = null, string? comment = null, bool? forward = null)
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("account_id", accountId.ToString()),
@@ -411,7 +411,7 @@ namespace Mastonet
             {
                 data.Add(new KeyValuePair<string, string>("status_ids[]", statusId.ToString()));
             }
-            if (!string.IsNullOrEmpty(comment))
+            if (comment != null)
             {
                 data.Add(new KeyValuePair<string, string>("comment", comment));
             }
@@ -589,7 +589,7 @@ namespace Mastonet
         /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
         /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
         /// <returns>Returns an updated filter</returns>
-        public Task<Filter> UpdateFilter(long filterId, string phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
+        public Task<Filter> UpdateFilter(long filterId, string? phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
         {
             if (context == 0)
             {

@@ -11,12 +11,12 @@ namespace Mastonet.Entities
         /// Name of the app
         /// </summary>
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Homepage URL of the app
         /// </summary>
         [JsonProperty("website")]
-        public string Website { get; set; }
+        public string? Website { get; set; }
     }
 }

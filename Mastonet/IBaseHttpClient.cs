@@ -8,7 +8,7 @@ namespace Mastonet
     public interface IBaseHttpClient
     {
         string Instance { get; }
-        AppRegistration AppRegistration { get; }
-        Auth AuthToken { get; }
+        AppRegistration? AppRegistration { get; }
+        Auth? AuthToken { get; }
     }
 }

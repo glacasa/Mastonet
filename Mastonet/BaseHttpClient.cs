@@ -14,11 +14,11 @@ namespace Mastonet
     public abstract class BaseHttpClient : IBaseHttpClient
     {
         protected readonly HttpClient client;
-        public AppRegistration AppRegistration { get; set; }
-        public Auth AuthToken { get; set; }
+        public AppRegistration? AppRegistration { get; set; }
+        public Auth? AuthToken { get; set; }
 
         #region Instance 
-        private string instance;
+        private string instance = string.Empty;
         public string Instance
         {
             get
@@ -57,7 +57,7 @@ namespace Mastonet
             }
         }
 
-        protected async Task<string> Delete(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<string> Delete(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
         {
             string url = "https://" + this.Instance + route;
             if (data != null)
@@ -74,7 +74,7 @@ namespace Mastonet
             }
         }
 
-        protected async Task<string> Get(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<string> Get(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
         {
             string url = "https://" + this.Instance + route;
             if (data != null)
@@ -91,7 +91,7 @@ namespace Mastonet
             }
         }
 
-        protected async Task<T> Get<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<T> Get<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
             where T : class
         {
             var content = await Get(route, data);
@@ -99,7 +99,7 @@ namespace Mastonet
         }
 
         private Regex idFinderRegex = new Regex("_id=([0-9]+)");
-        protected async Task<MastodonList<T>> GetMastodonList<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<MastodonList<T>> GetMastodonList<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
         {
             string url = "https://" + this.Instance + route;
             if (data != null)
@@ -147,7 +147,7 @@ namespace Mastonet
             }
         }
 
-        protected async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<string> Post(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
         {
             string url = "https://" + this.Instance + route;
 
@@ -160,41 +160,44 @@ namespace Mastonet
             }
         }
 
-        protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
+        protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
         {
             string url = "https://" + this.Instance + route;
 
-            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
-            {
-                AddHttpHeader(request);
-                var content = new MultipartFormDataContent();
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
 
+            AddHttpHeader(request);
+            var content = new MultipartFormDataContent();
+
+            if (media != null)
+            {
                 foreach (var m in media)
                 {
                     content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
                 }
-                if (data != null)
-                {
-                    foreach (var pair in data)
-                    {
-                        content.Add(new StringContent(pair.Value), pair.Key);
-                    }
-                }
-                request.Content = content;
-
-                using (var response = await client.SendAsync(request))
-                    return await response.Content.ReadAsStringAsync();
             }
+
+            if (data != null)
+            {
+                foreach (var pair in data)
+                {
+                    content.Add(new StringContent(pair.Value), pair.Key);
+                }
+            }
+            request.Content = content;
+
+            using var response = await client.SendAsync(request);
+            return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
+        protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
             where T : class
         {
             var content = media != null && media.Any() ? await PostMedia(route, data, media) : await Post(route, data);
             return TryDeserialize<T>(content);
         }
 
-        protected async Task<string> Put(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<string> Put(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
         {
             string url = "https://" + this.Instance + route;
 
@@ -208,12 +211,12 @@ namespace Mastonet
             }
         }
 
-        protected async Task<T> Put<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<T> Put<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
         {
             return TryDeserialize<T>(await Put(route, data));
         }
 
-        protected async Task<string> Patch(string route, IEnumerable<KeyValuePair<string, string>> data = null)
+        protected async Task<string> Patch(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
         {
             string url = "https://" + this.Instance + route;
 
@@ -226,7 +229,7 @@ namespace Mastonet
             }
         }
 
-        protected async Task<string> PatchMedia(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
+        protected async Task<string> PatchMedia(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
         {
             string url = "https://" + this.Instance + route;
 
@@ -236,10 +239,15 @@ namespace Mastonet
                 AddHttpHeader(request);
 
                 var content = new MultipartFormDataContent();
-                foreach (var m in media)
+
+                if (media != null)
                 {
-                    content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
+                    foreach (var m in media)
+                    {
+                        content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
+                    }
                 }
+
                 if (data != null)
                 {
                     foreach (var pair in data)
@@ -254,7 +262,7 @@ namespace Mastonet
             }
         }
 
-        protected async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>> data = null, IEnumerable<MediaDefinition> media = null)
+        protected async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
             where T : class
         {
             var content = media != null && media.Any() ? await PatchMedia(route, data, media) : await Patch(route, data);
