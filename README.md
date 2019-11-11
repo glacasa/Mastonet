@@ -1,6 +1,6 @@
 # Masto.NET
 
-![Build status](https://glacasa.visualstudio.com/_apis/public/build/definitions/b2cc08b3-5c47-4294-b016-434c80d4059c/43/badge)
+[![Build status](https://dev.azure.com/glacasa/GithubBuilds/_apis/build/status/Mastonet-CI)](https://dev.azure.com/glacasa/GithubBuilds/_build/latest?definitionId=77)
 [![NuGet](https://img.shields.io/nuget/v/Mastonet.svg)](https://www.nuget.org/packages/Mastonet/)
 
 Masto.NET is a .net standard library for Mastodon written in C#.
