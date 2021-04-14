@@ -81,10 +81,8 @@ namespace Mastonet
                 {
                     var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
-                    var message = JsonConvert.DeserializeObject<Dictionary<string, string>>(messageStr);
-                    var eventName = message["event"];
-                    var data = message["payload"];
-                    SendEvent(eventName, data);
+                    var message = JsonConvert.DeserializeObject<TimelineMessage>(messageStr);
+                    SendEvent(message.Event, message.Payload);
 
                     ms.Dispose();
                     ms = new MemoryStream();
@@ -93,6 +91,13 @@ namespace Mastonet
             ms.Dispose();
 
             this.Stop();
+        }
+
+        private class TimelineMessage
+        {
+            public string Event { get; set; } = default!;
+
+            public string Payload { get; set; } = default!;
         }
 
         public override void Stop()
