@@ -33,22 +33,33 @@ namespace Mastonet
             {
                 case "update":
                     var status = JsonConvert.DeserializeObject<Status>(data);
-                    OnUpdate?.Invoke(this, new StreamUpdateEventArgs(status));
+                    if (status != null)
+                    {
+                        OnUpdate?.Invoke(this, new StreamUpdateEventArgs(status));
+                    }
                     break;
                 case "notification":
                     var notification = JsonConvert.DeserializeObject<Notification>(data);
-                    OnNotification?.Invoke(this, new StreamNotificationEventArgs(notification));
+                    if (notification != null)
+                    {
+                        OnNotification?.Invoke(this, new StreamNotificationEventArgs(notification));
+                    }
                     break;
                 case "delete":
-                    var statusId = long.Parse(data);
-                    OnDelete?.Invoke(this, new StreamDeleteEventArgs(statusId));
+                    if (long.TryParse(data, out long statusId))
+                    {
+                        OnDelete?.Invoke(this, new StreamDeleteEventArgs(statusId));
+                    }
                     break;
                 case "filters_changed":
                     OnFiltersChanged?.Invoke(this, new StreamFiltersChangedEventArgs());
                     break;
                 case "conversation":
                     var conversation = JsonConvert.DeserializeObject<Conversation>(data);
-                    OnConversation?.Invoke(this, new StreamConversationEvenTargs(conversation));
+                    if (conversation != null)
+                    {
+                        OnConversation?.Invoke(this, new StreamConversationEvenTargs(conversation));
+                    }
                     break;
             }
         }

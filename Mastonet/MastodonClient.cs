@@ -439,7 +439,7 @@ namespace Mastonet
                 return Task.FromResult(new Results());
             }
 
-            string url = "/api/v1/search?q=" + Uri.EscapeUriString(q);
+            string url = "/api/v1/search?q=" + Uri.EscapeDataString(q);
             if (resolve)
             {
                 url += "&resolve=true";
@@ -461,7 +461,7 @@ namespace Mastonet
                 return Task.FromResult(new ResultsV2());
             }
 
-            string url = "/api/v2/search?q=" + Uri.EscapeUriString(q);
+            string url = "/api/v2/search?q=" + Uri.EscapeDataString(q);
             if (resolve)
             {
                 url += "&resolve=true";
@@ -485,7 +485,7 @@ namespace Mastonet
                 return Task.FromResult(new List<Account>());
             }
 
-            string url = "/api/v1/accounts/search?q=" + Uri.EscapeUriString(q);
+            string url = "/api/v1/accounts/search?q=" + Uri.EscapeDataString(q);
             if (limit.HasValue)
             {
                 url += "&limit=" + limit.Value;
@@ -613,15 +613,15 @@ namespace Mastonet
             }
             if (irreversible.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("irreversible", irreversible.ToString().ToLowerInvariant()));
+                data.Add(new KeyValuePair<string, string>("irreversible", irreversible.Value.ToString().ToLowerInvariant()));
             }
             if (wholeWord.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("whole_word", wholeWord.ToString().ToLowerInvariant()));
+                data.Add(new KeyValuePair<string, string>("whole_word", wholeWord.Value.ToString().ToLowerInvariant()));
             }
             if (expiresIn.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.ToString()));
+                data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.Value.ToString()));
             }
 
             return Put<Filter>($"/api/v1/filters/{filterId}", data);

@@ -21,25 +21,28 @@ namespace Mastonet
         {
             NotificationType context = NotificationType.None;
             var contextStrings = serializer.Deserialize<IEnumerable<string>>(reader);
-            foreach (var contextString in contextStrings)
+            if (contextStrings != null)
             {
-                switch (contextString)
+                foreach (var contextString in contextStrings)
                 {
-                    case "follow":
-                        context |= NotificationType.Follow;
-                        break;
-                    case "favourite":
-                        context |= NotificationType.Favourite;
-                        break;
-                    case "reblog":
-                        context |= NotificationType.Reblog;
-                        break;
-                    case "mention":
-                        context |= NotificationType.Mention;
-                        break;
-                    case "poll":
-                        context |= NotificationType.Poll;
-                        break;
+                    switch (contextString)
+                    {
+                        case "follow":
+                            context |= NotificationType.Follow;
+                            break;
+                        case "favourite":
+                            context |= NotificationType.Favourite;
+                            break;
+                        case "reblog":
+                            context |= NotificationType.Reblog;
+                            break;
+                        case "mention":
+                            context |= NotificationType.Mention;
+                            break;
+                        case "poll":
+                            context |= NotificationType.Poll;
+                            break;
+                    }
                 }
             }
             return context;

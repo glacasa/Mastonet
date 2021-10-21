@@ -80,15 +80,15 @@ namespace Mastonet
             }
             if (locked.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("locked", locked.ToString().ToLowerInvariant()));
+                data.Add(new KeyValuePair<string, string>("locked", locked.Value.ToString().ToLowerInvariant()));
             }
             if (source_privacy.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("source[privacy]", source_privacy.ToString().ToLowerInvariant()));
+                data.Add(new KeyValuePair<string, string>("source[privacy]", source_privacy.Value.ToString().ToLowerInvariant()));
             }
             if (source_sensitive.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("source[sensitive]", source_sensitive.ToString().ToLowerInvariant()));
+                data.Add(new KeyValuePair<string, string>("source[sensitive]", source_sensitive.Value.ToString().ToLowerInvariant()));
             }
             if (source_language != null)
             {

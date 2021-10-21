@@ -143,7 +143,7 @@ namespace Mastonet
             }
             if (visibility.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("visibility", visibility.ToString().ToLowerInvariant()));
+                data.Add(new KeyValuePair<string, string>("visibility", visibility.Value.ToString().ToLowerInvariant()));
             }
             if (scheduledAt.HasValue)
             {
@@ -209,7 +209,7 @@ namespace Mastonet
             var data = new List<KeyValuePair<string, string>>();
             if (scheduledAt.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.ToString()));
+                data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.Value.ToString()));
             }
             return Put<ScheduledStatus>("/api/v1/scheduled_statuses/" + scheduledStatusId, data);
         }

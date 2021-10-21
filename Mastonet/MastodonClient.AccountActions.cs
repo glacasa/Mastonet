@@ -214,7 +214,7 @@ namespace Mastonet
         /// <param name="domain">Domain to block</param>
         public Task BlockDomain(string domain)
         {
-            var url = "/api/v1/domain_blocks?domain=" + Uri.EscapeUriString(domain);
+            var url = "/api/v1/domain_blocks?domain=" + Uri.EscapeDataString(domain);
             return Post(url);
         }
 
@@ -224,7 +224,7 @@ namespace Mastonet
         /// <param name="domain">Domain to block</param>
         public Task UnblockDomain(string domain)
         {
-            var url = "/api/v1/domain_blocks?domain=" + Uri.EscapeUriString(domain);
+            var url = "/api/v1/domain_blocks?domain=" + Uri.EscapeDataString(domain);
             return Delete(url);
         }
 

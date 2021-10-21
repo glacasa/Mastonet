@@ -82,7 +82,10 @@ namespace Mastonet
                     var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
                     var message = JsonConvert.DeserializeObject<TimelineMessage>(messageStr);
-                    SendEvent(message.Event, message.Payload);
+                    if (message != null)
+                    {
+                        SendEvent(message.Event, message.Payload);
+                    }
 
                     ms.Dispose();
                     ms = new MemoryStream();

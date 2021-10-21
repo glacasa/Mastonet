@@ -21,22 +21,24 @@ namespace Mastonet
         {
             FilterContext context = 0;
             var contextStrings = serializer.Deserialize<IEnumerable<string>>(reader);
-            foreach (var contextString in contextStrings)
-            {
-                switch (contextString)
+            if (contextStrings != null) {
+                foreach (var contextString in contextStrings)
                 {
-                    case "home":
-                        context |= FilterContext.Home;
-                        break;
-                    case "notifications":
-                        context |= FilterContext.Notifications;
-                        break;
-                    case "public":
-                        context |= FilterContext.Public;
-                        break;
-                    case "thread":
-                        context |= FilterContext.Thread;
-                        break;
+                    switch (contextString)
+                    {
+                        case "home":
+                            context |= FilterContext.Home;
+                            break;
+                        case "notifications":
+                            context |= FilterContext.Notifications;
+                            break;
+                        case "public":
+                            context |= FilterContext.Public;
+                            break;
+                        case "thread":
+                            context |= FilterContext.Thread;
+                            break;
+                    }
                 }
             }
             return context;

@@ -34,7 +34,9 @@ namespace Mastonet
 
         private void CheckInstance(string instance)
         {
-            if (instance.ToLowerInvariant().Contains("gab."))
+            var notSupportedList = new List<string> { "gab.", "truthsocial." };
+            var lowered = instance.ToLowerInvariant();
+            if (notSupportedList.Any(n => lowered.Contains(n)))
             {
                 throw new NotSupportedException();
             }
@@ -117,7 +119,7 @@ namespace Mastonet
                     var result = TryDeserialize<MastodonList<T>>(content);
 
                     // Read `Link` header
-                    IEnumerable<string> linkHeader;
+                    IEnumerable<string>? linkHeader;
                     if (response.Headers.TryGetValues("Link", out linkHeader))
                     {
                         var links = linkHeader.Single().Split(',');
@@ -173,7 +175,7 @@ namespace Mastonet
             {
                 foreach (var m in media)
                 {
-                    content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
+                    content.Add(new StreamContent(m.Media), m.ParamName!, m.FileName);
                 }
             }
 
@@ -244,7 +246,7 @@ namespace Mastonet
                 {
                     foreach (var m in media)
                     {
-                        content.Add(new StreamContent(m.Media), m.ParamName, m.FileName);
+                        content.Add(new StreamContent(m.Media), m.ParamName!, m.FileName);
                     }
                 }
 
@@ -274,13 +276,13 @@ namespace Mastonet
             if (json[0] == '{')
             {
                 var error = JsonConvert.DeserializeObject<Error>(json);
-                if (!string.IsNullOrEmpty(error.Description))
+                if (error != null && !string.IsNullOrEmpty(error.Description))
                 {
                     throw new ServerErrorException(error);
                 }
             }
 
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json)!;
         }
 
         #endregion
