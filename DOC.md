@@ -3,7 +3,7 @@
 ## App registration
 
 You need to obtain a ClientId and a ClientSecret for your app, directly from the client, on the target Mastodon instance.
-Call the static `CreateApp` method :
+Call the `CreateApp` method :
 ```cs
 var authClient = new AuthenticationClient("instanceUrl");
 var appRegistration = await authClient.CreateApp("Your app name", Scope.Read | Scope.Write | Scope.Follow);
@@ -18,12 +18,12 @@ var auth = await authClient.ConnectWithPassword("email", "password");
 ```
 ## User login, using OAuth
 
-The recommended way to login is to use OAuth. You open a web browser and let the user login himself on his instance. 
+The recommended way to login is to use OAuth. You open a web browser and let the user log himself on his instance. 
 ```cs
 var url = authClient.OAuthUrl();
 OpenBrowser(url);
 ```
-You can either embed a WebView in you app, or open an external browser. When the user allowed your app to access its account, he is redirected to a web page with an auth code.
+You can either embed a WebView in your app, or open an external browser. When the user allowed your app to access their account, he is redirected to a web page with an auth code.
 
 You have several option to get the code :
 
@@ -76,12 +76,4 @@ You should share a single instance of HttpClient in your entire app (c.f. [You'r
     var httpClient = new HttpClient();
     var authClient = new AuthenticationClient("instanceUrl", httpClient);
     var mastodonClient = new MastodonClient(appRegistration, auth, httpClient);
-```
-
-# Connection issues with .net framework
-
-Some instances only accept TLS 1.2 requests, but .net Framework only support TLS 1.2 by default on version 4.6 and above
-If you are on version 4.5.2 or earlier, you should force using TLS 1.2 by this line of code before any request :
-```cs
-ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 ```
