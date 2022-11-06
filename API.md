@@ -121,9 +121,9 @@ public Task AuthorizeRequest(long accountId);
 
 public Task RejectRequest(long accountId);
 
-public Task<IEnumerable<Account>> GetFollowSuggestions()
+public Task<IEnumerable<Account>> GetFollowSuggestions();
 
-public Task DeleteFollowSuggestion(long accountId)
+public Task DeleteFollowSuggestion(long accountId);
 	
 public Task<MastodonList<Status>> GetFavourites(ArrayOptions options);
 ```
