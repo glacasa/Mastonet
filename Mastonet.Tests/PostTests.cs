@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using Mastonet.Entities;
 using Xunit;
 
 namespace Mastonet.Tests
@@ -15,7 +18,7 @@ namespace Mastonet.Tests
             var client = GetTestClient();
 
             System.IO.FileStream fs = new System.IO.FileStream(
-                                                @".\testimage.png",
+                                                @"./testimage.png",
                                                 System.IO.FileMode.Open,
                                                 System.IO.FileAccess.Read);
             var attachment = await client.UploadMedia(fs, "testimage.png");
@@ -31,6 +34,39 @@ namespace Mastonet.Tests
             Assert.NotNull(status.MediaAttachments);
             Assert.True(status.MediaAttachments.Any());
             Assert.Equal(attachment.Url, status.MediaAttachments.First().Url);
+        }
+
+        [Fact]
+        public async Task UploadMultipleMedia()
+        {
+            var client = GetTestClient();
+
+            var attachments = new List<Attachment>();
+            for (var i = 0; i < 4; i++)
+            {
+                using (var fs = new System.IO.FileStream($"./testimage.png", FileMode.Open, FileAccess.Read))
+                {
+                    var attachment = await client.UploadMedia(fs, $"testimage-{i}.png");
+                    Assert.NotNull(attachment);
+                    Assert.NotNull(attachment.PreviewUrl);
+                    Assert.NotNull(attachment.Url);
+                    attachments.Add(attachment);
+                };
+            }
+
+            var status = await client.PostStatus(
+                status: "Status with multiple media attachments",
+                visibility: Visibility.Private,
+                mediaIds: attachments.Select(a => a.Id));
+
+            status = await client.GetStatus(status.Id);
+
+            Assert.NotNull(status.MediaAttachments);
+            Assert.True(status.MediaAttachments.Count() == 4);
+            foreach (var attachment in attachments)
+            {
+                Assert.Contains(status.MediaAttachments, a => a.Url.Equals(attachment.Url));
+            }
         }
 
         [Fact]
