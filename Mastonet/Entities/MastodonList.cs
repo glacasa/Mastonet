@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mastonet.Entities
+namespace Mastonet.Entities;
+
+public class MastodonList<T> : List<T>
 {
-    public class MastodonList<T> : List<T>
-    {
-        public long? NextPageMaxId { get; internal set; }
-        public long? PreviousPageSinceId { get; internal set; }
-        public long? PreviousPageMinId { get; internal set; }
-    }
+    public long? NextPageMaxId { get; internal set; }
+    public long? PreviousPageSinceId { get; internal set; }
+    public long? PreviousPageMinId { get; internal set; }
 }

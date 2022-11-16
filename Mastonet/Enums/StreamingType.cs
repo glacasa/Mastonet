@@ -1,13 +1,12 @@
-﻿namespace Mastonet
+﻿namespace Mastonet;
+
+public enum StreamingType
 {
-    public enum StreamingType
-    {
-        User,
-        Public,
-        PublicLocal,
-        Hashtag,
-        HashtagLocal,
-        List,
-        Direct
-    }
+    User,
+    Public,
+    PublicLocal,
+    Hashtag,
+    HashtagLocal,
+    List,
+    Direct
 }

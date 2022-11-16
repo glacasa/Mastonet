@@ -3,49 +3,48 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mastonet
+namespace Mastonet;
+
+public class StreamUpdateEventArgs : EventArgs
 {
-    public class StreamUpdateEventArgs : EventArgs
+    public StreamUpdateEventArgs(Status status)
     {
-        public StreamUpdateEventArgs(Status status)
-        {
-            Status = status;
-        }
-
-        public Status Status { get; set; }
+        Status = status;
     }
 
-    public class StreamNotificationEventArgs : EventArgs
-    {
-        public StreamNotificationEventArgs(Notification notification)
-        {
-            this.Notification = notification;
-        }
+    public Status Status { get; set; }
+}
 
-        public Notification Notification { get; set; }
+public class StreamNotificationEventArgs : EventArgs
+{
+    public StreamNotificationEventArgs(Notification notification)
+    {
+        this.Notification = notification;
     }
 
-    public class StreamDeleteEventArgs : EventArgs
-    {
-        public StreamDeleteEventArgs(long statusId)
-        {
-            StatusId = statusId;
-        }
+    public Notification Notification { get; set; }
+}
 
-        public long StatusId { get; set; }
+public class StreamDeleteEventArgs : EventArgs
+{
+    public StreamDeleteEventArgs(long statusId)
+    {
+        StatusId = statusId;
     }
 
-    public class StreamFiltersChangedEventArgs : EventArgs
+    public long StatusId { get; set; }
+}
+
+public class StreamFiltersChangedEventArgs : EventArgs
+{
+}
+
+public class StreamConversationEvenTargs : EventArgs
+{
+    public StreamConversationEvenTargs(Conversation conversation)
     {
+        Conversation = conversation;
     }
 
-    public class StreamConversationEvenTargs : EventArgs
-    {
-        public StreamConversationEvenTargs(Conversation conversation)
-        {
-            Conversation = conversation;
-        }
-
-        public Conversation Conversation { get; set; }
-    }
+    public Conversation Conversation { get; set; }
 }

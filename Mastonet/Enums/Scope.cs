@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mastonet
+namespace Mastonet;
+
+[Flags]
+public enum Scope
 {
-    [Flags]
-    public enum Scope
-    {
-        Read = 1,
-        Write = 2,
-        Follow = 4,
-    }
+    Read = 1,
+    Write = 2,
+    Follow = 4,
 }

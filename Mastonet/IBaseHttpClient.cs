@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mastonet
+namespace Mastonet;
+
+public interface IBaseHttpClient
 {
-    public interface IBaseHttpClient
-    {
-        string Instance { get; }
-        AppRegistration? AppRegistration { get; }
-        Auth? AuthToken { get; }
-    }
+    string Instance { get; }
+    AppRegistration? AppRegistration { get; }
+    Auth? AuthToken { get; }
 }
