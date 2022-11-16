@@ -22,7 +22,7 @@ namespace Mastonet.Tests
         public async Task Search()
         {
             var client = GetTestClient();
-            var found = await client.Search("search", false);
+            var found = await client.SearchV2("search", false);
 
             Assert.True(found.Hashtags.Any());
         }

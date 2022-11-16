@@ -14,13 +14,13 @@ namespace Mastonet.Tests
         {
             var client = GetTestClient();
 
-            var status = await client.GetAccountStatuses(1);
+            var status = await client.GetAccountStatuses("1");
             Assert.NotNull(status);
             Assert.True(status.Any());
-            status = await client.GetAccountStatuses(1, onlyMedia: true);
+            status = await client.GetAccountStatuses("1", onlyMedia: true);
             Assert.NotNull(status);
             Assert.True(status.Any());
-            status = await client.GetAccountStatuses(1, excludeReplies: true);
+            status = await client.GetAccountStatuses("1", excludeReplies: true);
             Assert.NotNull(status);
             Assert.True(status.Any());
         }
@@ -72,7 +72,7 @@ namespace Mastonet.Tests
             await privateClient.Reblog(status.Id);
 
             var rbBy = await privateClient.GetRebloggedBy(status.Id);
-            Assert.NotNull(rbBy.FirstOrDefault(a => a.Id == 11));
+            Assert.NotNull(rbBy.FirstOrDefault(a => a.Id == "11"));
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace Mastonet.Tests
             await privateClient.Favourite(status.Id);
 
             var rbBy = await privateClient.GetFavouritedBy(status.Id);
-            Assert.NotNull(rbBy.FirstOrDefault(a => a.Id == 11));
+            Assert.NotNull(rbBy.FirstOrDefault(a => a.Id == "11"));
         }
     }
 }

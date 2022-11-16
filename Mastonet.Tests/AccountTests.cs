@@ -39,7 +39,7 @@ namespace Mastonet.Tests
         {
             var client = GetTestClient();
 
-            var relationships = await client.GetAccountRelationships(1);
+            var relationships = await client.GetAccountRelationships("1");
 
             Assert.NotNull(relationships);
             Assert.Single(relationships);

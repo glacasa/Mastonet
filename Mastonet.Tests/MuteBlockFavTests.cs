@@ -13,7 +13,7 @@ namespace Mastonet.Tests
         public async Task Block()
         {
             var client = GetTestClient();
-            var rel = await client.Block(10);
+            var rel = await client.Block("10");
             Assert.NotNull(rel);
             Assert.True(rel.Blocking);
         }
@@ -22,7 +22,7 @@ namespace Mastonet.Tests
         public async Task Unblock()
         {
             var client = GetTestClient();
-            var rel = await client.Unblock(10);
+            var rel = await client.Unblock("10");
             Assert.NotNull(rel);
             Assert.False(rel.Blocking);
         }
@@ -39,7 +39,7 @@ namespace Mastonet.Tests
         public async Task Mute()
         {
             var client = GetTestClient();
-            var rel = await client.Mute(10);
+            var rel = await client.Mute("10");
             Assert.NotNull(rel);
             Assert.True(rel.Muting);
         }
@@ -48,7 +48,7 @@ namespace Mastonet.Tests
         public async Task Unmute()
         {
             var client = GetTestClient();
-            var rel = await client.Unmute(10);
+            var rel = await client.Unmute("10");
             Assert.NotNull(rel);
             Assert.False(rel.Muting);
         }
