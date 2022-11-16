@@ -5,61 +5,84 @@ using System.Linq;
 
 namespace Mastonet.Entities
 {
+    /// <summary>
+    /// Represents a poll attached to a status.
+    /// </summary>
     public class Poll
     {
         /// <summary>
-        /// The poll ID
+        /// The ID of the poll in the database.
         /// </summary>
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
-        /// The due DateTime
+        /// When the poll ends.
         /// </summary>
         [JsonProperty("expires_at")]
         public DateTime? ExpiresAt { get; set; }
 
         /// <summary>
-        /// Whether the poll is expired
+        /// Is the poll currently expired?
         /// </summary>
         [JsonProperty("expired")]
         public bool Expired { get; set; }
 
         /// <summary>
-        /// Whether a vote for multiple options is accepted
+        /// Does the poll allow multiple-choice answers?
         /// </summary>
         [JsonProperty("multiple")]
         public bool Multiple { get; set; }
 
         /// <summary>
-        /// The total number of votes
+        /// How many votes have been received.
         /// </summary>
         [JsonProperty("votes_count")]
         public int VotesCount { get; set; }
 
         /// <summary>
-        /// The array of options
+        /// How many unique accounts have voted on a multiple-choice poll.
+        /// null if Multiple is false
+        /// </summary>
+        [JsonProperty("voters_count")]
+        public int? VotersCount { get; set; }
+
+        /// <summary>
+        /// When called with a user token, has the authorized user voted?
+        /// </summary>
+        [JsonProperty("voted")]
+        public bool? Voted { get; set; }
+
+        /// <summary>
+        /// When called with a user token, which options has the authorized user chosen? 
+        /// Contains an array of index values for options.
+        /// </summary>
+        [JsonProperty("own_votes")]
+        public IEnumerable<int> OwnVotes { get; set; }= Enumerable.Empty<int>();
+
+        /// <summary>
+        /// Possible answers for the poll.
         /// </summary>
         [JsonProperty("options")]
         public IEnumerable<PollOption> Options { get; set; } = Enumerable.Empty<PollOption>();
 
         /// <summary>
-        /// Whether the account has voted
+        /// Custom emoji to be used for rendering poll options.
         /// </summary>
-        [JsonProperty("voted")]
-        public bool? Voted { get; set; }
+        [JsonProperty("emojis")]
+        public IEnumerable<Emoji> Emojis { get; set; }= Enumerable.Empty<Emoji>();
     }
 
     public class PollOption
     {
         /// <summary>
-        /// The options' title
+        /// The text value of the poll option. 
         /// </summary>
         [JsonProperty("title")]
         public string Title { get; set; } = string.Empty;
 
         /// <summary>
-        /// The number of votes for the option
+        /// The number of received votes for this option. Number, or null if results are not published yet.
         /// </summary>
         [JsonProperty("votes_count")]
         public int? VotesCount { get; set; }

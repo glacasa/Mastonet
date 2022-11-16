@@ -5,30 +5,39 @@ using Newtonsoft.Json;
 
 namespace Mastonet.Entities
 {
+    /// <summary>
+    /// Represents a custom emoji.
+    /// </summary>
     public class Emoji
     {
         /// <summary>
-        /// The shortcode of the emoji
+        /// The name of the custom emoji.
         /// </summary>
         [JsonProperty("shortcode")]
         public string Shortcode { get; set; } = string.Empty;
 
         /// <summary>
-        /// URL to the emoji static image
-        /// </summary>
-        [JsonProperty("static_url")]
-        public string StaticUrl { get; set; } = string.Empty;
-
-        /// <summary>
-        /// URL to the emoji image
+        /// A link to the custom emoji.
         /// </summary>
         [JsonProperty("url")]
         public string Url { get; set; } = string.Empty;
 
         /// <summary>
-        /// Boolean that indicates if the emoji is visible in picker
+        /// A link to a static copy of the custom emoji.
+        /// </summary>
+        [JsonProperty("static_url")]
+        public string StaticUrl { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Whether this Emoji should be visible in the picker or unlisted.
         /// </summary>
         [JsonProperty("visible_in_picker")]
         public bool VisibleInPicker { get; set; }
+
+        /// <summary>
+        /// Used for sorting custom emoji in the picker.
+        /// </summary>
+        [JsonProperty("category")]
+        public string? Category { get; set; }
     }
 }

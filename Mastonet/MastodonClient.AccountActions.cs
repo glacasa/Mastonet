@@ -19,7 +19,7 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="reblogs">Whether the followed account’s reblogs will show up in the home timeline</param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Follow(long accountId, bool reblogs = true)
+        public Task<Relationship> Follow(string accountId, bool reblogs = true)
         {
             var data = reblogs ? null : Enumerable.Repeat(new KeyValuePair<string, string>("reblogs", "false"), 1);
             return this.Post<Relationship>($"/api/v1/accounts/{accountId}/follow", data);
@@ -30,7 +30,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Unfollow(long accountId)
+        public Task<Relationship> Unfollow(string accountId)
         {
             return this.Post<Relationship>($"/api/v1/accounts/{accountId}/unfollow");
         }
@@ -55,7 +55,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Block(long accountId)
+        public Task<Relationship> Block(string accountId)
         {
             return Post<Relationship>($"/api/v1/accounts/{accountId}/block");
         }
@@ -65,7 +65,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Unblock(long accountId)
+        public Task<Relationship> Unblock(string accountId)
         {
             return Post<Relationship>($"/api/v1/accounts/{accountId}/unblock");
         }
@@ -105,7 +105,7 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="notifications">Whether the mute will mute notifications or not</param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Mute(long accountId, bool notifications = true)
+        public Task<Relationship> Mute(string accountId, bool notifications = true)
         {
             var data = notifications ? null : new[] { new KeyValuePair<string, string>("notifications", "false") };
             return Post<Relationship>($"/api/v1/accounts/{accountId}/mute", data);
@@ -116,7 +116,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the target Account</returns>
-        public Task<Relationship> Unmute(long accountId)
+        public Task<Relationship> Unmute(string accountId)
         {
             return Post<Relationship>($"/api/v1/accounts/{accountId}/unmute");
         }
@@ -164,7 +164,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the updated Relationships with the target Account</returns>
-        public Task<Relationship> Endorse(long accountId)
+        public Task<Relationship> Endorse(string accountId)
         {
             return Post<Relationship>($"/api/v1/accounts/{accountId}/pin");
         }
@@ -174,7 +174,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns the updated Relationships with the target Account</returns>
-        public Task<Relationship> Unendorse(long accountId)
+        public Task<Relationship> Unendorse(string accountId)
         {
             return Post<Relationship>($"/api/v1/accounts/{accountId}/unpin");
         }

@@ -58,7 +58,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns array of List</returns>
-        public Task<IEnumerable<List>> GetListsContainingAccount(long accountId)
+        public Task<IEnumerable<List>> GetListsContainingAccount(string accountId)
         {
             return this.Get<IEnumerable<List>>($"/api/v1/accounts/{accountId}/lists");
         }
@@ -71,7 +71,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns array of Account</returns>
-        public Task<MastodonList<Account>> GetListAccounts(long listId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetListAccounts(string listId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetListAccounts(listId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -82,7 +82,7 @@ namespace Mastonet
         /// <param name="listId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns array of Account</returns>
-        public Task<MastodonList<Account>> GetListAccounts(long listId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetListAccounts(string listId, ArrayOptions options)
         {
             var url = $"/api/v1/lists/{listId}/accounts";
             if (options != null)
@@ -97,7 +97,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="listId"></param>
         /// <returns>Returns List</returns>
-        public Task<List> GetList(long listId)
+        public Task<List> GetList(string listId)
         {
             return this.Get<List>("/api/v1/lists/" + listId);
         }
@@ -126,7 +126,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="title">The title of the list</param>
         /// <returns>The list updated</returns>
-        public Task<List> UpdateList(long listId, string newTitle)
+        public Task<List> UpdateList(string listId, string newTitle)
         {
             if (string.IsNullOrEmpty(newTitle))
             {
@@ -144,7 +144,7 @@ namespace Mastonet
         /// Remove a list.
         /// </summary>
         /// <param name="listId"></param>
-        public Task DeleteList(long listId)
+        public Task DeleteList(string listId)
         {
             return this.Delete("/api/v1/lists/" + listId);
         }
@@ -155,14 +155,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="listId">List ID</param>
         /// <param name="accountIds">Array of account IDs</param>
-        public Task AddAccountsToList(long listId, IEnumerable<long> accountIds)
+        public Task AddAccountsToList(string listId, IEnumerable<string> accountIds)
         {
             if (accountIds == null || !accountIds.Any())
             {
                 throw new ArgumentException("Accounts are required", nameof(accountIds));
             }
 
-            var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
+            var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id));
 
             return this.Post($"/api/v1/lists/{listId}/accounts", data);
         }
@@ -173,7 +173,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="listId">List ID</param>
         /// <param name="accounts">Array of Accounts</param>
-        public Task AddAccountsToList(long listId, IEnumerable<Account> accounts)
+        public Task AddAccountsToList(string listId, IEnumerable<Account> accounts)
         {
             return AddAccountsToList(listId, accounts.Select(account => account.Id));
         }
@@ -183,14 +183,14 @@ namespace Mastonet
         /// </summary>
         /// <param name="listId">List Id</param>
         /// <param name="accountIds">Array of Account IDs</param>
-        public Task RemoveAccountsFromList(long listId, IEnumerable<long> accountIds)
+        public Task RemoveAccountsFromList(string listId, IEnumerable<string> accountIds)
         {
             if (accountIds == null || !accountIds.Any())
             {
                 throw new ArgumentException("Accounts are required", nameof(accountIds));
             }
 
-            var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id.ToString()));
+            var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id));
 
             return this.Delete($"/api/v1/lists/{listId}/accounts", data);
         }
@@ -200,7 +200,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="listId">List Id</param>
         /// <param name="accountIds">Array of Accounts</param>
-        public Task RemoveAccountsFromList(long listId, IEnumerable<Account> accounts)
+        public Task RemoveAccountsFromList(string listId, IEnumerable<Account> accounts)
         {
             return RemoveAccountsFromList(listId, accounts.Select(account => account.Id));
         }
@@ -252,7 +252,7 @@ namespace Mastonet
         /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
         /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
         /// <returns>Returns an Attachment that can be used when creating a status</returns>
-        public Task<Attachment> UpdateMedia(long mediaId, string? description = null, AttachmentFocusData? focus = null)
+        public Task<Attachment> UpdateMedia(string mediaId, string? description = null, AttachmentFocusData? focus = null)
         {
             var data = new Dictionary<string, string>();
             if (description != null)
@@ -338,7 +338,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="notificationId"></param>
         /// <returns>Returns the Notification</returns>
-        public Task<Notification> GetNotification(long notificationId)
+        public Task<Notification> GetNotification(string notificationId)
         {
             return Get<Notification>($"/api/v1/notifications/{notificationId}");
         }
@@ -357,7 +357,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="notificationId"></param>
         /// <returns></returns>
-        public Task DismissNotification(long notificationId)
+        public Task DismissNotification(string notificationId)
         {
             var data = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("id", notificationId.ToString()) };
             return Post("/api/v1/notifications/dismiss", data);
@@ -402,14 +402,17 @@ namespace Mastonet
         /// <param name="comment">A comment to associate with the report</param>
         /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
         /// <returns>Returns the finished Report</returns>
-        public Task<Report> Report(long accountId, IEnumerable<long>? statusIds = null, string? comment = null, bool? forward = null)
+        public Task<Report> Report(string accountId, IEnumerable<string>? statusIds = null, string? comment = null, bool? forward = null)
         {
             var data = new List<KeyValuePair<string, string>>() {
                 new KeyValuePair<string, string>("account_id", accountId.ToString()),
             };
-            foreach (var statusId in statusIds ?? Enumerable.Empty<long>())
+            if (statusIds != null)
             {
-                data.Add(new KeyValuePair<string, string>("status_ids[]", statusId.ToString()));
+                foreach (var statusId in statusIds)
+                {
+                    data.Add(new KeyValuePair<string, string>("status_ids[]", statusId));
+                }
             }
             if (comment != null)
             {
@@ -432,11 +435,12 @@ namespace Mastonet
         /// <param name="q">The search query</param>
         /// <param name="resolve">Whether to resolve non-local accounts</param>
         /// <returns>Returns Results. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-        public Task<Results> Search(string q, bool resolve = false)
+        [Obsolete]
+        public Task<ResultsV1> SearchV1(string q, bool resolve = false)
         {
             if (string.IsNullOrEmpty(q))
             {
-                return Task.FromResult(new Results());
+                return Task.FromResult(new ResultsV1());
             }
 
             string url = "/api/v1/search?q=" + Uri.EscapeDataString(q);
@@ -445,7 +449,7 @@ namespace Mastonet
                 url += "&resolve=true";
             }
 
-            return Get<Results>(url);
+            return Get<ResultsV1>(url);
         }
 
         /// <summary>
@@ -574,7 +578,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="filterId">Filter ID</param>
         /// <returns>Returns a filter</returns>
-        public Task<Filter> GetFilter(long filterId)
+        public Task<Filter> GetFilter(string filterId)
         {
             return Get<Filter>($"/api/v1/filters/{filterId}");
         }
@@ -589,7 +593,7 @@ namespace Mastonet
         /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
         /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
         /// <returns>Returns an updated filter</returns>
-        public Task<Filter> UpdateFilter(long filterId, string? phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
+        public Task<Filter> UpdateFilter(string filterId, string? phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
         {
             if (context == 0)
             {
@@ -631,7 +635,7 @@ namespace Mastonet
         /// Deleting a text filter
         /// </summary>
         /// <param name="filterId"></param>
-        public Task DeleteFilter(long filterId)
+        public Task DeleteFilter(string filterId)
         {
             return Delete($"/api/v1/filters/{filterId}");
         }
@@ -643,7 +647,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="id">The ID of the poll</param>
         /// <returns>Returns Poll</returns>
-        public Task<Poll> GetPoll(long id)
+        public Task<Poll> GetPoll(string id)
         {
             return Get<Poll>("/api/v1/polls/" + id.ToString());
         }
@@ -654,7 +658,7 @@ namespace Mastonet
         /// <param name="id">The ID of the poll</param>
         /// <param name="choices">Array of choice indices</param>
         /// <returns>Returns Poll</returns>
-        public Task<Poll> Vote(long id, IEnumerable<int> choices)
+        public Task<Poll> Vote(string id, IEnumerable<int> choices)
         {
             var data = choices
                 .Select(index => new KeyValuePair<string, string>("choices[]", index.ToString()))

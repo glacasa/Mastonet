@@ -5,66 +5,87 @@ using System.Text;
 
 namespace Mastonet.Entities
 {
+    /// <summary>
+    /// Represents the relationship between accounts, such as following / blocking / muting / etc.
+    /// </summary>
     public class Relationship
     {
         /// <summary>
-        /// Target account id
+        /// The account id.
         /// </summary>
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
-        /// Whether the user is currently following the account
+        /// Are you following this user?
         /// </summary>
         [JsonProperty("following")]
         public bool Following { get; set; }
 
         /// <summary>
-        /// Whether the user is currently being followed by the account
-        /// </summary>
-        [JsonProperty("followed_by")]
-        public bool FollowedBy { get; set; }
-
-        /// <summary>
-        /// Whether the user is currently blocking the account
-        /// </summary>
-        [JsonProperty("blocking")]
-        public bool Blocking { get; set; }
-
-        /// <summary>
-        /// Whether the user is currently muting the account
-        /// </summary>
-        [JsonProperty("muting")]
-        public bool Muting { get; set; }
-
-        /// <summary>
-        /// Whether the user is also muting notifications
-        /// </summary>
-        [JsonProperty("muting_notifications")]
-        public bool MutingNotifications { get; set; }
-
-        /// <summary>
-        /// Whether the user has requested to follow the account
+        /// Do you have a pending follow request for this user?
         /// </summary>
         [JsonProperty("requested")]
         public bool Requested { get; set; }
 
         /// <summary>
-        /// Whether the user is currently blocking the accounts's domain
+        /// Are you featuring this user on your profile?
         /// </summary>
-        [JsonProperty("domain_blocking")]
-        public bool DomainBlocking { get; set; }
+        [JsonProperty("endorsed")]
+        public bool Endorsed { get; set; }
 
         /// <summary>
-        /// Whether the user's reblogs will show up in the home timeline
+        /// Are you followed by this user?
+        /// </summary>
+        [JsonProperty("followed_by")]
+        public bool FollowedBy { get; set; }
+
+        /// <summary>
+        /// Are you muting this user?
+        /// </summary>
+        [JsonProperty("muting")]
+        public bool Muting { get; set; }
+
+        /// <summary>
+        /// Are you muting notifications from this user?
+        /// </summary>
+        [JsonProperty("muting_notifications")]
+        public bool MutingNotifications { get; set; }
+
+        /// <summary>
+        /// Are you receiving this user's boosts in your home timeline?
         /// </summary>
         [JsonProperty("showing_reblogs")]
         public bool ShowingReblogs { get; set; }
 
         /// <summary>
-        /// Whether the user is currently endorsing the account
+        /// Have you enabled notifications for this user?
         /// </summary>
-        [JsonProperty("endorsed")]
-        public bool Endorsed { get; set; }
+        [JsonProperty("notifying")]
+        public bool Notifying { get; set; }
+
+        /// <summary>
+        /// Are you blocking this user?
+        /// </summary>
+        [JsonProperty("blocking")]
+        public bool Blocking { get; set; }
+
+        /// <summary>
+        /// Are you blocking this user's domain?
+        /// </summary>
+        [JsonProperty("domain_blocking")]
+        public bool DomainBlocking { get; set; }
+
+        /// <summary>
+        /// Is this user blocking you?
+        /// </summary>
+        [JsonProperty("blocked_by")]
+        public bool BlockedBy { get; set; }
+
+        /// <summary>
+        /// This user's profile bio
+        /// </summary>
+        [JsonProperty("note")]
+        public string Note { get; set; } = string.Empty;
     }
 }

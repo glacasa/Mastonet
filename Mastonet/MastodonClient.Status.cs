@@ -18,7 +18,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns a Status</returns>
-        public Task<Status> GetStatus(long statusId)
+        public Task<Status> GetStatus(string statusId)
         {
             return Get<Status>($"/api/v1/statuses/{statusId}");
         }
@@ -28,7 +28,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns a Context</returns>
-        public Task<Context> GetStatusContext(long statusId)
+        public Task<Context> GetStatusContext(string statusId)
         {
             return Get<Context>($"/api/v1/statuses/{statusId}/context");
         }
@@ -38,7 +38,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns a Card</returns>
-        public Task<Card> GetStatusCard(long statusId)
+        public Task<Card> GetStatusCard(string statusId)
         {
             return Get<Card>($"/api/v1/statuses/{statusId}/card");
         }
@@ -51,7 +51,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetRebloggedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetRebloggedBy(string statusId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetRebloggedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -62,7 +62,7 @@ namespace Mastonet
         /// <param name="statusId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetRebloggedBy(long statusId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetRebloggedBy(string statusId, ArrayOptions options)
         {
             var url = $"/api/v1/statuses/{statusId}/reblogged_by";
             if (options != null)
@@ -80,7 +80,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetFavouritedBy(long statusId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetFavouritedBy(string statusId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetFavouritedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -91,7 +91,7 @@ namespace Mastonet
         /// <param name="statusId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetFavouritedBy(long statusId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetFavouritedBy(string statusId, ArrayOptions options)
         {
             var url = $"/api/v1/statuses/{statusId}/favourited_by";
             if (options != null)
@@ -113,7 +113,7 @@ namespace Mastonet
         /// <param name="language">Override language code of the toot (ISO 639-2)</param>
         /// <param name="poll">Nested parameters to attach a poll to the status</param>
         /// <returns>Returns Status</returns>
-        public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null)
+        public Task<Status> PostStatus(string status, Visibility? visibility = null, string? replyStatusId = null, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null)
         {
             if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
             {
@@ -124,9 +124,9 @@ namespace Mastonet
                 new KeyValuePair<string, string>("status", status),
             };
 
-            if (replyStatusId.HasValue)
+            if (!string.IsNullOrEmpty(replyStatusId))
             {
-                data.Add(new KeyValuePair<string, string>("in_reply_to_id", replyStatusId.Value.ToString()));
+                data.Add(new KeyValuePair<string, string>("in_reply_to_id", replyStatusId));
             }
             if (mediaIds != null && mediaIds.Any())
             {
@@ -174,7 +174,7 @@ namespace Mastonet
         /// Deleting a status
         /// </summary>
         /// <param name="statusId"></param>
-        public Task DeleteStatus(long statusId)
+        public Task DeleteStatus(string statusId)
         {
             return Delete($"/api/v1/statuses/{statusId}");
         }
@@ -193,7 +193,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="scheduledStatusId"></param>
         /// <returns>Returns ScheduledStatus</returns>
-        public Task<ScheduledStatus> GetScheduledStatus(long scheduledStatusId)
+        public Task<ScheduledStatus> GetScheduledStatus(string scheduledStatusId)
         {
             return Get<ScheduledStatus>("/api/v1/scheduled_statuses/" + scheduledStatusId);
         }
@@ -204,7 +204,7 @@ namespace Mastonet
         /// <param name="scheduledStatusId"></param>
         /// <param name="scheduledAt">DateTime to schedule posting of status</param>
         /// <returns>Returns ScheduledStatus</returns>
-        public Task<ScheduledStatus> UpdateScheduledStatus(long scheduledStatusId, DateTime? scheduledAt)
+        public Task<ScheduledStatus> UpdateScheduledStatus(string scheduledStatusId, DateTime? scheduledAt)
         {
             var data = new List<KeyValuePair<string, string>>();
             if (scheduledAt.HasValue)
@@ -218,7 +218,7 @@ namespace Mastonet
         /// Remove Scheduled status.
         /// </summary>
         /// <param name="scheduledStatusId"></param>
-        public Task DeleteScheduledStatus(long scheduledStatusId)
+        public Task DeleteScheduledStatus(string scheduledStatusId)
         {
             return Delete("/api/v1/scheduled_statuses/" + scheduledStatusId);
         }
@@ -228,7 +228,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> Reblog(long statusId)
+        public Task<Status> Reblog(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/reblog");
         }
@@ -238,7 +238,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> Unreblog(long statusId)
+        public Task<Status> Unreblog(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/unreblog");
         }
@@ -248,7 +248,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> Favourite(long statusId)
+        public Task<Status> Favourite(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/favourite");
         }
@@ -258,7 +258,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> Unfavourite(long statusId)
+        public Task<Status> Unfavourite(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/unfavourite");
         }
@@ -268,7 +268,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> MuteConversation(long statusId)
+        public Task<Status> MuteConversation(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/mute");
         }
@@ -278,7 +278,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> UnmuteConversation(long statusId)
+        public Task<Status> UnmuteConversation(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/unmute");
         }
@@ -288,7 +288,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> Pin(long statusId)
+        public Task<Status> Pin(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/pin");
         }
@@ -298,7 +298,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="statusId"></param>
         /// <returns>Returns the target Status</returns>
-        public Task<Status> Unpin(long statusId)
+        public Task<Status> Unpin(string statusId)
         {
             return Post<Status>($"/api/v1/statuses/{statusId}/unpin");
         }

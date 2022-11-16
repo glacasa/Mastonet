@@ -14,7 +14,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Returns an Account</returns>
-        public Task<Account> GetAccount(long accountId)
+        public Task<Account> GetAccount(string accountId)
         {
             return Get<Account>($"/api/v1/accounts/{accountId}");
         }
@@ -49,7 +49,7 @@ namespace Mastonet
             Visibility? source_privacy = null,
             bool? source_sensitive = null,
             string? source_language = null,
-            IEnumerable<AccountField>? fields_attributes = null)
+            IEnumerable<Field>? fields_attributes = null)
         {
             if (fields_attributes?.Count() > 4)
             {
@@ -111,9 +111,9 @@ namespace Mastonet
         /// </summary>
         /// <param name="id">Account ID</param>
         /// <returns>Returns an array of Relationships of the current user to a given account</returns>
-        public Task<IEnumerable<Relationship>> GetAccountRelationships(long id)
+        public Task<IEnumerable<Relationship>> GetAccountRelationships(string id)
         {
-            return GetAccountRelationships(new long[] { id });
+            return GetAccountRelationships(new string[] { id });
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Mastonet
         /// </summary>
         /// <param name="id">Account IDs</param>
         /// <returns>Returns an array of Relationships of the current user to a list of given accounts</returns>
-        public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<long> ids)
+        public Task<IEnumerable<Relationship>> GetAccountRelationships(IEnumerable<string> ids)
         {
             var data = new List<KeyValuePair<string, string>>();
             foreach (var id in ids)
@@ -139,7 +139,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetAccountFollowers(long accountId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetAccountFollowers(string accountId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetAccountFollowers(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -150,7 +150,7 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetAccountFollowers(long accountId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetAccountFollowers(string accountId, ArrayOptions options)
         {
             var url = $"/api/v1/accounts/{accountId}/followers";
             if (options != null)
@@ -168,7 +168,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetAccountFollowing(long accountId, long? maxId = null, long? sinceId = null, int? limit = null)
+        public Task<MastodonList<Account>> GetAccountFollowing(string accountId, long? maxId = null, long? sinceId = null, int? limit = null)
         {
             return GetAccountFollowing(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
         }
@@ -179,7 +179,7 @@ namespace Mastonet
         /// <param name="accountId"></param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Accounts</returns>
-        public Task<MastodonList<Account>> GetAccountFollowing(long accountId, ArrayOptions options)
+        public Task<MastodonList<Account>> GetAccountFollowing(string accountId, ArrayOptions options)
         {
             var url = $"/api/v1/accounts/{accountId}/following";
             if (options != null)
@@ -201,7 +201,7 @@ namespace Mastonet
         /// <param name="sinceId">Get items with ID greater than this value</param>
         /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
+        public Task<MastodonList<Status>> GetAccountStatuses(string accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
         {
             return GetAccountStatuses(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, onlyMedia, pinned, excludeReplies, excludeReblogs);
         }
@@ -216,7 +216,7 @@ namespace Mastonet
         /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
         /// <param name="options">Define the first and last items to get</param>
         /// <returns>Returns an array of Statuses</returns>
-        public Task<MastodonList<Status>> GetAccountStatuses(long accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
+        public Task<MastodonList<Status>> GetAccountStatuses(string accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
         {
             var url = $"/api/v1/accounts/{accountId}/statuses";
 
@@ -311,7 +311,7 @@ namespace Mastonet
         /// Authorizing follow requests
         /// </summary>
         /// <param name="accountId">The id of the account to authorize</param>
-        public Task AuthorizeRequest(long accountId)
+        public Task AuthorizeRequest(string accountId)
         {
             return this.Post($"/api/v1/follow_requests/{accountId}/authorize");
         }
@@ -320,7 +320,7 @@ namespace Mastonet
         /// Rejecting follow requests
         /// </summary>
         /// <param name="accountId">The id of the account to reject</param>
-        public Task RejectRequest(long accountId)
+        public Task RejectRequest(string accountId)
         {
             return this.Post($"/api/v1/follow_requests/{accountId}/reject");
         }
@@ -341,7 +341,7 @@ namespace Mastonet
         /// Removing account from suggestions
         /// </summary>
         /// <param name="accountId">The account ID to remove</param>
-        public Task DeleteFollowSuggestion(long accountId)
+        public Task DeleteFollowSuggestion(string accountId)
         {
             return Delete($"/api/v1/suggestions/{accountId}");
         }

@@ -6,16 +6,19 @@ using System.Text;
 
 namespace Mastonet.Entities
 {
-   public  class Context
+    /// <summary>
+    /// Represents the tree around a given status. Used for reconstructing threads of statuses.
+    /// </summary>
+    public class Context
     {
         /// <summary>
-        /// The ancestors of the status in the conversation
+        /// Parents in the thread.
         /// </summary>
         [JsonProperty("ancestors")]
         public IEnumerable<Status> Ancestors { get; set; } = Enumerable.Empty<Status>();
 
         /// <summary>
-        /// The descendants of the status in the conversation
+        /// Children in the thread.
         /// </summary>
         [JsonProperty("descendants")]
         public IEnumerable<Status> Descendants { get; set; } = Enumerable.Empty<Status>();

@@ -6,55 +6,68 @@ using System.Text;
 
 namespace Mastonet.Entities
 {
+    /// <summary>
+    /// Represents a file or media attachment that can be added to a status.
+    /// </summary>
     public class Attachment
     {
         /// <summary>
-        /// ID of the attachment
+        /// The ID of the attachment in the database.
         /// </summary>
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
-        /// One of: "image", "video", "gifv", "unknown"
+        /// The type of the attachment.
+        /// One of: "unknown", "image", "gifv", "video", "audio
         /// </summary>
         [JsonProperty("type")]
         public string Type { get; set; } = string.Empty;
 
         /// <summary>
-        /// URL of the locally hosted version of the image
+        /// The location of the original full-size attachment.
         /// </summary>
         [JsonProperty("url")]
         public string Url { get; set; } = string.Empty;
 
         /// <summary>
-        /// For remote images, the remote URL of the original image
-        /// </summary>
-        [JsonProperty("remote_url")]
-        public string? RemoteUrl { get; set; }
-
-        /// <summary>
-        /// URL of the preview image
+        /// The location of a scaled-down preview of the attachment.
         /// </summary>
         [JsonProperty("preview_url")]
         public string PreviewUrl { get; set; } = string.Empty;
 
         /// <summary>
-        /// Shorter URL for the image, for insertion into text (only present on local images)
+        /// The location of the full-size original attachment on the remote website.
         /// </summary>
-        [JsonProperty("text_url")]
-        public string? TextUrl { get; set; }
+        [JsonProperty("remote_url")]
+        public string? RemoteUrl { get; set; }
 
         ///<summary>
-        /// Metadata of the attachment
+        /// Metadata returned by Paperclip.
         ///</summary>
         [JsonProperty("meta")]
         public AttachmentMeta? Meta { get; set; }
 
         /// <summary>
-        /// Description of the attachment
+        /// Alternate text that describes what is in the media attachment, to be used for the visually 
+        /// impaired or when media attachments do not load.
         /// </summary>
         [JsonProperty("description")]
         public string? Description { get; set; }
+
+        /// <summary>
+        /// A hash computed by the BlurHash algorithm, for generating colorful preview thumbnails when 
+        /// media has not been downloaded yet.
+        /// </summary>
+        [JsonProperty("blurhash")]
+        public string? BlurHash { get; set; }
+
+        /// <summary>
+        /// A shorter URL for the attachment.
+        /// </summary>
+        [JsonProperty("text_url")]
+        [Obsolete]
+        public string? TextUrl { get; set; }
     }
 
     public class AttachmentMeta

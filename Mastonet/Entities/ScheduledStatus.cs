@@ -6,13 +6,16 @@ using System.Text;
 
 namespace Mastonet.Entities
 {
+    /// <summary>
+    /// Represents a status that will be published at a future scheduled date.
+    /// </summary>
     public class ScheduledStatus
     {
         /// <summary>
-        /// The scheduled status's ID
+        /// ID of the scheduled status in the database.
         /// </summary>
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// DateTime to publish the scheduled status

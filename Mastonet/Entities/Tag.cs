@@ -5,45 +5,27 @@ using System.Text;
 
 namespace Mastonet.Entities
 {
+    /// <summary>
+    /// Represents a hashtag used within the content of a status.
+    /// </summary>
     public class Tag
     {
         /// <summary>
-        /// The hashtag, not including the preceding #
+        /// The value of the hashtag after the # sign.
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// The URL of the hashtag
+        /// A link to the hashtag on the instance.
         /// </summary>
         [JsonProperty("url")]
         public string Url { get; set; } = string.Empty;
 
         /// <summary>
-        /// 7-day stats of the hashtag
+        /// Usage statistics for given days.
         /// </summary>
         [JsonProperty("history")]
         public IEnumerable<History>? History { get; set; }
-    }
-
-    public class History
-    {
-        /// <summary>
-        /// UNIX time of the beginning of the day
-        /// </summary>
-        [JsonProperty("day")]
-        public int Day { get; set; }
-
-        /// <summary>
-        /// Number of statuses with the hashtag during the day
-        /// </summary>
-        [JsonProperty("uses")]
-        public int Uses { get; set; }
-
-        /// <summary>
-        /// Number of accounts that used the hashtag during the day
-        /// </summary>
-        [JsonProperty("accounts")]
-        public int Accounts { get; set; }
     }
 }

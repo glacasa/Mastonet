@@ -2,7 +2,7 @@
 
 ## How to use
 
-To use Mastonet, you need a `MastodonClient` object (see [README.md](https://github.com/glacasa/Mastonet/blob/master/README.md) ), and you have C# methods to call every [Mastodon API](https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md) method.
+To use Mastonet, you need a `MastodonClient` object (see [README.md](https://github.com/glacasa/Mastonet/blob/master/README.md) ), and you have C# methods to call every [Mastodon API](https://docs.joinmastodon.org/methods/) method.
 
 If a method is missing, please [submit an issue](https://github.com/glacasa/Mastonet/issues).
 

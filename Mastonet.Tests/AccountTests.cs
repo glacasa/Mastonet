@@ -15,7 +15,7 @@ namespace Mastonet.Tests
         {
             var client = GetTestClient();
 
-            var account = await client.GetAccount(1);
+            var account = await client.GetAccount("1");
 
             Assert.NotNull(account.ProfileUrl);
             Assert.NotNull(account.UserName);
