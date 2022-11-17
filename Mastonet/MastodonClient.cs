@@ -128,6 +128,17 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         return Put($"/api/v1/announcements/{id}/reactions/{emoji}");
     }
 
+    /// <summary>
+    /// Undo a react emoji to an announcement
+    /// </summary>
+    /// <param name="id">Local ID of an announcement in the database</param>
+    /// <param name="emoji">Unicode emoji, or shortcode of custom emoji</param>
+    /// <returns></returns>
+    public Task RemoveReactionFromAnnouncement(string id, string emoji)
+    {
+        return Delete($"/api/v1/announcements/{id}/reactions/{emoji}");
+    }
+
     #endregion
 
     #region Lists
