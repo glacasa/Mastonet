@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Mastonet;
 
-public interface IAuthenticationClient : IBaseHttpClient
+public interface IAuthenticationClient
 {
+    string Instance { get; }
+
     /// <summary>
     /// Registering an application
     /// </summary>

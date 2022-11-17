@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Mastonet;
 
-public interface IMastodonClient : IBaseHttpClient
+public interface IMastodonClient
 {
+    string Instance { get; }
+
     #region MastodonClient
 
     /// <summary>
@@ -34,19 +36,9 @@ public interface IMastodonClient : IBaseHttpClient
     /// Accounts that are in a given list.
     /// </summary>
     /// <param name="listId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns array of Account</returns>
-    Task<MastodonList<Account>> GetListAccounts(string listId, long? maxId = null, long? sinceId = null, int? limit = null);
-
-    /// <summary>
-    /// Accounts that are in a given list.
-    /// </summary>
-    /// <param name="listId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns array of Account</returns>
-    Task<MastodonList<Account>> GetListAccounts(string listId, ArrayOptions options);
+    Task<MastodonList<Account>> GetListAccounts(string listId, ArrayOptions? options = null);
 
     /// <summary>
     /// Get a list.
@@ -136,20 +128,10 @@ public interface IMastodonClient : IBaseHttpClient
     /// <summary>
     /// Fetching a user's notifications
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <param name="excludeTypes">Types to exclude</param>
-    /// <returns>Returns a list of Notifications for the authenticated user</returns>
-    Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = NotificationType.None);
-
-    /// <summary>
-    /// Fetching a user's notifications
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <param name="excludeTypes">Types to exclude</param>
     /// <returns>Returns a list of Notifications for the authenticated user</returns>
-    Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = NotificationType.None);
+    Task<MastodonList<Notification>> GetNotifications(ArrayOptions? options = null, NotificationType excludeTypes = NotificationType.None);
 
     /// <summary>
     /// Getting a single notification
@@ -171,21 +153,13 @@ public interface IMastodonClient : IBaseHttpClient
     /// <returns></returns>
     Task DismissNotification(string notificationId);
 
-    /// <summary>
-    /// Fetching a user's reports
-    /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns a list of Reports made by the authenticated user</returns>
-    Task<MastodonList<Report>> GetReports(long? maxId = null, long? sinceId = null, int? limit = null);
 
     /// <summary>
     /// Fetching a user's reports
     /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns a list of Reports made by the authenticated user</returns>
-    Task<MastodonList<Report>> GetReports(ArrayOptions options);
+    Task<MastodonList<Report>> GetReports(ArrayOptions? options = null);
 
     /// <summary>
     /// Reporting a user
@@ -197,22 +171,13 @@ public interface IMastodonClient : IBaseHttpClient
     /// <returns>Returns the finished Report</returns>
     Task<Report> Report(string accountId, IEnumerable<string>? statusIds = null, string? comment = null, bool? forward = null);
 
-    [Obsolete]
-    /// <summary>
-    /// Searching for content
-    /// </summary>
-    /// <param name="q">The search query</param>
-    /// <param name="resolve">Whether to resolve non-local accounts</param>
-    /// <returns>Returns Results. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-    Task<ResultsV1> SearchV1(string q, bool resolve = false);
-
     /// <summary>
     /// Searching for content
     /// </summary>
     /// <param name="q">The search query</param>
     /// <param name="resolve">Whether to resolve non-local accounts</param>
     /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-    Task<ResultsV2> SearchV2(string q, bool resolve = false);
+    Task<SearchResults> Search(string q, bool resolve = false);
 
     /// <summary>
     /// Searching for accounts
@@ -338,30 +303,10 @@ public interface IMastodonClient : IBaseHttpClient
     /// <summary>
     /// Getting an account's followers
     /// </summary>
-    /// <param name="accountId"></param>        
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetAccountFollowers(string accountId, long? maxId = null, long? sinceId = null, int? limit = null);
-
-    /// <summary>
-    /// Getting an account's followers
-    /// </summary>
     /// <param name="accountId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetAccountFollowers(string accountId, ArrayOptions options);
-
-    /// <summary>
-    /// Getting who account is following
-    /// </summary>
-    /// <param name="accountId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetAccountFollowing(string accountId, long? maxId = null, long? sinceId = null, int? limit = null);
+    Task<MastodonList<Account>> GetAccountFollowers(string accountId, ArrayOptions? options = null);
 
     /// <summary>
     /// Getting who account is following
@@ -369,21 +314,7 @@ public interface IMastodonClient : IBaseHttpClient
     /// <param name="accountId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetAccountFollowing(string accountId, ArrayOptions options);
-
-    /// <summary>
-    /// Getting an account's statuses
-    /// </summary>
-    /// <param name="accountId"></param>
-    /// <param name="onlyMedia">Only return statuses that have media attachments</param>
-    /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
-    /// <param name="pinned">Only return statuses that have been pinned</param>
-    /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Statuses</returns>
-    Task<MastodonList<Status>> GetAccountStatuses(string accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false);
+    Task<MastodonList<Account>> GetAccountFollowing(string accountId, ArrayOptions? options = null);
 
     /// <summary>
     /// Getting an account's statuses
@@ -395,23 +326,14 @@ public interface IMastodonClient : IBaseHttpClient
     /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses</returns>
-    Task<MastodonList<Status>> GetAccountStatuses(string accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false);
-
-    /// <summary>
-    /// Fetching a list of follow requests
-    /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-    Task<MastodonList<Account>> GetFollowRequests(long? maxId = null, long? sinceId = null, int? limit = null);
+    Task<MastodonList<Status>> GetAccountStatuses(string accountId, ArrayOptions? options = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false);
 
     /// <summary>
     /// Fetching a list of follow requests
     /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-    Task<MastodonList<Account>> GetFollowRequests(ArrayOptions options);
+    Task<MastodonList<Account>> GetFollowRequests(ArrayOptions? options = null);
 
     /// <summary>
     /// Authorizing follow requests
@@ -440,18 +362,9 @@ public interface IMastodonClient : IBaseHttpClient
     /// <summary>
     /// Fetching a user's favourites
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-    Task<MastodonList<Status>> GetFavourites(long? maxId = null, long? sinceId = null, int? limit = null);
-
-    /// <summary>
-    /// Fetching a user's favourites
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-    Task<MastodonList<Status>> GetFavourites(ArrayOptions options);
+    Task<MastodonList<Status>> GetFavourites(ArrayOptions? options = null);
 
     #endregion
 
@@ -496,18 +409,9 @@ public interface IMastodonClient : IBaseHttpClient
     /// <summary>
     /// Fetching a user's blocks
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-    Task<MastodonList<Account>> GetBlocks(long? maxId = null, long? sinceId = null, int? limit = null);
-
-    /// <summary>
-    /// Fetching a user's blocks
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-    Task<MastodonList<Account>> GetBlocks(ArrayOptions options);
+    Task<MastodonList<Account>> GetBlocks(ArrayOptions? options = null);
 
     /// <summary>
     /// Muting an account
@@ -527,34 +431,16 @@ public interface IMastodonClient : IBaseHttpClient
     /// <summary>
     /// Fetching a user's mutes
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-    Task<MastodonList<Account>> GetMutes(long? maxId = null, long? sinceId = null, int? limit = null);
-
-    /// <summary>
-    /// Fetching a user's mutes
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-    Task<MastodonList<Account>> GetMutes(ArrayOptions options);
-
-    /// <summary>
-    /// Fetching a user's blocked domains
-    /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of strings</returns>
-    Task<MastodonList<string>> GetDomainBlocks(long? maxId = null, long? sinceId = null, int? limit = null);
+    Task<MastodonList<Account>> GetMutes(ArrayOptions? options = null);
 
     /// <summary>
     /// Fetching a user's blocked domains
     /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of strings</returns>
-    Task<MastodonList<string>> GetDomainBlocks(ArrayOptions options);
+    Task<MastodonList<string>> GetDomainBlocks(ArrayOptions? options = null);
 
     /// <summary>
     /// Block a domain
@@ -616,29 +502,9 @@ public interface IMastodonClient : IBaseHttpClient
     /// Getting who reblogged a status
     /// </summary>
     /// <param name="statusId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetRebloggedBy(string statusId, long? maxId = null, long? sinceId = null, int? limit = null);
-
-    /// <summary>
-    /// Getting who reblogged a status
-    /// </summary>
-    /// <param name="statusId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetRebloggedBy(string statusId, ArrayOptions options);
-
-    /// <summary>
-    /// Getting who favourited a status
-    /// </summary>
-    /// <param name="statusId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetFavouritedBy(string statusId, long? maxId = null, long? sinceId = null, int? limit = null);
+    Task<MastodonList<Account>> GetRebloggedBy(string statusId, ArrayOptions? options = null);
 
     /// <summary>
     /// Getting who favourited a status
@@ -646,7 +512,7 @@ public interface IMastodonClient : IBaseHttpClient
     /// <param name="statusId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    Task<MastodonList<Account>> GetFavouritedBy(string statusId, ArrayOptions options);
+    Task<MastodonList<Account>> GetFavouritedBy(string statusId, ArrayOptions? options = null);
 
     /// <summary>
     /// Posting a new status
@@ -759,44 +625,16 @@ public interface IMastodonClient : IBaseHttpClient
     /// <summary>
     /// Retrieving Home timeline
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetHomeTimeline(long? maxId = null, long? sinceId = null, int? limit = null);
-
-    /// <summary>
-    /// Retrieving Home timeline
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetHomeTimeline(ArrayOptions options);
-
-    /// <summary>
-    /// Conversations (direct messages) for an account
-    /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit">Maximum number of items to get (Default 20)</param>
-    /// <returns>Returns array of Conversation</returns>
-    Task<MastodonList<Conversation>> GetConversations(long? maxId = null, long? sinceId = null, int? limit = null);
+    Task<MastodonList<Status>> GetHomeTimeline(ArrayOptions? options = null);
 
     /// <summary>
     /// Conversations (direct messages) for an account
     /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns array of Conversation</returns>
-    Task<MastodonList<Conversation>> GetConversations(ArrayOptions options);
-
-    /// <summary>
-    /// Retrieving Public timeline
-    /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <param name="local">Only return statuses originating from this instance</param>
-    /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetPublicTimeline(long? maxId = null, long? sinceId = null, int? limit = null, bool local = false, bool onlyMedia = false);
+    Task<MastodonList<Conversation>> GetConversations(ArrayOptions? options = null);
 
     /// <summary>
     /// Retrieving Public timeline
@@ -804,18 +642,7 @@ public interface IMastodonClient : IBaseHttpClient
     /// <param name="options">Define the first and last items to get</param>
     /// <param name="local">Only return statuses originating from this instance</param>
     /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false, bool onlyMedia = false);
-
-    /// <summary>
-    /// Retrieving Tag timeline
-    /// </summary>
-    /// <param name="hashtag">The tag to retieve</param>
-    /// <param name="local">Only return statuses originating from this instance</param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetTagTimeline(string hashtag, long? maxId = null, long? sinceId = null, int? limit = null, bool local = false, bool onlyMedia = false);
+    Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions? options = null, bool local = false, bool onlyMedia = false);
 
     /// <summary>
     /// Retrieving Tag timeline
@@ -824,17 +651,7 @@ public interface IMastodonClient : IBaseHttpClient
     /// <param name="local">Only return statuses originating from this instance</param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions options, bool local = false, bool onlyMedia = false);
-
-    /// <summary>
-    /// Retrieving List timeline
-    /// </summary>
-    /// <param name="listId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit">Maximum number of items to get (Default 20)</param>
-    /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetListTimeline(long listId, long? maxId = null, long? sinceId = null, int? limit = null);
+    Task<MastodonList<Status>> GetTagTimeline(string hashtag, ArrayOptions? options = null, bool local = false, bool onlyMedia = false);
 
     /// <summary>
     /// Retrieving List timeline
@@ -842,24 +659,15 @@ public interface IMastodonClient : IBaseHttpClient
     /// <param name="listId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetListTimeline(long listId, ArrayOptions options);
+    Task<MastodonList<Status>> GetListTimeline(long listId, ArrayOptions? options = null);
 
     TimelineStreaming GetPublicStreaming();
-
-    [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
-    TimelineStreaming GetPublicStreaming(string streamingApiUrl);
 
     TimelineStreaming GetPublicLocalStreaming();
 
     TimelineStreaming GetUserStreaming();
 
-    [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
-    TimelineStreaming GetUserStreaming(string streamingApiUrl);
-
     TimelineStreaming GetHashtagStreaming(string hashtag);
-
-    [Obsolete("Only use this method if the instance has a different streaming url. Please report the instance name here to allow us to support it : https://github.com/glacasa/Mastonet/issues/10")]
-    TimelineStreaming GetHashtagStreaming(string streamingApiUrl, string hashtag);
 
     TimelineStreaming GetHashtagLocalStreaming(string hashtag);
 

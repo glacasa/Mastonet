@@ -10,21 +10,21 @@ namespace Mastonet;
 
 public partial class MastodonClient : BaseHttpClient, IMastodonClient
 {
+
     #region Ctor
 
-    public MastodonClient(AppRegistration appRegistration, Auth accessToken)
-        : this(appRegistration, accessToken, DefaultHttpClient.Instance) { }
+    public MastodonClient(string instance, string accessToken)
+        : this(instance, accessToken, DefaultHttpClient.Instance)
+    {
+    }
 
-    public MastodonClient(AppRegistration appRegistration, Auth accessToken, HttpClient client)
+    public MastodonClient(string instance, string accessToken, HttpClient client)
         : base(client)
     {
-        this.Instance = appRegistration.Instance;
-        this.AppRegistration = appRegistration;
-        this.AuthToken = accessToken;
+        this.Instance = instance;
+        this.AccessToken = accessToken;
 
-#if NETSTANDARD2_0
         this.instanceGetter = new Lazy<Task<Instance>>(this.GetInstance);
-#endif
     }
 
     #endregion
@@ -67,22 +67,9 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// Accounts that are in a given list.
     /// </summary>
     /// <param name="listId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns array of Account</returns>
-    public Task<MastodonList<Account>> GetListAccounts(string listId, long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetListAccounts(listId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Accounts that are in a given list.
-    /// </summary>
-    /// <param name="listId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns array of Account</returns>
-    public Task<MastodonList<Account>> GetListAccounts(string listId, ArrayOptions options)
+    public Task<MastodonList<Account>> GetListAccounts(string listId, ArrayOptions? options = null)
     {
         var url = $"/api/v1/lists/{listId}/accounts";
         if (options != null)
@@ -286,23 +273,10 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <summary>
     /// Fetching a user's notifications
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <param name="excludeTypes">Types to exclude</param>
-    /// <returns>Returns a list of Notifications for the authenticated user</returns>
-    public Task<MastodonList<Notification>> GetNotifications(long? maxId = null, long? sinceId = null, int? limit = null, NotificationType excludeTypes = NotificationType.None)
-    {
-        return GetNotifications(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, excludeTypes);
-    }
-
-    /// <summary>
-    /// Fetching a user's notifications
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <param name="excludeTypes">Types to exclude</param>
     /// <returns>Returns a list of Notifications for the authenticated user</returns>
-    public Task<MastodonList<Notification>> GetNotifications(ArrayOptions options, NotificationType excludeTypes = NotificationType.None)
+    public Task<MastodonList<Notification>> GetNotifications(ArrayOptions? options = null, NotificationType excludeTypes = NotificationType.None)
     {
         var url = "/api/v1/notifications";
         var queryParams = "";
@@ -370,21 +344,9 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <summary>
     /// Fetching a user's reports
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns a list of Reports made by the authenticated user</returns>
-    public Task<MastodonList<Report>> GetReports(long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetReports(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Fetching a user's reports
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns a list of Reports made by the authenticated user</returns>
-    public Task<MastodonList<Report>> GetReports(ArrayOptions options)
+    public Task<MastodonList<Report>> GetReports(ArrayOptions? options = null)
     {
         var url = "/api/v1/reports";
         if (options != null)
@@ -429,28 +391,6 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     #endregion
 
     #region Search
-    /// <summary>
-    /// Searching for content
-    /// </summary>
-    /// <param name="q">The search query</param>
-    /// <param name="resolve">Whether to resolve non-local accounts</param>
-    /// <returns>Returns Results. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-    [Obsolete]
-    public Task<ResultsV1> SearchV1(string q, bool resolve = false)
-    {
-        if (string.IsNullOrEmpty(q))
-        {
-            return Task.FromResult(new ResultsV1());
-        }
-
-        string url = "/api/v1/search?q=" + Uri.EscapeDataString(q);
-        if (resolve)
-        {
-            url += "&resolve=true";
-        }
-
-        return Get<ResultsV1>(url);
-    }
 
     /// <summary>
     /// Searching for content
@@ -458,11 +398,11 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="q">The search query</param>
     /// <param name="resolve">Whether to resolve non-local accounts</param>
     /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-    public Task<ResultsV2> SearchV2(string q, bool resolve = false)
+    public Task<SearchResults> Search(string q, bool resolve = false)
     {
         if (string.IsNullOrEmpty(q))
         {
-            return Task.FromResult(new ResultsV2());
+            return Task.FromResult(new SearchResults());
         }
 
         string url = "/api/v2/search?q=" + Uri.EscapeDataString(q);
@@ -471,7 +411,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
             url += "&resolve=true";
         }
 
-        return Get<ResultsV2>(url);
+        return Get<SearchResults>(url);
     }
 
     /// <summary>
@@ -506,17 +446,6 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         return Get<List<Account>>(url);
     }
 
-    [Obsolete("maxId ans sinceId are not used for account search. Use SearchAccounts(string q, int? limit) instead")]
-    public Task<List<Account>> SearchAccounts(string q, long? maxId, long? sinceId, int? limit = null)
-    {
-        return SearchAccounts(q, limit);
-    }
-
-    [Obsolete("options are not used for account search. Use SearchAccounts(string q, int? limit) instead")]
-    public Task<List<Account>> SearchAccounts(string q, ArrayOptions options)
-    {
-        return SearchAccounts(q, options?.Limit);
-    }
     #endregion
 
     #region Filters

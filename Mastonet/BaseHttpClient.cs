@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Mastonet;
 
-public abstract class BaseHttpClient : IBaseHttpClient
+public abstract class BaseHttpClient
 {
     protected readonly HttpClient client;
-    public AppRegistration? AppRegistration { get; set; }
-    public Auth? AuthToken { get; set; }
+
+    public string AccessToken { get; protected set; } = string.Empty;
 
     #region Instance 
     private string instance = string.Empty;
@@ -25,7 +25,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
         {
             return instance;
         }
-        set
+        protected set
         {
             CheckInstance(value);
             instance = value;
@@ -34,6 +34,11 @@ public abstract class BaseHttpClient : IBaseHttpClient
 
     private void CheckInstance(string instance)
     {
+        if (string.IsNullOrWhiteSpace(instance))
+        {
+            throw new ArgumentNullException(nameof(instance));
+        }
+
         var notSupportedList = new List<string> { "gab.", "truthsocial." };
         var lowered = instance.ToLowerInvariant();
         if (notSupportedList.Any(n => lowered.Contains(n)))
@@ -53,9 +58,9 @@ public abstract class BaseHttpClient : IBaseHttpClient
 
     private void AddHttpHeader(HttpRequestMessage request)
     {
-        if (AuthToken != null)
+        if (!string.IsNullOrEmpty(AccessToken))
         {
-            request.Headers.Add("Authorization", "Bearer " + AuthToken.AccessToken);
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
         }
     }
 

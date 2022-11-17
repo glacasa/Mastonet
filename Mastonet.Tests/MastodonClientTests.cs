@@ -76,13 +76,13 @@ namespace Mastonet.Tests
 
         protected MastodonClient GetTestClient()
         {
-            return new MastodonClient(app, new Auth() { AccessToken = testAccessToken });
+            return new MastodonClient(app.Instance, testAccessToken );
         }
 
 
         protected MastodonClient GetPrivateClient()
         {
-            return new MastodonClient(app, new Auth() { AccessToken = privateAccessToken });
+            return new MastodonClient(app.Instance, privateAccessToken);
         }
 
     }

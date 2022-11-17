@@ -134,23 +134,10 @@ partial class MastodonClient
     /// <summary>
     /// Getting an account's followers
     /// </summary>
-    /// <param name="accountId"></param>        
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetAccountFollowers(string accountId, long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetAccountFollowers(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Getting an account's followers
-    /// </summary>
     /// <param name="accountId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetAccountFollowers(string accountId, ArrayOptions options)
+    public Task<MastodonList<Account>> GetAccountFollowers(string accountId, ArrayOptions? options = null)
     {
         var url = $"/api/v1/accounts/{accountId}/followers";
         if (options != null)
@@ -164,22 +151,9 @@ partial class MastodonClient
     /// Getting who account is following
     /// </summary>
     /// <param name="accountId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetAccountFollowing(string accountId, long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetAccountFollowing(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Getting who account is following
-    /// </summary>
-    /// <param name="accountId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetAccountFollowing(string accountId, ArrayOptions options)
+    public Task<MastodonList<Account>> GetAccountFollowing(string accountId, ArrayOptions? options = null)
     {
         var url = $"/api/v1/accounts/{accountId}/following";
         if (options != null)
@@ -197,26 +171,9 @@ partial class MastodonClient
     /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
     /// <param name="pinned">Only return statuses that have been pinned</param>
     /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Statuses</returns>
-    public Task<MastodonList<Status>> GetAccountStatuses(string accountId, long? maxId = null, long? sinceId = null, int? limit = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
-    {
-        return GetAccountStatuses(accountId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit }, onlyMedia, pinned, excludeReplies, excludeReblogs);
-    }
-
-    /// <summary>
-    /// Getting an account's statuses
-    /// </summary>
-    /// <param name="accountId"></param>
-    /// <param name="onlyMedia">Only return statuses that have media attachments</param>
-    /// <param name="excludeReplies">Skip statuses that reply to other statuses</param>
-    /// <param name="pinned">Only return statuses that have been pinned</param>
-    /// <param name="excludeReblogs">Skip statuses that are reblogs of other statuses</param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses</returns>
-    public Task<MastodonList<Status>> GetAccountStatuses(string accountId, ArrayOptions options, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
+    public Task<MastodonList<Status>> GetAccountStatuses(string accountId, ArrayOptions? options = null, bool onlyMedia = false, bool excludeReplies = false, bool pinned = false, bool excludeReblogs = false)
     {
         var url = $"/api/v1/accounts/{accountId}/statuses";
 
@@ -283,21 +240,9 @@ partial class MastodonClient
     /// <summary>
     /// Fetching a list of follow requests
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-    public Task<MastodonList<Account>> GetFollowRequests(long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetFollowRequests(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Fetching a list of follow requests
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts which have requested to follow the authenticated user</returns>
-    public Task<MastodonList<Account>> GetFollowRequests(ArrayOptions options)
+    public Task<MastodonList<Account>> GetFollowRequests(ArrayOptions? options = null)
     {
         var url = "/api/v1/follow_requests";
         if (options != null)
@@ -352,21 +297,9 @@ partial class MastodonClient
     /// <summary>
     /// Fetching a user's favourites
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-    public Task<MastodonList<Status>> GetFavourites(long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetFavourites(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Fetching a user's favourites
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
-    public Task<MastodonList<Status>> GetFavourites(ArrayOptions options)
+    public Task<MastodonList<Status>> GetFavourites(ArrayOptions? options = null)
     {
         var url = "/api/v1/favourites";
         if (options != null)

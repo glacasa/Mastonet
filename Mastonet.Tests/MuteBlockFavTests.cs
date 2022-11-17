@@ -65,12 +65,12 @@ namespace Mastonet.Tests
         public async Task FavouriteUnfavourite()
         {
             var client = GetTestClient();
-            var tl = await client.GetHomeTimeline(limit : 1);
+            var tl = await client.GetHomeTimeline(new ArrayOptions { Limit = 1 });
             var status = tl.First();
 
             status = await client.Favourite(status.Id);
             Assert.True(status.Favourited);
-            
+
             status = await client.Unfavourite(status.Id);
             Assert.False(status.Favourited);
         }

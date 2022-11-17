@@ -47,22 +47,9 @@ partial class MastodonClient
     /// Getting who reblogged a status
     /// </summary>
     /// <param name="statusId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetRebloggedBy(string statusId, long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetRebloggedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Getting who reblogged a status
-    /// </summary>
-    /// <param name="statusId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetRebloggedBy(string statusId, ArrayOptions options)
+    public Task<MastodonList<Account>> GetRebloggedBy(string statusId, ArrayOptions? options = null)
     {
         var url = $"/api/v1/statuses/{statusId}/reblogged_by";
         if (options != null)
@@ -76,22 +63,9 @@ partial class MastodonClient
     /// Getting who favourited a status
     /// </summary>
     /// <param name="statusId"></param>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetFavouritedBy(string statusId, long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetFavouritedBy(statusId, new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Getting who favourited a status
-    /// </summary>
-    /// <param name="statusId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts</returns>
-    public Task<MastodonList<Account>> GetFavouritedBy(string statusId, ArrayOptions options)
+    public Task<MastodonList<Account>> GetFavouritedBy(string statusId, ArrayOptions? options = null)
     {
         var url = $"/api/v1/statuses/{statusId}/favourited_by";
         if (options != null)

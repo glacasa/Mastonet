@@ -73,21 +73,9 @@ partial class MastodonClient
     /// <summary>
     /// Fetching a user's blocks
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-    public Task<MastodonList<Account>> GetBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetBlocks(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Fetching a user's blocks
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts blocked by the authenticated user</returns>
-    public Task<MastodonList<Account>> GetBlocks(ArrayOptions options)
+    public Task<MastodonList<Account>> GetBlocks(ArrayOptions? options = null)
     {
         var url = "/api/v1/blocks";
         if (options != null)
@@ -124,21 +112,9 @@ partial class MastodonClient
     /// <summary>
     /// Fetching a user's mutes
     /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-    public Task<MastodonList<Account>> GetMutes(long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetMutes(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
-
-    /// <summary>
-    /// Fetching a user's mutes
-    /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Accounts muted by the authenticated user</returns>
-    public Task<MastodonList<Account>> GetMutes(ArrayOptions options)
+    public Task<MastodonList<Account>> GetMutes(ArrayOptions? options = null)
     {
         var url = "/api/v1/mutes";
         if (options != null)
@@ -181,24 +157,13 @@ partial class MastodonClient
     #endregion
 
     #region Domain blocks
-    /// <summary>
-    /// Fetching a user's blocked domains
-    /// </summary>
-    /// <param name="maxId">Get items with ID less than or equal this value</param>
-    /// <param name="sinceId">Get items with ID greater than this value</param>
-    /// <param name="limit ">Maximum number of items to get (Default 40, Max 80)</param>
-    /// <returns>Returns an array of strings</returns>
-    public Task<MastodonList<string>> GetDomainBlocks(long? maxId = null, long? sinceId = null, int? limit = null)
-    {
-        return GetDomainBlocks(new ArrayOptions() { MaxId = maxId, SinceId = sinceId, Limit = limit });
-    }
 
     /// <summary>
     /// Fetching a user's blocked domains
     /// </summary>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of strings</returns>
-    public Task<MastodonList<string>> GetDomainBlocks(ArrayOptions options)
+    public Task<MastodonList<string>> GetDomainBlocks(ArrayOptions? options = null)
     {
         var url = "/api/v1/domain_blocks";
         if (options != null)

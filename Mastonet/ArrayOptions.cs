@@ -7,32 +7,32 @@ namespace Mastonet;
 
 public class ArrayOptions
 {
-    public long? MaxId { get; set; }
+    public string? MaxId { get; set; }
 
-    public long? SinceId { get; set; }
+    public string? SinceId { get; set; }
 
-    public long? MinId { get; set; }
+    public string? MinId { get; set; }
 
     public int? Limit { get; set; }
 
     internal string ToQueryString()
     {
         var query = new Collection<string>();
-        if (this.MaxId.HasValue)
+        if (!string.IsNullOrEmpty(MaxId))
         {
-            query.Add("max_id=" + this.MaxId);
+            query.Add("max_id=" + MaxId);
         }
-        if (this.SinceId.HasValue)
+        if (!string.IsNullOrEmpty(SinceId))
         {
-            query.Add("since_id=" + this.SinceId);
+            query.Add("since_id=" + SinceId);
         }
-        if (this.MinId.HasValue)
+        if (!string.IsNullOrEmpty(MinId))
         {
-            query.Add("min_id=" + this.MinId);
+            query.Add("min_id=" + MinId);
         }
-        if (this.Limit.HasValue)
+        if (Limit.HasValue)
         {
-            query.Add("limit=" + this.Limit);
+            query.Add("limit=" + Limit);
         }
         return string.Join("&", query);
     }

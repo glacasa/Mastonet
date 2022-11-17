@@ -10,6 +10,8 @@ namespace Mastonet;
 
 public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
 {
+    public AppRegistration? AppRegistration { get; set; }
+
     public AuthenticationClient(string instance) : this(instance, DefaultHttpClient.Instance) { }
     public AuthenticationClient(AppRegistration app) : this(app, DefaultHttpClient.Instance) { }
 
@@ -60,7 +62,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
 
     #region Auth
 
-    public async Task<Auth> ConnectWithPassword(string email, string password)
+    public  Task<Auth> ConnectWithPassword(string email, string password)
     {
         if (AppRegistration == null)
         {
@@ -77,12 +79,10 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
             new KeyValuePair<string, string>("scope", GetScopeParam(AppRegistration.Scope)),
         };
 
-        var auth = await Post<Auth>("/oauth/token", data);
-        this.AuthToken = auth;
-        return auth;
+        return Post<Auth>("/oauth/token", data);
     }
 
-    public async Task<Auth> ConnectWithCode(string code, string? redirect_uri = null)
+    public  Task<Auth> ConnectWithCode(string code, string? redirect_uri = null)
     {
         if (AppRegistration == null)
         {
@@ -98,9 +98,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
             new KeyValuePair<string, string>("code", code),
         };
 
-        var auth = await Post<Auth>("/oauth/token", data);
-        this.AuthToken = auth;
-        return auth;
+        return Post<Auth>("/oauth/token", data);
     }
 
     public string OAuthUrl(string? redirectUri = null)
