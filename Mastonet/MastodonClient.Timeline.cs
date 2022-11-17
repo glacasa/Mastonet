@@ -41,6 +41,26 @@ partial class MastodonClient
     }
 
     /// <summary>
+    /// Remove conversation
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public Task DeleteConversation(string id)
+    {
+        return Delete("/api/v1/conversations/" + id);
+    }
+
+    /// <summary>
+    /// Mark as read
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public Task<Conversation> MarkAsRead(string id)
+    {
+        return Post<Conversation>($"/api/v1/conversations/{id}/read");
+    }
+
+    /// <summary>
     /// Retrieving Public timeline
     /// </summary>
     /// <param name="options">Define the first and last items to get</param>

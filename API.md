@@ -31,6 +31,22 @@ Note that the 3-parameter overloads don't have `minId` for backward compatibilit
 ### Instance
 ```cs
 public Task<Instance> GetInstance();
+
+public Task<IEnumerable<string>> GetInstancePeers();
+
+public Task<IEnumerable<Activity>> GetInstanceActivity();
+
+public Task<IEnumerable<Tag>> GetTrendingTags();
+
+public Task<IEnumerable<Account>> GetDirectory(int? offset, int? limit, DirectoryOrder? order, bool? local);
+
+public Task<IEnumerable<Announcement>> GetAnnouncements(bool withDismissed = false);
+
+public Task DismissAnnouncement(string id);
+
+public Task AddReactionToAnnouncement(string id, string emoji);
+
+public Task RemoveReactionFromAnnouncement(string id, string emoji);
 ```
 ### Lists
 ```cs
@@ -124,6 +140,16 @@ public Task<IEnumerable<Account>> GetFollowSuggestions();
 public Task DeleteFollowSuggestion(long accountId);
 	
 public Task<MastodonList<Status>> GetFavourites(ArrayOptions options);
+
+public Task<MastodonList<Status>> GetBookmarks(ArrayOptions? options = null);
+
+public Task<MastodonList<FeaturedTag>> GetFeaturedTags();
+
+public Task<FeaturedTag> FeatureTag(string name);
+
+public Task UnfeatureTag(string id);
+
+public Task<IEnumerable<Tag>> GetFeaturedTagsSuggestions();
 ```
 ### Account actions
 ```cs
@@ -156,6 +182,10 @@ public Task<MastodonList<Account>> GetEndorsements();
 public Task<Relationship> Endorse(long accountId);
 
 public Task<Relationship> Unendorse(long accountId);
+
+public Task<Marker> GetMarkers();
+
+public Task<Marker> SetMarkers(string? homeLastReadId = null, string? notificationLastReadId = null);
 ```
 ### Statuses
 ```cs
@@ -169,7 +199,7 @@ public Task<MastodonList<Account>> GetRebloggedBy(long statusId, ArrayOptions op
 
 public Task<MastodonList<Account>> GetFavouritedBy(long statusId, ArrayOptions options);
 
-public Task<Status> PostStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null, PollParameters poll = null);
+public Task<Status> PublishStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null, PollParameters poll = null);
 
 public Task DeleteStatus(long statusId);
 
@@ -202,6 +232,10 @@ public Task<Status> Unpin(long statusId);
 public Task<MastodonList<Status>> GetHomeTimeline(ArrayOptions options);
 
 public Task<MastodonList<Conversation>> GetConversations(ArrayOptions options);
+
+public Task DeleteConversation(string id);
+
+public Task<Conversation> MarkAsRead(string id);
 
 public Task<MastodonList<Status>> GetPublicTimeline(ArrayOptions options, bool local = false, bool onlyMedia = false);
 

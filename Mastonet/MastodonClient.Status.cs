@@ -87,7 +87,7 @@ partial class MastodonClient
     /// <param name="language">Override language code of the toot (ISO 639-2)</param>
     /// <param name="poll">Nested parameters to attach a poll to the status</param>
     /// <returns>Returns Status</returns>
-    public Task<Status> PostStatus(string status, Visibility? visibility = null, string? replyStatusId = null, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null)
+    public Task<Status> PublishStatus(string status, Visibility? visibility = null, string? replyStatusId = null, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null)
     {
         if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
         {

@@ -20,6 +20,62 @@ public interface IMastodonClient
     Task<Instance> GetInstance();
 
     /// <summary>
+    /// List of connected domains
+    /// </summary>
+    /// <returns></returns>
+    Task<IEnumerable<string>> GetInstancePeers();
+
+    /// <summary>
+    /// Weekly activity
+    /// </summary>
+    /// <returns></returns>
+    Task<IEnumerable<Activity>> GetInstanceActivity();
+
+    /// <summary>
+    /// Tags that are being used more frequently within the past week.
+    /// </summary>
+    /// <returns></returns>
+    Task<IEnumerable<Tag>> GetTrendingTags();
+
+    /// <summary>
+    /// A directory of profiles that your website is aware of.
+    /// </summary>
+    /// <param name="offset"></param>
+    /// <param name="limit"></param>
+    /// <param name="order"></param>
+    /// <param name="local"></param>
+    /// <returns></returns>
+    Task<IEnumerable<Account>> GetDirectory(int? offset, int? limit, DirectoryOrder? order, bool? local);
+
+    /// <summary>
+    /// Get all announcements set by administration
+    /// </summary>
+    /// <param name="withDismissed">If true, response will include announcements dismissed by the user</param>
+    /// <returns></returns>
+    Task<IEnumerable<Announcement>> GetAnnouncements(bool withDismissed = false);
+
+    /// <summary>
+    /// Allows a user to mark the announcement as read
+    /// </summary>
+    /// <param name="id"></param>
+    Task DismissAnnouncement(string id);
+
+    /// <summary>
+    /// React to an announcement with an emoji
+    /// </summary>
+    /// <param name="id">Local ID of an announcement in the database</param>
+    /// <param name="emoji">Unicode emoji, or shortcode of custom emoji</param>
+    Task AddReactionToAnnouncement(string id, string emoji);
+
+    /// <summary>
+    /// Undo a react emoji to an announcement
+    /// </summary>
+    /// <param name="id">Local ID of an announcement in the database</param>
+    /// <param name="emoji">Unicode emoji, or shortcode of custom emoji</param>
+    /// <returns></returns>
+    Task RemoveReactionFromAnnouncement(string id, string emoji);
+
+    /// <summary>
     /// User’s lists.
     /// </summary>
     /// <returns>Returns array of List</returns>
@@ -251,32 +307,38 @@ public interface IMastodonClient
     #region MastodonClient.Account
 
     /// <summary>
-    /// Fetching an account
+    /// View information about a profile.
     /// </summary>
     /// <param name="accountId"></param>
     /// <returns>Returns an Account</returns>
     Task<Account> GetAccount(string accountId);
 
     /// <summary>
-    /// Getting the current user
+    /// Get the user's own Account with Source
     /// </summary>
-    /// <returns>Returns the authenticated user's Account</returns>
+    /// <returns>Returns the user's own Account with Source</returns>
     Task<Account> GetCurrentUser();
 
+
+
     /// <summary>
-    /// Updating the current user
-    /// </summary>
-    /// <param name="display_name">The name to display in the user's profile</param>
-    /// <param name="note">A new biography for the user</param>
-    /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
-    /// <param name="header">A base64 encoded image to display as the user's header image</param>
-    /// <param name="locked">Whether to enable follow requests</param>
-    /// <param name="source_privacy">Default post privacy preference</param>
-    /// <param name="source_sensitive">Whether to mark statuses as sensitive by default</param>
-    /// <param name="source_language">Override language on statuses by default (ISO6391)</param>
-    /// <param name="fields_attributes">Profile metadata (max. 4)</param>
-    /// <returns>Returns the authenticated user's Account</returns>
-    Task<Account> UpdateCredentials(string? display_name = null,
+    /// Update the user's display and preferences.
+    /// </summary> 
+    /// <param name="discoverable">Whether the account should be shown in the profile directory</param>
+    /// <param name="bot">Whether the account has a bot flag</param>
+    /// <param name="display_name">The display name to use for the profile</param>
+    /// <param name="note">The account bio</param>
+    /// <param name="avatar">Avatar image</param>
+    /// <param name="header">Header image</param>
+    /// <param name="locked">Whether manual approval of follow requests is required</param>
+    /// <param name="source_privacy">Default post privacy for authored statuses</param>
+    /// <param name="source_sensitive">Whether to mark authored statuses as sensitive by default</param>
+    /// <param name="source_language">Default language to use for authored statuses (ISO6391)</param>
+    /// <param name="fields_attributes">Profile metadata name and value. (By default, max 4 fields and 255 characters per property/value)</param>
+    /// <returns>Returns the user's own Account with Source</returns>
+    Task<Account> UpdateCredentials(bool? discoverable = null,
+                                    bool? bot = null,
+                                    string? display_name = null,
                                     string? note = null,
                                     MediaDefinition? avatar = null,
                                     MediaDefinition? header = null,
@@ -365,6 +427,39 @@ public interface IMastodonClient
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses favourited by the authenticated user</returns>
     Task<MastodonList<Status>> GetFavourites(ArrayOptions? options = null);
+
+    /// <summary>
+    /// View your bookmarks.
+    /// </summary>
+    /// <param name="options">Define the first and last items to get</param>
+    /// <returns>Statuses the user has bookmarked</returns>
+    Task<MastodonList<Status>> GetBookmarks(ArrayOptions? options = null);
+
+    /// <summary>
+    /// View your featured tags
+    /// </summary>
+    /// <returns></returns>
+    Task<IEnumerable<FeaturedTag>> GetFeaturedTags();
+
+    /// <summary>
+    /// Feature a tag
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    Task<FeaturedTag> FeatureTag(string name);
+
+    /// <summary>
+    /// Unfeature a tag
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task UnfeatureTag(string id);
+
+    /// <summary>
+    /// Shows your 10 most-used tags, with usage history for the past week.
+    /// </summary>
+    /// <returns></returns>
+    Task<IEnumerable<Tag>> GetFeaturedTagsSuggestions();
 
     #endregion
 
@@ -473,6 +568,21 @@ public interface IMastodonClient
     /// <param name="accountId"></param>
     /// <returns>Returns the updated Relationships with the target Account</returns>
     Task<Relationship> Unendorse(string accountId);
+
+    /// <summary>
+    /// Get saved timeline position
+    /// </summary>
+    /// <returns></returns>
+    Task<Marker> GetMarkers();
+
+    /// <summary>
+    /// Save position in timeline
+    /// </summary>
+    /// <param name="homeLastReadId"></param>
+    /// <param name="notificationLastReadId"></param>
+    /// <returns></returns>
+    Task<Marker> SetMarkers(string? homeLastReadId = null, string? notificationLastReadId = null);
+
     #endregion
 
     #region MastodonClient.Status
@@ -527,7 +637,7 @@ public interface IMastodonClient
     /// <param name="language">Override language code of the toot (ISO 639-2)</param>
     /// <param name="poll">Nested parameters to attach a poll to the status</param>
     /// <returns>Returns Status</returns>
-    Task<Status> PostStatus(string status, Visibility? visibility = null, string? replyStatusId = null, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null);
+    Task<Status> PublishStatus(string status, Visibility? visibility = null, string? replyStatusId = null, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null);
 
     /// <summary>
     /// Deleting a status
@@ -635,6 +745,20 @@ public interface IMastodonClient
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns array of Conversation</returns>
     Task<MastodonList<Conversation>> GetConversations(ArrayOptions? options = null);
+
+    /// <summary>
+    /// Remove conversation
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task DeleteConversation(string id);
+
+    /// <summary>
+    /// Mark as read
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<Conversation> MarkAsRead(string id);
 
     /// <summary>
     /// Retrieving Public timeline

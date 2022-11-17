@@ -12,7 +12,8 @@ public enum NotificationType
     Favourite = 2,
     Reblog = 4,
     Mention = 8,
-    Poll = 16
+    Poll = 16,
+    FollowRequest = 32,
 }
 
 public class NotificationTypeConverter : JsonConverter<NotificationType>

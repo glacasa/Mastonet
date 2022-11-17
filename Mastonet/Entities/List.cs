@@ -23,7 +23,7 @@ public class List
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// One of :
+    /// Which replies should be shown in the list. One of :
     /// followed = Show replies to any followed user
     /// list = Show replies to members of the list
     /// none = Show replies to no one

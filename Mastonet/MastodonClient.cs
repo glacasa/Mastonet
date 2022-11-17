@@ -40,6 +40,94 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         return this.Get<Instance>("/api/v1/instance");
     }
 
+    /// <summary>
+    /// List of connected domains
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<string>> GetInstancePeers()
+    {
+        return Get<IEnumerable<string>>("/api/v1/instance/peers");
+    }
+
+    /// <summary>
+    /// Weekly activity
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<Activity>> GetInstanceActivity()
+    {
+        return Get<IEnumerable<Activity>>("/api/v1/instance/activity");
+    }
+
+    /// <summary>
+    /// Tags that are being used more frequently within the past week.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<Tag>> GetTrendingTags()
+    {
+        return Get<IEnumerable<Tag>>("/api/v1/trends");
+    }
+
+    /// <summary>
+    /// A directory of profiles that your website is aware of.
+    /// </summary>
+    /// <param name="offset"></param>
+    /// <param name="limit"></param>
+    /// <param name="order"></param>
+    /// <param name="local"></param>
+    /// <returns></returns>
+    public Task<IEnumerable<Account>> GetDirectory(int? offset, int? limit, DirectoryOrder? order, bool? local)
+    {
+        var queryParams = "";
+
+        if (offset.HasValue)
+        {
+            queryParams += (queryParams != "" ? "&" : "?") + "offset=" + offset.Value;
+        }
+        if (limit.HasValue)
+        {
+            queryParams += (queryParams != "" ? "&" : "?") + "limit=" + limit.Value;
+        }
+        if (order.HasValue)
+        {
+            queryParams += (queryParams != "" ? "&" : "?") + "order=" + order.Value.ToString().ToLowerInvariant();
+        }
+        if (local.HasValue)
+        {
+            queryParams += (queryParams != "" ? "&" : "?") + "local=" + local.Value;
+        }
+
+        return Get<IEnumerable<Account>>("/api/v1/directory" + queryParams);
+    }
+
+
+    /// Get all announcements set by administration
+    /// </summary>
+    /// <param name="withDismissed">If true, response will include announcements dismissed by the user</param>
+    /// <returns></returns>
+    public Task<IEnumerable<Announcement>> GetAnnouncements(bool withDismissed = false)
+    {
+        return Get<IEnumerable<Announcement>>("/api/v1/announcements");
+    }
+
+    /// <summary>
+    /// Allows a user to mark the announcement as read
+    /// </summary>
+    /// <param name="id"></param>
+    public Task DismissAnnouncement(string id)
+    {
+        return Post($"/api/v1/announcements/{id}/dismiss");
+    }
+
+    /// <summary>
+    /// React to an announcement with an emoji
+    /// </summary>
+    /// <param name="id">Local ID of an announcement in the database</param>
+    /// <param name="emoji">Unicode emoji, or shortcode of custom emoji</param>
+    public Task AddReactionToAnnouncement(string id, string emoji)
+    {
+        return Put($"/api/v1/announcements/{id}/reactions/{emoji}");
+    }
+
     #endregion
 
     #region Lists
@@ -284,25 +372,30 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             queryParams += "?" + options.ToQueryString();
         }
-        if ((excludeTypes & NotificationType.Follow) == NotificationType.Follow)
+
+        if (excludeTypes.HasFlag(NotificationType.Follow))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=follow";
         }
-        if ((excludeTypes & NotificationType.Favourite) == NotificationType.Favourite)
+        if (excludeTypes.HasFlag(NotificationType.Favourite))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=favourite";
         }
-        if ((excludeTypes & NotificationType.Reblog) == NotificationType.Reblog)
+        if (excludeTypes.HasFlag(NotificationType.Reblog))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=reblog";
         }
-        if ((excludeTypes & NotificationType.Mention) == NotificationType.Mention)
+        if (excludeTypes.HasFlag(NotificationType.Mention))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=mention";
         }
-        if ((excludeTypes & NotificationType.Poll) == NotificationType.Poll)
+        if (excludeTypes.HasFlag(NotificationType.Poll))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=poll";
+        }
+        if (excludeTypes.HasFlag(NotificationType.FollowRequest))
+        {
+            queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=follow_request";
         }
         return GetMastodonList<Notification>(url + queryParams);
     }
@@ -333,8 +426,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <returns></returns>
     public Task DismissNotification(string notificationId)
     {
-        var data = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("id", notificationId.ToString()) };
-        return Post("/api/v1/notifications/dismiss", data);
+        return Post($"/api/v1/notifications/{notificationId}/dismiss");
     }
 
     #endregion

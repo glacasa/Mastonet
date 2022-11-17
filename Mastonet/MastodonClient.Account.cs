@@ -10,7 +10,7 @@ namespace Mastonet;
 partial class MastodonClient
 {
     /// <summary>
-    /// Fetching an account
+    /// View information about a profile.
     /// </summary>
     /// <param name="accountId"></param>
     /// <returns>Returns an Account</returns>
@@ -20,28 +20,38 @@ partial class MastodonClient
     }
 
     /// <summary>
-    /// Getting the current user
+    /// Get the user's own Account with Source
     /// </summary>
-    /// <returns>Returns the authenticated user's Account</returns>
+    /// <returns>Returns the user's own Account with Source</returns>
     public Task<Account> GetCurrentUser()
     {
         return Get<Account>($"/api/v1/accounts/verify_credentials");
     }
 
+    public Task<IdentityProof> GetIdentityProof()
+    {
+        return Get<IdentityProof>($"/api/proofs");
+    }
+
     /// <summary>
-    /// Updating the current user
-    /// </summary>
-    /// <param name="display_name">The name to display in the user's profile</param>
-    /// <param name="note">A new biography for the user</param>
-    /// <param name="avatar">A base64 encoded image to display as the user's avatar</param>
-    /// <param name="header">A base64 encoded image to display as the user's header image</param>
-    /// <param name="locked">Whether to enable follow requests</param>
-    /// <param name="source_privacy">Default post privacy preference</param>
-    /// <param name="source_sensitive">Whether to mark statuses as sensitive by default</param>
-    /// <param name="source_language">Override language on statuses by default (ISO6391)</param>
-    /// <param name="fields_attributes">Profile metadata (max. 4)</param>
-    /// <returns>Returns the authenticated user's Account</returns>
-    public Task<Account> UpdateCredentials(string? display_name = null,
+    /// Update the user's display and preferences.
+    /// </summary> 
+    /// <param name="discoverable">Whether the account should be shown in the profile directory</param>
+    /// <param name="bot">Whether the account has a bot flag</param>
+    /// <param name="display_name">The display name to use for the profile</param>
+    /// <param name="note">The account bio</param>
+    /// <param name="avatar">Avatar image</param>
+    /// <param name="header">Header image</param>
+    /// <param name="locked">Whether manual approval of follow requests is required</param>
+    /// <param name="source_privacy">Default post privacy for authored statuses</param>
+    /// <param name="source_sensitive">Whether to mark authored statuses as sensitive by default</param>
+    /// <param name="source_language">Default language to use for authored statuses (ISO6391)</param>
+    /// <param name="fields_attributes">Profile metadata name and value. (By default, max 4 fields and 255 characters per property/value)</param>
+    /// <returns>Returns the user's own Account with Source</returns>
+    public Task<Account> UpdateCredentials(
+        bool? discoverable = null,
+        bool? bot = null,
+        string? display_name = null,
         string? note = null,
         MediaDefinition? avatar = null,
         MediaDefinition? header = null,
@@ -58,6 +68,16 @@ partial class MastodonClient
 
         var data = new List<KeyValuePair<string, string>>();
         var media = new List<MediaDefinition>();
+
+        if (discoverable != null)
+        {
+            data.Add(new KeyValuePair<string, string>("discoverable", discoverable.Value.ToString()));
+        }
+
+        if (bot != null)
+        {
+            data.Add(new KeyValuePair<string, string>("bot", bot.Value.ToString()));
+        }
 
         if (display_name != null)
         {
@@ -307,6 +327,73 @@ partial class MastodonClient
             url += "?" + options.ToQueryString();
         }
         return GetMastodonList<Status>(url);
+    }
+
+    #endregion
+
+
+    #region Bookmarks 
+
+    /// <summary>
+    /// View your bookmarks.
+    /// </summary>
+    /// <param name="options">Define the first and last items to get</param>
+    /// <returns>Statuses the user has bookmarked</returns>
+    public Task<MastodonList<Status>> GetBookmarks(ArrayOptions? options = null)
+    {
+        var url = "/api/v1/bookmarks";
+        if (options != null)
+        {
+            url += "?" + options.ToQueryString();
+        }
+        return GetMastodonList<Status>(url);
+    }
+
+    #endregion
+
+    #region Featured tags
+
+    /// <summary>
+    /// View your featured tags
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<FeaturedTag>> GetFeaturedTags()
+    {
+        return Get<IEnumerable<FeaturedTag>>("/api/v1/featured_tags");
+    }
+
+    /// <summary>
+    /// Feature a tag
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public Task<FeaturedTag> FeatureTag(string name)
+    {
+        var data = new List<KeyValuePair<string, string>>
+        {
+            new KeyValuePair<string, string>("name",name)
+        };
+
+        return Post<FeaturedTag>("/api/v1/featured_tags", data);
+    }
+
+    /// <summary>
+    /// Unfeature a tag
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public Task UnfeatureTag(string id)
+    {
+        return Delete("/api/v1/featured_tags/" + id);
+    }
+
+    /// <summary>
+    /// Shows your 10 most-used tags, with usage history for the past week.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<Tag>> GetFeaturedTagsSuggestions()
+    {
+        return Get<IEnumerable<Tag>>("/api/v1/featured_tags/suggestions");
     }
 
     #endregion

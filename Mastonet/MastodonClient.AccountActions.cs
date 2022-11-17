@@ -154,6 +154,39 @@ partial class MastodonClient
     {
         return Post<Relationship>($"/api/v1/accounts/{accountId}/unpin");
     }
+
+    /// <summary>
+    /// Get saved timeline position
+    /// </summary>
+    /// <returns></returns>
+    public Task<Marker> GetMarkers()
+    {
+        return Get<Marker>("/api/v1/markers");
+    }
+
+    /// <summary>
+    /// Save position in timeline
+    /// </summary>
+    /// <param name="homeLastReadId"></param>
+    /// <param name="notificationLastReadId"></param>
+    /// <returns></returns>
+    public Task<Marker> SetMarkers(string? homeLastReadId = null, string? notificationLastReadId = null)
+    {
+        var data = new List<KeyValuePair<string, string>>();
+        
+        if (!string.IsNullOrEmpty(homeLastReadId))
+        {
+            data.Add(new KeyValuePair<string, string>("home[last_read_id]", homeLastReadId));
+        }
+
+        if (!string.IsNullOrEmpty(notificationLastReadId))
+        {
+            data.Add(new KeyValuePair<string, string>("notifications[last_read_id]", notificationLastReadId));
+        }
+
+        return Post<Marker>("/api/v1/markers", data);
+    }
+
     #endregion
 
     #region Domain blocks
