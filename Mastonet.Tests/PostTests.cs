@@ -28,7 +28,7 @@ namespace Mastonet.Tests
             Assert.NotNull(attachment.PreviewUrl);
             Assert.NotNull(attachment.Url);
 
-            var status = await client.PostStatus("Status with image", Visibility.Private, mediaIds: new string[] { attachment.Id });
+            var status = await client.PublishStatus("Status with image", Visibility.Private, mediaIds: new string[] { attachment.Id });
             status = await client.GetStatus(status.Id);
 
             Assert.NotNull(status.MediaAttachments);
@@ -54,7 +54,7 @@ namespace Mastonet.Tests
                 };
             }
 
-            var status = await client.PostStatus(
+            var status = await client.PublishStatus(
                 status: "Status with multiple media attachments",
                 visibility: Visibility.Private,
                 mediaIds: attachments.Select(a => a.Id));
@@ -73,7 +73,7 @@ namespace Mastonet.Tests
         public async Task PostStatus()
         {
             var client = GetTestClient();
-            var status = await client.PostStatus("Yo1", Visibility.Public);
+            var status = await client.PublishStatus("Yo1", Visibility.Public);
 
             var client2 = GetPrivateClient();
 
@@ -88,7 +88,7 @@ namespace Mastonet.Tests
         public async Task DeleteStatus()
         {
             var client = GetTestClient();
-            var status = await client.PostStatus("Yo1", Visibility.Public);
+            var status = await client.PublishStatus("Yo1", Visibility.Public);
             var statusId = status.Id;
 
             status = await client.GetStatus(statusId);
