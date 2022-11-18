@@ -27,13 +27,17 @@ public abstract class BaseHttpClient
         }
         protected set
         {
-            CheckInstance(value);
-            instance = value;
+            instance = CheckInstance(value);
         }
     }
 
-    private void CheckInstance(string instance)
+    private string CheckInstance(string instance)
     {
+        if (instance.StartsWith("https://"))
+        {
+            instance = instance.Substring("https://".Length);
+        }
+
         if (string.IsNullOrWhiteSpace(instance))
         {
             throw new ArgumentNullException(nameof(instance));
@@ -45,6 +49,8 @@ public abstract class BaseHttpClient
         {
             throw new NotSupportedException();
         }
+
+        return instance;
     }
 
     #endregion
