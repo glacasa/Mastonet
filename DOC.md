@@ -5,7 +5,8 @@
 You need to obtain a ClientId and a ClientSecret for your app, directly from the client, on the target Mastodon instance.
 Call the `CreateApp` method :
 ```cs
-var authClient = new AuthenticationClient("instanceUrl");
+var instance = "example.org";
+var authClient = new AuthenticationClient(instance);
 var appRegistration = await authClient.CreateApp("Your app name", Scope.Read | Scope.Write | Scope.Follow);
 ```
 The `appRegistration` object must be saved.
@@ -43,7 +44,8 @@ var auth = await authClient.ConnectWithCode(authCode);
 
 When you have the access token, you should save it in the app, and use it every time you restart the app. You just need to add it to the MastodonClient constructor.
 ```cs
-var client = new MastodonClient(appRegistration, auth);
+var accessToken = auth.AccessToken;
+var client = new MastodonClient(instance, accessToken);
 ```
 Now you can call all the API methods. [Mastonet API](https://github.com/glacasa/Mastonet/blob/master/API.md) [Mastodon API overview](https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md)
 
@@ -74,6 +76,6 @@ streaming.Stop();
 You should share a single instance of HttpClient in your entire app (c.f. [You're using HttpClient wrong and it is destabilizing your software](https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/)). If you have HttpClient in other parts of your app, you can inject it from constructors:
 ```cs
     var httpClient = new HttpClient();
-    var authClient = new AuthenticationClient("instanceUrl", httpClient);
-    var mastodonClient = new MastodonClient(appRegistration, auth, httpClient);
+    var authClient = new AuthenticationClient(instance, httpClient);
+    var mastodonClient = new MastodonClient(instance, accessToken, httpClient);
 ```
