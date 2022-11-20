@@ -233,7 +233,7 @@ public interface IMastodonClient
     /// <param name="q">The search query</param>
     /// <param name="resolve">Whether to resolve non-local accounts</param>
     /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-    Task<SearchResults> Search(string q, bool resolve = false);
+    Task<SearchResults> Search(string q, bool resolveNonLocalAccouns = false);
 
     /// <summary>
     /// Searching for accounts
@@ -243,7 +243,7 @@ public interface IMastodonClient
     /// <param name="resolve">Attempt WebFinger look-up (default: false)</param>
     /// <param name="following">Only who the user is following (default: false)</param>
     /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
-    Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false);
+    Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolveNonLocalAccouns = false, bool onlyFollowing = false);
 
     /// <summary>
     /// Listing all text filters the user has configured that potentially must be applied client-side

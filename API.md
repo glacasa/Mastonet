@@ -90,9 +90,9 @@ public Task<Report> Report(long accountId, IEnumerable<long> statusIds = null, s
 ```
 ### Search
 ```cs
-public Task<SearchResults> Search(string q, bool resolve = false);
+public Task<SearchResults> Search(string q, bool resolveNonLocalAccouns = false);
 
-public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false);
+public Task<IEnumerable<Account>> SearchAccounts(string q, int? limit = null, bool resolveNonLocalAccouns = false, bool onlyFollowing = false);
 ```
 ### Filters
 ```cs

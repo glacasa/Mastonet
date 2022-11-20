@@ -501,7 +501,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="q">The search query</param>
     /// <param name="resolve">Whether to resolve non-local accounts</param>
     /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-    public Task<SearchResults> Search(string q, bool resolve = false)
+    public Task<SearchResults> Search(string q, bool resolveNonLocalAccouns = false)
     {
         if (string.IsNullOrEmpty(q))
         {
@@ -509,7 +509,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         }
 
         string url = "/api/v2/search?q=" + Uri.EscapeDataString(q);
-        if (resolve)
+        if (resolveNonLocalAccouns)
         {
             url += "&resolve=true";
         }
@@ -525,7 +525,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="resolve">Attempt WebFinger look-up (default: false)</param>
     /// <param name="following">Only who the user is following (default: false)</param>
     /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
-    public Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolve = false, bool following = false)
+    public Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolveNonLocalAccouns = false, bool onlyFollowing = false)
     {
         if (string.IsNullOrEmpty(q))
         {
@@ -537,11 +537,11 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             url += "&limit=" + limit.Value;
         }
-        if (resolve)
+        if (resolveNonLocalAccouns)
         {
             url += "&resolve=true";
         }
-        if (following)
+        if (onlyFollowing)
         {
             url += "&following=true";
         }
