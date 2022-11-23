@@ -33,14 +33,14 @@ public abstract class BaseHttpClient
 
     private string CheckInstance(string instance)
     {
-        if (instance.StartsWith("https://"))
-        {
-            instance = instance.Substring("https://".Length);
-        }
-
         if (string.IsNullOrWhiteSpace(instance))
         {
             throw new ArgumentNullException(nameof(instance));
+        }
+
+        if (instance.StartsWith("https://"))
+        {
+            instance = instance.Substring("https://".Length);
         }
 
         var notSupportedList = new List<string> { "gab.", "truthsocial." };
