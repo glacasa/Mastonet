@@ -90,7 +90,7 @@ public class Account
     /// Whether the account has opted into discovery features such as the profile directory.
     /// </summary>
     [JsonProperty("discoverable")]
-    public bool Discoverable { get; set; }
+    public bool? Discoverable { get; set; }
 
     // Statistical attributes
 
