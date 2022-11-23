@@ -17,7 +17,7 @@ namespace Mastonet.Tests
 
             // Have 1 notif
             await testClient.ClearNotifications();
-            await privClient.PostStatus("@TestAccount hello", Visibility.Direct);
+            await privClient.PublishStatus("@TestAccount hello", Visibility.Direct);
 
             // Get notif
             var notifications = await testClient.GetNotifications();
@@ -32,7 +32,7 @@ namespace Mastonet.Tests
 
             // Have 1 notif
             await testClient.ClearNotifications();
-            await privClient.PostStatus("@TestAccount hello", Visibility.Direct);
+            await privClient.PublishStatus("@TestAccount hello", Visibility.Direct);
 
             // Get notif
             var notifications = await testClient.GetNotifications();
@@ -50,7 +50,7 @@ namespace Mastonet.Tests
             var privClient = GetPrivateClient();
 
             // Have notifs
-            await privClient.PostStatus("@TestAccount hello", Visibility.Direct);
+            await privClient.PublishStatus("@TestAccount hello", Visibility.Direct);
             var notifications = await testClient.GetNotifications();
             Assert.True(notifications.Any());
 

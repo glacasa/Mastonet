@@ -30,7 +30,7 @@ namespace Mastonet.Tests
         {
             var client = GetTestClient();
 
-            var status = await client.PostStatus("Yo", Visibility.Private);
+            var status = await client.PublishStatus("Yo", Visibility.Private);
 
             status = await client.GetStatus(status.Id);
             Assert.False(status.Favourited);
@@ -44,8 +44,8 @@ namespace Mastonet.Tests
         {
             var client = GetTestClient();
 
-            var status = await client.PostStatus("Yo", Visibility.Private);
-            var status2 = await client.PostStatus("Yo 2", Visibility.Private, replyStatusId: status.Id);
+            var status = await client.PublishStatus("Yo", Visibility.Private);
+            var status2 = await client.PublishStatus("Yo 2", Visibility.Private, replyStatusId: status.Id);
 
             var context = await client.GetStatusContext(status2.Id);
             Assert.Single(context.Ancestors);
@@ -57,7 +57,7 @@ namespace Mastonet.Tests
         {
             var client = GetTestClient();
 
-            var status = await client.PostStatus("Yo", Visibility.Private);
+            var status = await client.PublishStatus("Yo", Visibility.Private);
 
             var card = await client.GetStatusCard(status.Id);
         }
@@ -68,7 +68,7 @@ namespace Mastonet.Tests
             var testClient = GetTestClient();
             var privateClient = GetPrivateClient();
 
-            var status = await testClient.PostStatus("Yo", Visibility.Public);
+            var status = await testClient.PublishStatus("Yo", Visibility.Public);
             await privateClient.Reblog(status.Id);
 
             var rbBy = await privateClient.GetRebloggedBy(status.Id);
@@ -81,7 +81,7 @@ namespace Mastonet.Tests
             var testClient = GetTestClient();
             var privateClient = GetPrivateClient();
 
-            var status = await testClient.PostStatus("Yo", Visibility.Public);
+            var status = await testClient.PublishStatus("Yo", Visibility.Public);
             await privateClient.Favourite(status.Id);
 
             var rbBy = await privateClient.GetFavouritedBy(status.Id);

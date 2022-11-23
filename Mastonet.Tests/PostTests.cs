@@ -106,7 +106,7 @@ namespace Mastonet.Tests
         public async Task ReblogUnreblog()
         {
             var testClient = GetTestClient();
-            var status = await testClient.PostStatus("Yo1", Visibility.Public);
+            var status = await testClient.PublishStatus("Yo1", Visibility.Public);
 
             var client = GetPrivateClient();
             status = await client.GetStatus(status.Id);
