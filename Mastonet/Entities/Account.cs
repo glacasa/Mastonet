@@ -104,7 +104,7 @@ public class Account
     /// When the most recent status was posted.
     /// </summary>
     [JsonProperty("last_status_at")]
-    public DateTime LastStatusAt { get; set; }
+    public DateTime? LastStatusAt { get; set; }
 
     /// <summary>
     /// How many statuses are attached to this account.
@@ -160,5 +160,5 @@ public class Account
     /// When a timed mute will expire, if applicable.
     /// </summary>
     [JsonProperty("mute_expires_at")]
-    public DateTime MuteExpiresAt { get; set; }
+    public DateTime? MuteExpiresAt { get; set; }
 }
