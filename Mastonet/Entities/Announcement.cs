@@ -40,7 +40,7 @@ public class Announcement
     /// <summary>
     /// When the announcement was created.
     /// </summary>
-    [JsonProperty("created_at")]
+    [JsonProperty("published_at")]
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
