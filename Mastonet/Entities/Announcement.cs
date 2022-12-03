@@ -22,7 +22,7 @@ public class Announcement
     /// <summary>
     /// The content of the announcement.
     /// </summary>
-    [JsonProperty("text")]
+    [JsonProperty("content")]
     public string Text { get; set; } = string.Empty;
 
     /// <summary>
