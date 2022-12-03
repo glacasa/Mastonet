@@ -23,7 +23,14 @@ public class Announcement
     /// The content of the announcement.
     /// </summary>
     [JsonProperty("content")]
-    public string Text { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    
+    [Obsolete("This property was incorrectly named, use 'Content' instead.")]
+    public string Text
+    {
+        get => Content;
+        set => Content = value;
+    }
 
     /// <summary>
     /// Whether the announcement is currently active.
@@ -41,7 +48,13 @@ public class Announcement
     /// When the announcement was created.
     /// </summary>
     [JsonProperty("published_at")]
-    public DateTime CreatedAt { get; set; }
+    public DateTime PublishedAt { get; set; }
+    
+    [Obsolete("This property was incorrectly named, use 'PublishedAt' instead.")]
+    public DateTime CreatedAt    {
+        get => PublishedAt;
+        set => PublishedAt = value;
+    }
 
     /// <summary>
     /// When the announcement was last updated.
