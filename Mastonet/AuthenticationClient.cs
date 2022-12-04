@@ -131,4 +131,8 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     }
 
     #endregion
+    
+    protected override void OnResponseReceived(HttpResponseMessage response)
+    {
+    }
 }
