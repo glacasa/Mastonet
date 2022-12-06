@@ -123,6 +123,8 @@ public class TimelineHttpStreaming : TimelineStreaming
             {
                 if (!restart)
                     throw;
+                else
+                    NotifyStreamRestarted();
             }
         } while (restart);
     }

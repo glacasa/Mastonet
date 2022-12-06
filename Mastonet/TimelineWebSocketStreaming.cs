@@ -110,6 +110,8 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
             {
                 if (!restart)
                     throw;
+                else
+                    NotifyStreamRestarted();
             }
         }
         while (restart);

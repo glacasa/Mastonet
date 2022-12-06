@@ -17,6 +17,8 @@ public abstract class TimelineStreaming
     public event EventHandler<StreamFiltersChangedEventArgs>? OnFiltersChanged;
     public event EventHandler<StreamConversationEvenTargs>? OnConversation;
 
+    public event Action OnStreamRestarted;
+
     protected TimelineStreaming(StreamingType type, string? param, string? accessToken)
     {
         this.streamingType = type;
@@ -26,6 +28,14 @@ public abstract class TimelineStreaming
 
     public abstract Task Start(TimeSpan? timeout = null, bool restart = true);
     public abstract void Stop();
+
+    protected void NotifyStreamRestarted()
+    {
+        if (OnStreamRestarted != null)
+        {
+            OnStreamRestarted.Invoke();
+        }
+    }
 
     protected void SendEvent(string eventName, string data)
     {
