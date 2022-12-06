@@ -111,7 +111,7 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
                 if (!restart)
                     throw;
                 else
-                    NotifyStreamRestarted();
+                    NotifyStreamRestarted(lastValidMessage);
             }
         }
         while (restart);
