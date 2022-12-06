@@ -56,6 +56,7 @@ public class TimelineHttpStreaming : TimelineStreaming
                     throw new NotImplementedException();
             }
 
+            DateTime lastReceivedValidLine = DateTime.Now;
             try
             {
                 using (var request = new HttpRequestMessage(HttpMethod.Get, url))
@@ -70,7 +71,6 @@ public class TimelineHttpStreaming : TimelineStreaming
                             string? eventName = null;
                             string? data = null;
 
-                            DateTime lastReceivedValidLine = DateTime.Now;
                             while (true)
                             {
                                 var line = await reader.ReadLineAsync();
@@ -124,7 +124,7 @@ public class TimelineHttpStreaming : TimelineStreaming
                 if (!restart)
                     throw;
                 else
-                    NotifyStreamRestarted();
+                    NotifyStreamRestarted(lastReceivedValidLine);
             }
         } while (restart);
     }
