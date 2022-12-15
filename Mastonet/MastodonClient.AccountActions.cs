@@ -13,6 +13,7 @@ namespace Mastonet;
 partial class MastodonClient
 {
     #region Follow
+
     /// <summary>
     /// Following an account
     /// </summary>
@@ -42,14 +43,17 @@ partial class MastodonClient
     /// <returns>Returns the local representation of the followed account, as an Account</returns>
     public Task<Account> Follow(string uri)
     {
-        var data = new List<KeyValuePair<string, string>>() {
+        var data = new List<KeyValuePair<string, string>>()
+        {
             new KeyValuePair<string, string>("uri", uri)
         };
         return this.Post<Account>($"/api/v1/follows", data);
     }
+
     #endregion
 
     #region Block
+
     /// <summary>
     /// Blocking an account
     /// </summary>
@@ -82,11 +86,14 @@ partial class MastodonClient
         {
             url += "?" + options.ToQueryString();
         }
+
         return GetMastodonList<Account>(url);
     }
+
     #endregion
 
     #region Mutes
+
     /// <summary>
     /// Muting an account
     /// </summary>
@@ -121,11 +128,14 @@ partial class MastodonClient
         {
             url += "?" + options.ToQueryString();
         }
+
         return GetMastodonList<Account>(url);
     }
+
     #endregion
 
     #region Endorsements
+
     /// <summary>
     /// Getting accounts the user chose to endorse
     /// </summary>
@@ -173,7 +183,7 @@ partial class MastodonClient
     public Task<Marker> SetMarkers(string? homeLastReadId = null, string? notificationLastReadId = null)
     {
         var data = new List<KeyValuePair<string, string>>();
-        
+
         if (!string.IsNullOrEmpty(homeLastReadId))
         {
             data.Add(new KeyValuePair<string, string>("home[last_read_id]", homeLastReadId));
@@ -203,6 +213,7 @@ partial class MastodonClient
         {
             url += "?" + options.ToQueryString();
         }
+
         return GetMastodonList<string>(url);
     }
 
@@ -228,4 +239,54 @@ partial class MastodonClient
 
     #endregion
 
+    #region Tags
+
+    /// <summary>
+    /// View information about a single tag
+    /// </summary>
+    /// <param name="tag">The name of the hashtag</param>
+    /// <returns></returns>
+    public Task<Tag> GetTagInfo(string tag)
+    {
+        return Get<Tag>("/api/v1/tags/" + tag);
+    }
+
+    /// <summary>
+    /// Follow a hashtag
+    /// </summary>
+    /// <param name="tag">The name of the hashtag</param>
+    /// <returns></returns>
+    public Task<Tag> FollowTag(string tag)
+    {
+        return Post<Tag>($"/api/v1/tags/{tag}/follow");
+    }
+
+    /// <summary>
+    /// Unfollow a hashtag
+    /// </summary>
+    /// <param name="tag">The name of the hashtag</param>
+    /// <returns></returns>
+    public Task<Tag> UnfollowTag(string tag)
+    {
+        return Post<Tag>($"/api/v1/tags/{tag}/unfollow");
+    }
+
+    /// <summary>
+    /// View all followed tags
+    /// </summary>
+    /// <returns></returns>
+    public Task<MastodonList<Tag>> ViewFollowedTags(ArrayOptions? options = null)
+    {
+        string url = "/api/v1/followed_tags";
+
+        var queryParams = "";
+        if (options != null)
+        {
+            queryParams = "?" + options.ToQueryString();
+        }
+
+        return GetMastodonList<Tag>(url + queryParams);
+    }
+
+    #endregion
 }

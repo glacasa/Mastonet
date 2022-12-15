@@ -583,6 +583,33 @@ public interface IMastodonClient
     /// <returns></returns>
     Task<Marker> SetMarkers(string? homeLastReadId = null, string? notificationLastReadId = null);
 
+    /// <summary>
+    /// View information about a single tag
+    /// </summary>
+    /// <param name="tag">The name of the hashtag</param>
+    /// <returns></returns>
+    Task<Tag> GetTagInfo(string tag);
+
+    /// <summary>
+    /// Follow a hashtag
+    /// </summary>
+    /// <param name="tag">The name of the hashtag</param>
+    /// <returns></returns>
+    Task<Tag> FollowTag(string tag);
+    
+    /// <summary>
+    /// Unfollow a hashtag
+    /// </summary>
+    /// <param name="tag">The name of the hashtag</param>
+    /// <returns></returns>
+    Task<Tag> UnfollowTag(string tag);
+
+    /// <summary>
+    /// View all followed tags
+    /// </summary>
+    /// <returns></returns>
+    Task<MastodonList<Tag>> ViewFollowedTags(ArrayOptions? options = null);
+
     #endregion
 
     #region MastodonClient.Status

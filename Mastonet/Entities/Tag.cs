@@ -27,4 +27,7 @@ public class Tag
     /// </summary>
     [JsonProperty("history")]
     public IEnumerable<History>? History { get; set; }
+    
+    [JsonProperty("following")]
+    public bool? Following { get; set; }
 }
