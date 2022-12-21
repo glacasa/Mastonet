@@ -9,6 +9,7 @@ namespace Mastonet.Entities;
 /// <summary>
 /// Represents the software instance of Mastodon running on this domain.
 /// </summary>
+[Obsolete]
 public class Instance
 {
     /// <summary>

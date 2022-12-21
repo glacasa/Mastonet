@@ -24,7 +24,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         this.Instance = instance;
         this.AccessToken = accessToken;
 
-        this.instanceGetter = new Lazy<Task<Instance>>(this.GetInstance);
+        this.instanceGetter = new Lazy<Task<InstanceV2>>(this.GetInstanceV2);
     }
 
     #endregion
@@ -35,9 +35,19 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// Getting instance information
     /// </summary>
     /// <returns>Returns the current Instance. Does not require authentication</returns>
-    public Task<Instance> GetInstance()
+    [Obsolete("This method is deprecated on Mastodon v4. Use GetInstanceV2() instead.")]
+    public Task<Instance> GetInstance() 
     {
         return this.Get<Instance>("/api/v1/instance");
+    }
+    
+    /// <summary>
+    /// Getting instance information
+    /// </summary>
+    /// <returns>Returns the current Instance. Does not require authentication</returns>
+    public Task<InstanceV2> GetInstanceV2()
+    {
+        return this.Get<InstanceV2>("/api/v2/instance");
     }
 
     /// <summary>

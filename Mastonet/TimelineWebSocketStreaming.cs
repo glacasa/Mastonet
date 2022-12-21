@@ -14,12 +14,12 @@ namespace Mastonet;
 public class TimelineWebSocketStreaming : TimelineHttpStreaming
 {
     private ClientWebSocket? socket;
-    readonly Task<Instance> instanceGetter;
+    readonly Task<InstanceV2> instanceGetter;
     private const int receiveChunkSize = 512;
 
-    public TimelineWebSocketStreaming(StreamingType type, string? param, string instance, Task<Instance> instanceGetter, string? accessToken)
+    public TimelineWebSocketStreaming(StreamingType type, string? param, string instance, Task<InstanceV2> instanceGetter, string? accessToken)
         : this(type, param, instance, instanceGetter, accessToken, DefaultHttpClient.Instance) { }
-    public TimelineWebSocketStreaming(StreamingType type, string? param, string instance, Task<Instance> instanceGetter, string? accessToken, HttpClient client)
+    public TimelineWebSocketStreaming(StreamingType type, string? param, string instance, Task<InstanceV2> instanceGetter, string? accessToken, HttpClient client)
         : base(type, param, instance, accessToken, client)
     {
         this.instanceGetter = instanceGetter;
@@ -28,7 +28,7 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
     public override async Task Start()
     {
         var instance = await instanceGetter;
-        var url = instance?.Urls?.StreamingAPI;
+        var url = instance?.Configuration?.Urls?.Streaming;
 
         if (url == null)
         {

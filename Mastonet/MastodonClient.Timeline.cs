@@ -137,7 +137,7 @@ partial class MastodonClient
 
     #region Streaming
 
-    private Lazy<Task<Instance>> instanceGetter;
+    private Lazy<Task<InstanceV2>> instanceGetter;
 
 
     private TimelineStreaming GetStreaming(StreamingType streamingType, string? param)
