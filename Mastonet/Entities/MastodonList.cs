@@ -6,7 +6,7 @@ namespace Mastonet.Entities;
 
 public class MastodonList<T> : List<T>
 {
-    public long? NextPageMaxId { get; internal set; }
-    public long? PreviousPageSinceId { get; internal set; }
-    public long? PreviousPageMinId { get; internal set; }
+    public string? NextPageMaxId { get; internal set; }
+    public string? PreviousPageSinceId { get; internal set; }
+    public string? PreviousPageMinId { get; internal set; }
 }
