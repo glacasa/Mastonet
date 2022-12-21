@@ -30,7 +30,7 @@ Note that the 3-parameter overloads don't have `minId` for backward compatibilit
 
 ### Instance
 ```cs
-public Task<Instance> GetInstance();
+public Task<Instance> GetInstanceV2();
 
 public Task<IEnumerable<string>> GetInstancePeers();
 
