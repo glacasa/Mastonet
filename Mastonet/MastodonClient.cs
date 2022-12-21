@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Mastonet;
 
 public partial class MastodonClient : BaseHttpClient, IMastodonClient
 {
-
     #region Ctor
 
     public MastodonClient(string instance, string accessToken)
@@ -93,14 +93,17 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             queryParams += (queryParams != "" ? "&" : "?") + "offset=" + offset.Value;
         }
+
         if (limit.HasValue)
         {
             queryParams += (queryParams != "" ? "&" : "?") + "limit=" + limit.Value;
         }
+
         if (order.HasValue)
         {
             queryParams += (queryParams != "" ? "&" : "?") + "order=" + order.Value.ToString().ToLowerInvariant();
         }
+
         if (local.HasValue)
         {
             queryParams += (queryParams != "" ? "&" : "?") + "local=" + local.Value;
@@ -185,6 +188,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             url += "?" + options.ToQueryString();
         }
+
         return GetMastodonList<Account>(url);
     }
 
@@ -210,7 +214,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
             throw new ArgumentException("The title is required", nameof(title));
         }
 
-        var data = new List<KeyValuePair<string, string>>() {
+        var data = new List<KeyValuePair<string, string>>()
+        {
             new KeyValuePair<string, string>("title", title),
         };
 
@@ -229,7 +234,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
             throw new ArgumentException("The title is required", nameof(newTitle));
         }
 
-        var data = new List<KeyValuePair<string, string>>() {
+        var data = new List<KeyValuePair<string, string>>()
+        {
             new KeyValuePair<string, string>("title", newTitle),
         };
 
@@ -313,7 +319,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
     /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
     /// <returns>Returns an Attachment that can be used when creating a status</returns>
-    public Task<Attachment> UploadMedia(Stream data, string fileName = "file", string? description = null, AttachmentFocusData? focus = null)
+    public Task<Attachment> UploadMedia(Stream data, string fileName = "file", string? description = null,
+        AttachmentFocusData? focus = null)
     {
         return UploadMedia(new MediaDefinition(data, fileName), description, focus);
     }
@@ -325,7 +332,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
     /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
     /// <returns>Returns an Attachment that can be used when creating a status</returns>
-    public Task<Attachment> UploadMedia(MediaDefinition media, string? description = null, AttachmentFocusData? focus = null)
+    public Task<Attachment> UploadMedia(MediaDefinition media, string? description = null,
+        AttachmentFocusData? focus = null)
     {
         media.ParamName = "file";
         var list = new List<MediaDefinition>() { media };
@@ -334,10 +342,12 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             data.Add("description", description);
         }
+
         if (focus != null)
         {
             data.Add("focus", $"{focus.X},{focus.Y}");
         }
+
         return this.Post<Attachment>("/api/v1/media", data, list);
     }
 
@@ -355,10 +365,12 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             data.Add("description", description);
         }
+
         if (focus != null)
         {
             data.Add("focus", $"{focus.X},{focus.Y}");
         }
+
         return Put<Attachment>("/api/v1/media/" + mediaId, data);
     }
 
@@ -385,7 +397,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="options">Define the first and last items to get</param>
     /// <param name="excludeTypes">Types to exclude</param>
     /// <returns>Returns a list of Notifications for the authenticated user</returns>
-    public Task<MastodonList<Notification>> GetNotifications(ArrayOptions? options = null, NotificationType excludeTypes = NotificationType.None)
+    public Task<MastodonList<Notification>> GetNotifications(ArrayOptions? options = null,
+        NotificationType excludeTypes = NotificationType.None)
     {
         var url = "/api/v1/notifications";
         var queryParams = "";
@@ -398,26 +411,32 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=follow";
         }
+
         if (excludeTypes.HasFlag(NotificationType.Favourite))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=favourite";
         }
+
         if (excludeTypes.HasFlag(NotificationType.Reblog))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=reblog";
         }
+
         if (excludeTypes.HasFlag(NotificationType.Mention))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=mention";
         }
+
         if (excludeTypes.HasFlag(NotificationType.Poll))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=poll";
         }
+
         if (excludeTypes.HasFlag(NotificationType.FollowRequest))
         {
             queryParams += (queryParams != "" ? "&" : "?") + "exclude_types[]=follow_request";
         }
+
         return GetMastodonList<Notification>(url + queryParams);
     }
 
@@ -466,6 +485,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             url += "?" + options.ToQueryString();
         }
+
         return GetMastodonList<Report>(url);
     }
 
@@ -477,9 +497,11 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="comment">A comment to associate with the report</param>
     /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
     /// <returns>Returns the finished Report</returns>
-    public Task<Report> Report(string accountId, IEnumerable<string>? statusIds = null, string? comment = null, bool? forward = null)
+    public Task<Report> Report(string accountId, IEnumerable<string>? statusIds = null, string? comment = null,
+        bool? forward = null)
     {
-        var data = new List<KeyValuePair<string, string>>() {
+        var data = new List<KeyValuePair<string, string>>()
+        {
             new KeyValuePair<string, string>("account_id", accountId.ToString()),
         };
         if (statusIds != null)
@@ -489,10 +511,12 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
                 data.Add(new KeyValuePair<string, string>("status_ids[]", statusId));
             }
         }
+
         if (comment != null)
         {
             data.Add(new KeyValuePair<string, string>("comment", comment));
         }
+
         if (forward.HasValue)
         {
             data.Add(new KeyValuePair<string, string>("forward", forward.Value.ToString().ToLowerInvariant()));
@@ -535,7 +559,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="resolve">Attempt WebFinger look-up (default: false)</param>
     /// <param name="following">Only who the user is following (default: false)</param>
     /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
-    public Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolveNonLocalAccouns = false, bool onlyFollowing = false)
+    public Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolveNonLocalAccouns = false,
+        bool onlyFollowing = false)
     {
         if (string.IsNullOrEmpty(q))
         {
@@ -547,10 +572,12 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             url += "&limit=" + limit.Value;
         }
+
         if (resolveNonLocalAccouns)
         {
             url += "&resolve=true";
         }
+
         if (onlyFollowing)
         {
             url += "&following=true";
@@ -562,6 +589,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     #endregion
 
     #region Filters
+
     /// <summary>
     /// Listing all text filters the user has configured that potentially must be applied client-side
     /// </summary>
@@ -580,33 +608,39 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="wholeWord">Whether to consider word boundaries when matching</param>
     /// <param name="expiresIn">Number that indicates seconds. Filter will be expire in seconds after API processed. Leave null for no expiration</param>
     /// <returns>Returns a created filter</returns>
-    public Task<Filter> CreateFilter(string phrase, FilterContext context, bool irreversible = false, bool wholeWord = false, uint? expiresIn = null)
+    public Task<Filter> CreateFilter(string phrase, FilterContext context, bool irreversible = false,
+        bool wholeWord = false, uint? expiresIn = null)
     {
         if (string.IsNullOrEmpty(phrase))
         {
             throw new ArgumentException("The phrase is required", nameof(phrase));
         }
+
         if (context == 0)
         {
             throw new ArgumentException("At least one context must be specified", nameof(context));
         }
 
         var data = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>("phrase", phrase) };
-        foreach (FilterContext checkFlag in new[] { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread })
+        foreach (FilterContext checkFlag in new[]
+                     { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread })
         {
             if ((context & checkFlag) == checkFlag)
             {
                 data.Add(new KeyValuePair<string, string>("context[]", checkFlag.ToString().ToLowerInvariant()));
             }
         }
+
         if (irreversible)
         {
             data.Add(new KeyValuePair<string, string>("irreversible", "true"));
         }
+
         if (wholeWord)
         {
             data.Add(new KeyValuePair<string, string>("whole_word", "true"));
         }
+
         if (expiresIn.HasValue)
         {
             data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.Value.ToString()));
@@ -635,7 +669,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
     /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
     /// <returns>Returns an updated filter</returns>
-    public Task<Filter> UpdateFilter(string filterId, string? phrase = null, FilterContext? context = null, bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
+    public Task<Filter> UpdateFilter(string filterId, string? phrase = null, FilterContext? context = null,
+        bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null)
     {
         if (context == 0)
         {
@@ -647,9 +682,13 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         {
             data.Add(new KeyValuePair<string, string>("phrase", phrase));
         }
+
         if (context.HasValue)
         {
-            foreach (FilterContext checkFlag in new[] { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread })
+            foreach (FilterContext checkFlag in new[]
+                     {
+                         FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread
+                     })
             {
                 if ((context & checkFlag) == checkFlag)
                 {
@@ -657,14 +696,18 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
                 }
             }
         }
+
         if (irreversible.HasValue)
         {
-            data.Add(new KeyValuePair<string, string>("irreversible", irreversible.Value.ToString().ToLowerInvariant()));
+            data.Add(new KeyValuePair<string, string>("irreversible",
+                irreversible.Value.ToString().ToLowerInvariant()));
         }
+
         if (wholeWord.HasValue)
         {
             data.Add(new KeyValuePair<string, string>("whole_word", wholeWord.Value.ToString().ToLowerInvariant()));
         }
+
         if (expiresIn.HasValue)
         {
             data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.Value.ToString()));
@@ -681,9 +724,11 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     {
         return Delete($"/api/v1/filters/{filterId}");
     }
+
     #endregion
 
     #region Polls
+
     /// <summary>
     /// Get a poll
     /// </summary>
@@ -707,5 +752,61 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
             .ToArray();
         return Post<Poll>("/api/v1/polls/" + id.ToString() + "/votes", data);
     }
+
     #endregion
+
+    #region Rate limits
+
+    public event EventHandler<RateLimitEventArgs>? RateLimitsUpdated;
+
+    private void UpdateRateLimits(HttpResponseMessage response)
+    {
+        if (RateLimitsUpdated != null)
+        {
+            // Get ratelimit info
+            // https://docs.joinmastodon.org/api/rate-limits/
+
+            var category = ApiCallCategory.Global;
+
+            var requestMethod = response.RequestMessage?.Method;
+            var requestPath = response.RequestMessage?.RequestUri?.AbsolutePath ?? "";
+            if (requestMethod == HttpMethod.Post && requestPath == "/api/v1/media")
+            {
+                category = ApiCallCategory.MediaUpload;
+            }
+            if ((requestMethod == HttpMethod.Delete && requestPath.StartsWith("/api/v1/statuses/")) ||
+                (requestMethod == HttpMethod.Post && requestPath.EndsWith("unreblog")))
+            {
+                category = ApiCallCategory.StatusDelete;
+            }
+
+
+            var headers = response.Headers;
+            var limit = headers.GetValues("X-RateLimit-Limit").FirstOrDefault();
+            var remaining = headers.GetValues("X-RateLimit-Remaining").FirstOrDefault();
+            var reset = headers.GetValues("X-RateLimit-Reset").FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(limit) && int.TryParse(limit, out int intLimit) &&
+                !string.IsNullOrEmpty(remaining) && int.TryParse(remaining, out int intRemaining) &&
+                !string.IsNullOrEmpty(reset) && DateTime.TryParse(reset, out DateTime dateReset))
+            {
+                var rateLimitEventArgs = new RateLimitEventArgs
+                {
+                    RateLimitCategory = category,
+                    Limit = intLimit,
+                    Remaining = intRemaining,
+                    Reset = dateReset
+                };
+
+                RateLimitsUpdated?.Invoke(this, rateLimitEventArgs);
+            }
+        }
+    }
+
+    #endregion
+
+    protected override void OnResponseReceived(HttpResponseMessage response)
+    {
+        UpdateRateLimits(response);
+    }
 }

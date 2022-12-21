@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -62,6 +63,8 @@ public abstract class BaseHttpClient
 
     #region Http helpers
 
+    protected abstract void OnResponseReceived(HttpResponseMessage response);
+    
     private void AddHttpHeader(HttpRequestMessage request)
     {
         if (!string.IsNullOrEmpty(AccessToken))
@@ -82,10 +85,12 @@ public abstract class BaseHttpClient
         using (var request = new HttpRequestMessage(HttpMethod.Delete, url))
         {
             AddHttpHeader(request);
-            using (var response = await client.SendAsync(request))
-                return await response.Content.ReadAsStringAsync();
+            using var response = await client.SendAsync(request);
+            OnResponseReceived(response);
+            return await response.Content.ReadAsStringAsync();
         }
     }
+
 
     protected async Task<string> Get(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
     {
@@ -99,8 +104,9 @@ public abstract class BaseHttpClient
         using (var request = new HttpRequestMessage(HttpMethod.Get, url))
         {
             AddHttpHeader(request);
-            using (var response = await client.SendAsync(request))
-                return await response.Content.ReadAsStringAsync();
+            using var response = await client.SendAsync(request);
+            OnResponseReceived(response);
+            return await response.Content.ReadAsStringAsync();
         }
     }
 
@@ -126,6 +132,7 @@ public abstract class BaseHttpClient
             AddHttpHeader(request);
             using (var response = await client.SendAsync(request))
             {
+                OnResponseReceived(response);
                 var content = await response.Content.ReadAsStringAsync();
                 var result = TryDeserialize<MastodonList<T>>(content);
 
@@ -168,8 +175,9 @@ public abstract class BaseHttpClient
         {
             AddHttpHeader(request);
             request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            using (var response = await client.SendAsync(request))
-                return await response.Content.ReadAsStringAsync();
+            using var response = await client.SendAsync(request);
+            OnResponseReceived(response);
+            return await response.Content.ReadAsStringAsync();
         }
     }
 
@@ -200,6 +208,7 @@ public abstract class BaseHttpClient
         request.Content = content;
 
         using var response = await client.SendAsync(request);
+        OnResponseReceived(response);
         return await response.Content.ReadAsStringAsync();
     }
 
@@ -219,8 +228,9 @@ public abstract class BaseHttpClient
             AddHttpHeader(request);
 
             request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            using (var response = await client.SendAsync(request))
-                return await response.Content.ReadAsStringAsync();
+            using var response = await client.SendAsync(request);
+            OnResponseReceived(response);
+            return await response.Content.ReadAsStringAsync();
         }
     }
 
@@ -237,8 +247,9 @@ public abstract class BaseHttpClient
         {
             AddHttpHeader(request);
             request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            using (var response = await client.SendAsync(request))
-                return await response.Content.ReadAsStringAsync();
+            using var response = await client.SendAsync(request);
+            OnResponseReceived(response);
+            return await response.Content.ReadAsStringAsync();
         }
     }
 
@@ -270,8 +281,9 @@ public abstract class BaseHttpClient
             }
 
             request.Content = content;
-            using (var response = await client.SendAsync(request))
-                return await response.Content.ReadAsStringAsync();
+            using var response = await client.SendAsync(request);
+            OnResponseReceived(response);
+            return await response.Content.ReadAsStringAsync();
         }
     }
 
@@ -297,4 +309,6 @@ public abstract class BaseHttpClient
     }
 
     #endregion
+
+
 }
