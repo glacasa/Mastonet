@@ -674,6 +674,19 @@ public interface IMastodonClient
     Task<Status> PublishStatus(string status, Visibility? visibility = null, string? replyStatusId = null, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null);
 
     /// <summary>
+    /// Edit a given status to change its text, sensitivity, media attachments, or poll. Note that editing a poll’s options will reset the votes.
+    /// </summary>
+    /// <param name="statusId">The ID of the status in the database.</param>
+    /// <param name="status">The plain text content of the status.</param>
+    /// <param name="mediaIds">Include Attachment IDs to be attached as media. If provided, status becomes optional, and poll cannot be used.</param>
+    /// <param name="sensitive">Whether the status should be marked as sensitive.</param>
+    /// <param name="spoilerText">The plain text subject or content warning of the status.</param>
+    /// <param name="language">ISO 639 language code for the status.</param>
+    /// <param name="poll">Nested parameters to attach a poll to the status</param>
+    /// <returns></returns>
+    Task<Status> EditStatus(string statusId, string status, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, string? language = null, PollParameters? poll = null);
+
+    /// <summary>
     /// Deleting a status
     /// </summary>
     /// <param name="statusId"></param>

@@ -18,9 +18,9 @@ namespace Mastonet.Tests
             var client = GetTestClient();
 
             System.IO.FileStream fs = new System.IO.FileStream(
-                                                @"./testimage.png",
-                                                System.IO.FileMode.Open,
-                                                System.IO.FileAccess.Read);
+                @"./testimage.png",
+                System.IO.FileMode.Open,
+                System.IO.FileAccess.Read);
             var attachment = await client.UploadMedia(fs, "testimage.png");
             fs.Dispose();
 
@@ -28,7 +28,8 @@ namespace Mastonet.Tests
             Assert.NotNull(attachment.PreviewUrl);
             Assert.NotNull(attachment.Url);
 
-            var status = await client.PublishStatus("Status with image", Visibility.Private, mediaIds: new string[] { attachment.Id });
+            var status = await client.PublishStatus("Status with image", Visibility.Private,
+                mediaIds: new string[] { attachment.Id });
             status = await client.GetStatus(status.Id);
 
             Assert.NotNull(status.MediaAttachments);
@@ -51,7 +52,9 @@ namespace Mastonet.Tests
                     Assert.NotNull(attachment.PreviewUrl);
                     Assert.NotNull(attachment.Url);
                     attachments.Add(attachment);
-                };
+                }
+
+                ;
             }
 
             var status = await client.PublishStatus(
@@ -73,7 +76,7 @@ namespace Mastonet.Tests
         public async Task PostStatus()
         {
             var client = GetTestClient();
-            var status = await client.PublishStatus("Yo1", Visibility.Public);
+            var status = await client.PublishStatus("Yo1", Visibility.Unlisted);
 
             var client2 = GetPrivateClient();
 
@@ -81,7 +84,25 @@ namespace Mastonet.Tests
 
             Assert.Equal(status.Id, statusFromApi.Id);
             Assert.Equal(status.Content, statusFromApi.Content);
-            Assert.Equal(Visibility.Public, statusFromApi.Visibility);
+            Assert.Equal(Visibility.Unlisted, statusFromApi.Visibility);
+        }
+
+        [Fact]
+        public async Task EditStatus()
+        {
+            var client = GetTestClient();
+            var status = await client.PublishStatus("Initial status", Visibility.Unlisted);
+
+            var client2 = GetPrivateClient();
+            var statusFromApi = await client2.GetStatus(status.Id);
+
+            Assert.Equal(status.Content, statusFromApi.Content);
+
+            status = await client.EditStatus(statusFromApi.Id, "Edited status");
+            var editedStatusFromApi = await client2.GetStatus(status.Id);
+
+            Assert.Equal(status.Content, editedStatusFromApi.Content);
+            Assert.NotEqual(statusFromApi.Content, editedStatusFromApi.Content);
         }
 
         [Fact]
@@ -96,10 +117,7 @@ namespace Mastonet.Tests
 
             await client.DeleteStatus(statusId);
 
-            await Assert.ThrowsAsync<ServerErrorException>(async () =>
-            {
-                status = await client.GetStatus(statusId);
-            });
+            await Assert.ThrowsAsync<ServerErrorException>(async () => { status = await client.GetStatus(statusId); });
         }
 
         [Fact]

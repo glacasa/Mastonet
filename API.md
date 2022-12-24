@@ -201,6 +201,8 @@ public Task<MastodonList<Account>> GetFavouritedBy(long statusId, ArrayOptions o
 
 public Task<Status> PublishStatus(string status, Visibility? visibility = null, long? replyStatusId = null, IEnumerable<long> mediaIds = null, bool sensitive = false, string spoilerText = null, DateTime? scheduledAt = null, string language = null, PollParameters poll = null);
 
+public Task<Status> EditStatus(string statusId, string status, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, string? language = null, PollParameters? poll = null);
+
 public Task DeleteStatus(long statusId);
 
 public Task<IEnumerable<ScheduledStatus>> GetScheduledStatuses();

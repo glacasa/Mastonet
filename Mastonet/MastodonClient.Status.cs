@@ -56,6 +56,7 @@ partial class MastodonClient
         {
             url += "?" + options.ToQueryString();
         }
+
         return GetMastodonList<Account>(url);
     }
 
@@ -72,8 +73,10 @@ partial class MastodonClient
         {
             url += "?" + options.ToQueryString();
         }
+
         return GetMastodonList<Account>(url);
     }
+
     /// <summary>
     /// Posting a new status
     /// </summary>
@@ -87,14 +90,17 @@ partial class MastodonClient
     /// <param name="language">Override language code of the toot (ISO 639-2)</param>
     /// <param name="poll">Nested parameters to attach a poll to the status</param>
     /// <returns>Returns Status</returns>
-    public Task<Status> PublishStatus(string status, Visibility? visibility = null, string? replyStatusId = null, IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null, DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null)
+    public Task<Status> PublishStatus(string status, Visibility? visibility = null, string? replyStatusId = null,
+        IEnumerable<string>? mediaIds = null, bool sensitive = false, string? spoilerText = null,
+        DateTime? scheduledAt = null, string? language = null, PollParameters? poll = null)
     {
         if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
         {
             throw new ArgumentException("A status must have either text (status) or media (mediaIds)", nameof(status));
         }
 
-        var data = new List<KeyValuePair<string, string>>() {
+        var data = new List<KeyValuePair<string, string>>()
+        {
             new KeyValuePair<string, string>("status", status),
         };
 
@@ -102,31 +108,40 @@ partial class MastodonClient
         {
             data.Add(new KeyValuePair<string, string>("in_reply_to_id", replyStatusId));
         }
-        if (mediaIds != null && mediaIds.Any())
+
+        if (mediaIds != null)
         {
             foreach (var mediaId in mediaIds)
+            {
                 data.Add(new KeyValuePair<string, string>("media_ids[]", mediaId.ToString()));
+            }
         }
+
         if (sensitive)
         {
             data.Add(new KeyValuePair<string, string>("sensitive", "true"));
         }
+
         if (spoilerText != null)
         {
             data.Add(new KeyValuePair<string, string>("spoiler_text", spoilerText));
         }
+
         if (visibility.HasValue)
         {
             data.Add(new KeyValuePair<string, string>("visibility", visibility.Value.ToString().ToLowerInvariant()));
         }
+
         if (scheduledAt.HasValue)
         {
             data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.Value.ToString("o")));
         }
+
         if (language != null)
         {
             data.Add(new KeyValuePair<string, string>("language", language));
         }
+
         if (poll != null)
         {
             data.AddRange(poll.Options.Select(option => new KeyValuePair<string, string>("poll[options][]", option)));
@@ -135,6 +150,7 @@ partial class MastodonClient
             {
                 data.Add(new KeyValuePair<string, string>("poll[multiple]", poll.Multiple.Value.ToString()));
             }
+
             if (poll.HideTotals.HasValue)
             {
                 data.Add(new KeyValuePair<string, string>("poll[hide_totals]", poll.HideTotals.Value.ToString()));
@@ -143,6 +159,61 @@ partial class MastodonClient
 
         return Post<Status>("/api/v1/statuses", data);
     }
+
+    public Task<Status> EditStatus(string statusId, string status, IEnumerable<string>? mediaIds = null,
+        bool sensitive = false, string? spoilerText = null, string? language = null, PollParameters? poll = null)
+    {
+        if (string.IsNullOrEmpty(status) && (mediaIds == null || !mediaIds.Any()))
+        {
+            throw new ArgumentException("A status must have either text (status) or media (mediaIds)", nameof(status));
+        }
+
+        var data = new List<KeyValuePair<string, string>>()
+        {
+            new KeyValuePair<string, string>("status", status),
+        };
+
+        if (mediaIds != null)
+        {
+            foreach (var mediaId in mediaIds)
+            {
+                data.Add(new KeyValuePair<string, string>("media_ids[]", mediaId.ToString()));
+            }
+        }
+
+        if (sensitive)
+        {
+            data.Add(new KeyValuePair<string, string>("sensitive", "true"));
+        }
+
+        if (spoilerText != null)
+        {
+            data.Add(new KeyValuePair<string, string>("spoiler_text", spoilerText));
+        }
+
+        if (language != null)
+        {
+            data.Add(new KeyValuePair<string, string>("language", language));
+        }
+
+        if (poll != null)
+        {
+            data.AddRange(poll.Options.Select(option => new KeyValuePair<string, string>("poll[options][]", option)));
+            data.Add(new KeyValuePair<string, string>("poll[expires_in]", poll.ExpiresIn.TotalSeconds.ToString()));
+            if (poll.Multiple.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("poll[multiple]", poll.Multiple.Value.ToString()));
+            }
+
+            if (poll.HideTotals.HasValue)
+            {
+                data.Add(new KeyValuePair<string, string>("poll[hide_totals]", poll.HideTotals.Value.ToString()));
+            }
+        }
+
+        return Put<Status>("/api/v1/statuses/" + statusId, data);
+    }
+
 
     /// <summary>
     /// Deleting a status
@@ -185,6 +256,7 @@ partial class MastodonClient
         {
             data.Add(new KeyValuePair<string, string>("scheduled_at", scheduledAt.Value.ToString()));
         }
+
         return Put<ScheduledStatus>("/api/v1/scheduled_statuses/" + scheduledStatusId, data);
     }
 
