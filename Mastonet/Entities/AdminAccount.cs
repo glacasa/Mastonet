@@ -57,7 +57,7 @@ public class AdminAccount
     /// Whether the account has confirmed their email address.
     /// </summary>
     [JsonProperty("confirmed")]
-    public bool Confirmed { get; set; }
+    public bool? Confirmed { get; set; }
 
     /// <summary>
     /// Whether the account is currently suspended.
@@ -81,13 +81,13 @@ public class AdminAccount
     /// Whether the account is currently disabled.
     /// </summary>
     [JsonProperty("disabled")]
-    public bool Disabled { get; set; }
+    public bool? Disabled { get; set; }
 
     /// <summary>
     /// Whether the account is currently approved.
     /// </summary>
     [JsonProperty("approved")]
-    public bool Approved { get; set; }
+    public bool? Approved { get; set; }
 
     /// <summary>
     /// The locale of the account.
