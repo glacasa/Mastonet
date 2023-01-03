@@ -46,8 +46,15 @@ public partial class MastodonClient
 
     private static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)
     {
+        // Empty parm? Exit
+        if (string.IsNullOrEmpty(value)) 
+            return queryParams;
+
+        // Figure up delimiter and concat
         var concatChar = GetQueryStringConcatChar(queryParams);
         queryParams += $"{concatChar}{queryStringParam}={value}";
+
+        // 
         return queryParams;
     }
 
