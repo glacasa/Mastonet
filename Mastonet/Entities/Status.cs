@@ -100,19 +100,19 @@ public class Status
     /// How many boosts this status has received.
     /// </summary>
     [JsonProperty("reblogs_count")]
-    public int ReblogCount { get; set; }
+    public long ReblogCount { get; set; }
 
     /// <summary>
     /// How many favourites this status has received.
     /// </summary>
     [JsonProperty("favourites_count")]
-    public int FavouritesCount { get; set; }
+    public long FavouritesCount { get; set; }
 
     /// <summary>
     /// How many replies this status has received.
     /// </summary>
     [JsonProperty("replies_count")]
-    public int RepliesCount { get; set; }
+    public long RepliesCount { get; set; }
 
 
     // Nullable attributes

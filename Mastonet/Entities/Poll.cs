@@ -38,7 +38,7 @@ public class Poll
     /// How many votes have been received.
     /// </summary>
     [JsonProperty("votes_count")]
-    public int VotesCount { get; set; }
+    public long VotesCount { get; set; }
 
     /// <summary>
     /// How many unique accounts have voted on a multiple-choice poll.

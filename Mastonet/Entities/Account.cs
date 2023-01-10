@@ -110,19 +110,19 @@ public class Account
     /// How many statuses are attached to this account.
     /// </summary>
     [JsonProperty("statuses_count")]
-    public int StatusesCount { get; set; }
+    public long StatusesCount { get; set; }
 
     /// <summary>
     /// The reported followers of this profile.
     /// </summary>
     [JsonProperty("followers_count")]
-    public int FollowersCount { get; set; }
+    public long FollowersCount { get; set; }
 
     /// <summary>
     /// The reported follows of this profile.
     /// </summary>
     [JsonProperty("following_count")]
-    public int FollowingCount { get; set; }
+    public long FollowingCount { get; set; }
 
     // Optional attributes
 
