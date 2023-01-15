@@ -307,6 +307,25 @@ public abstract class BaseHttpClient
 
         return JsonConvert.DeserializeObject<T>(json)!;
     }
+    
+    protected static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)
+    {
+        // Empty parm? Exit
+        if (string.IsNullOrEmpty(value))
+        {
+            return queryParams;
+        }
+
+        // Figure up delimiter and concat
+        var concatChar = GetQueryStringConcatChar(queryParams);
+        queryParams += $"{concatChar}{queryStringParam}={value}";
+        return queryParams;
+    }
+
+    protected static string GetQueryStringConcatChar(string queryParams)
+    {
+        return !string.IsNullOrEmpty(queryParams) ? "&" : "?";
+    }
 
     #endregion
 

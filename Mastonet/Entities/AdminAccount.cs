@@ -27,7 +27,7 @@ public class AdminAccount
     ///  The domain of the account, if it is remote.
     /// </summary>
     [JsonProperty("domain")]
-    public string Domain { get; set; } = string.Empty;
+    public string? Domain { get; set; } 
 
     /// <summary>
     /// When the account was first discovered.
@@ -45,19 +45,19 @@ public class AdminAccount
     /// The IP address last used to login to this account.
     /// </summary>
     [JsonProperty("ip")]
-    public string Ip { get; set; } = string.Empty;
+    public string? Ip { get; set; }
 
     /// <summary>
     /// The current role of the account.
     /// </summary>
     [JsonProperty("role")]
-    public Role? Role { get; set; }
+    public Role Role { get; set; } = default!;
 
     /// <summary>
     /// Whether the account has confirmed their email address.
     /// </summary>
     [JsonProperty("confirmed")]
-    public bool? Confirmed { get; set; }
+    public bool Confirmed { get; set; }
 
     /// <summary>
     /// Whether the account is currently suspended.
@@ -81,13 +81,13 @@ public class AdminAccount
     /// Whether the account is currently disabled.
     /// </summary>
     [JsonProperty("disabled")]
-    public bool? Disabled { get; set; }
+    public bool Disabled { get; set; }
 
     /// <summary>
     /// Whether the account is currently approved.
     /// </summary>
     [JsonProperty("approved")]
-    public bool? Approved { get; set; }
+    public bool Approved { get; set; }
 
     /// <summary>
     /// The locale of the account.
@@ -99,7 +99,7 @@ public class AdminAccount
     /// The reason given when requesting an invite (for instances that require manual approval of registrations)
     /// </summary>
     [JsonProperty("invite_request")]
-    public string InviteRequest { get; set; } = string.Empty;
+    public string? InviteRequest { get; set; } 
 
     /// <summary>
     /// All known IP addresses associated with this account.
@@ -117,78 +117,11 @@ public class AdminAccount
     /// The ID of the Application that created this account, if applicable.
     /// </summary>
     [JsonProperty("created_by_application_id")]
-    public string CreatedByApplicationId { get; set; } = string.Empty;
+    public string? CreatedByApplicationId { get; set; } 
+    
+    /// <summary>
+    /// The ID of the Account that invited this user, if applicable.
+    /// </summary>
+    [JsonProperty("invited_by_account_id")]
+    public string? InvitedByAccountId { get; set; } 
 }
-
-/// <summary>
-/// Represents a custom user role that grants permissions.
-/// </summary>
-public class Role
-{
-    /// <summary>
-    /// The ID of the Role in the database.
-    /// </summary>
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    /// <summary>
-    /// The name of the role.
-    /// </summary>
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>
-    /// The hex code assigned to this role. If no hex code is assigned, the string will be empty.
-    /// </summary>
-    [JsonProperty("color")]
-    public string Color { get; set; } = string.Empty;
-
-    /// <summary>
-    /// An index for the role’s position. The higher the position, the more priority the role has over other roles.
-    /// </summary>
-    [JsonProperty("position")]
-    public int Position { get; set; }
-
-    /// <summary>
-    /// A bitmask that represents the sum of all permissions granted to the role.
-    /// </summary>
-    [JsonProperty("permissions")]
-    public int Permissions { get; set; }
-
-    /// <summary>
-    /// Whether the role is publicly visible as a badge on user profiles.
-    /// </summary>
-    [JsonProperty("highlighted")]
-    public bool Highlighted { get; set; }
-
-    /// <summary>
-    /// The date that the role was created.
-    /// </summary>
-    [JsonProperty("created_at")]
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// The date that the role was updated.
-    /// </summary>
-    [JsonProperty("updated_at")]
-    public DateTime UpdatedAt { get; set; }
-}
-
-/// <summary>
-/// Represents an IP address associated with a user.
-/// </summary>
-public class AccountIp
-{
-    /// <summary>
-    /// The IP address.
-    /// </summary>
-    [JsonProperty("ip")]
-    public string Ip { get; set; } = string.Empty;
-
-    /// <summary>
-    /// The timestamp of when the IP address was last used for this account.
-    /// </summary>
-    [JsonProperty("used_at")]
-    public DateTime UsedAt { get; set; }
-}
-

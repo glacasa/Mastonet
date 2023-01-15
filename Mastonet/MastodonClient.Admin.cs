@@ -44,22 +44,5 @@ public partial class MastodonClient
         return GetMastodonList<AdminAccount>(url + queryParams);
     }
 
-    private static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)
-    {
-        // Empty parm? Exit
-        if (string.IsNullOrEmpty(value))
-        {
-            return queryParams;
-        }
 
-        // Figure up delimiter and concat
-        var concatChar = GetQueryStringConcatChar(queryParams);
-        queryParams += $"{concatChar}{queryStringParam}={value}";
-        return queryParams;
-    }
-
-    private static string GetQueryStringConcatChar(string queryParams)
-    {
-        return !string.IsNullOrEmpty(queryParams) ? "&" : "?";
-    }
 }
