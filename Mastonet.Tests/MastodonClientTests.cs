@@ -43,7 +43,7 @@ namespace _InitTest
             throw new Exception(authCode);
         }
 
-        private string Instance => "";
+        internal static string Instance => "";
 
         private string Email1 => "";
         private string Password1 => "";
