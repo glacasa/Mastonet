@@ -66,7 +66,7 @@ public class Attachment
     /// A shorter URL for the attachment.
     /// </summary>
     [JsonProperty("text_url")]
-    [Obsolete]
+    [Obsolete("Attribute was deprecated in version 3.5.0")]
     public string? TextUrl { get; set; }
 }
 

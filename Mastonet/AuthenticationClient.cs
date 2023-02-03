@@ -66,7 +66,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     {
         if (AppRegistration == null)
         {
-            throw new Exception("The app must be registered before you can connect");
+            throw new InvalidOperationException("The app must be registered before you can connect");
         }
 
         var data = new List<KeyValuePair<string, string>>()
@@ -86,7 +86,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     {
         if (AppRegistration == null)
         {
-            throw new Exception("The app must be registered before you can connect");
+            throw new InvalidOperationException("The app must be registered before you can connect");
         }
 
         var data = new List<KeyValuePair<string, string>>()
@@ -105,7 +105,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     {
         if (AppRegistration == null)
         {
-            throw new Exception("The app must be registered before you can connect");
+            throw new InvalidOperationException("The app must be registered before you can connect");
         }
 
         if (redirectUri != null)

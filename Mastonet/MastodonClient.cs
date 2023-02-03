@@ -91,7 +91,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
 
         if (offset.HasValue)
         {
-            queryParams += (queryParams != "" ? "&" : "?") + "offset=" + offset.Value;
+            queryParams = "?offset=" + offset.Value;
         }
 
         if (limit.HasValue)

@@ -8,7 +8,7 @@ namespace Mastonet.Tests;
 public class InstanceTest : MastodonClientTests
 {
     [Fact]
-    [Obsolete]
+    [Obsolete("This is testing the deprecated GetInstance V1 method")]
     public async Task GetInstanceV1()
     {
         var client = GetTestClient();

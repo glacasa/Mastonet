@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Mastonet;
 
-public abstract class BaseHttpClient
+public abstract partial class BaseHttpClient
 {
     protected readonly HttpClient client;
 
@@ -32,7 +32,7 @@ public abstract class BaseHttpClient
         }
     }
 
-    private string CheckInstance(string instance)
+    private static string CheckInstance(string instance)
     {
         if (string.IsNullOrWhiteSpace(instance))
         {
@@ -64,7 +64,7 @@ public abstract class BaseHttpClient
     #region Http helpers
 
     protected abstract void OnResponseReceived(HttpResponseMessage response);
-    
+
     private void AddHttpHeader(HttpRequestMessage request)
     {
         if (!string.IsNullOrEmpty(AccessToken))
@@ -117,7 +117,15 @@ public abstract class BaseHttpClient
         return TryDeserialize<T>(content);
     }
 
-    private Regex idFinderRegex = new Regex("_id=([0-9]+)");
+    private const string ID_FINDER_PATTERN = "_id=([0-9]+)";
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(ID_FINDER_PATTERN, RegexOptions.None, 100)]
+    private static partial Regex IdFinder();
+#else
+    private static readonly Regex idFinderRegex = new Regex(ID_FINDER_PATTERN, RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
+    private static Regex IdFinder() => idFinderRegex;
+#endif
+
     protected async Task<MastodonList<T>> GetMastodonList<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
     {
         string url = "https://" + this.Instance + route;
@@ -145,18 +153,18 @@ public abstract class BaseHttpClient
                     {
                         if (link.Contains("rel=\"next\""))
                         {
-                            result.NextPageMaxId = idFinderRegex.Match(link).Groups[1].Value;
+                            result.NextPageMaxId = IdFinder().Match(link).Groups[1].Value;
                         }
 
                         if (link.Contains("rel=\"prev\""))
                         {
                             if (link.Contains("since_id"))
                             {
-                                result.PreviousPageSinceId = idFinderRegex.Match(link).Groups[1].Value;
+                                result.PreviousPageSinceId = IdFinder().Match(link).Groups[1].Value;
                             }
                             if (link.Contains("min_id"))
                             {
-                                result.PreviousPageMinId = idFinderRegex.Match(link).Groups[1].Value;
+                                result.PreviousPageMinId = IdFinder().Match(link).Groups[1].Value;
                             }
                         }
                     }
@@ -179,6 +187,13 @@ public abstract class BaseHttpClient
             OnResponseReceived(response);
             return await response.Content.ReadAsStringAsync();
         }
+    }
+
+    protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
+        where T : class
+    {
+        var content = media != null && media.Any() ? await PostMedia(route, data, media) : await Post(route, data);
+        return TryDeserialize<T>(content);
     }
 
     protected async Task<string> PostMedia(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
@@ -210,13 +225,6 @@ public abstract class BaseHttpClient
         using var response = await client.SendAsync(request);
         OnResponseReceived(response);
         return await response.Content.ReadAsStringAsync();
-    }
-
-    protected async Task<T> Post<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
-        where T : class
-    {
-        var content = media != null && media.Any() ? await PostMedia(route, data, media) : await Post(route, data);
-        return TryDeserialize<T>(content);
     }
 
     protected async Task<string> Put(string route, IEnumerable<KeyValuePair<string, string>>? data = null)
@@ -253,6 +261,13 @@ public abstract class BaseHttpClient
         }
     }
 
+    protected async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
+        where T : class
+    {
+        var content = media != null && media.Any() ? await PatchMedia(route, data, media) : await Patch(route, data);
+        return TryDeserialize<T>(content);
+    }
+
     protected async Task<string> PatchMedia(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
     {
         string url = "https://" + this.Instance + route;
@@ -287,14 +302,7 @@ public abstract class BaseHttpClient
         }
     }
 
-    protected async Task<T> Patch<T>(string route, IEnumerable<KeyValuePair<string, string>>? data = null, IEnumerable<MediaDefinition>? media = null)
-        where T : class
-    {
-        var content = media != null && media.Any() ? await PatchMedia(route, data, media) : await Patch(route, data);
-        return TryDeserialize<T>(content);
-    }
-
-    private T TryDeserialize<T>(string json)
+    private static T TryDeserialize<T>(string json)
     {
         if (json[0] == '{')
         {
@@ -307,7 +315,7 @@ public abstract class BaseHttpClient
 
         return JsonConvert.DeserializeObject<T>(json)!;
     }
-    
+
     protected static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)
     {
         // Empty parm? Exit
