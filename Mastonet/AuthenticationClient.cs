@@ -120,6 +120,28 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
         return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
     }
 
+    /// <summary>
+    /// Revoke an access token to make it no longer valid for use.
+    /// </summary>
+    /// <param name="token">The previously obtained token, to be invalidated.</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public Task Revoke(string token)
+    {
+        if (AppRegistration == null)
+        {
+            throw new InvalidOperationException("You need to revoke a token with the app CclientId and ClientSecret used to obtain the Token");
+        }
+
+        var data = new List<KeyValuePair<string, string>>()
+        {
+            new KeyValuePair<string, string>("client_id", AppRegistration.ClientId),
+            new KeyValuePair<string, string>("client_secret", AppRegistration.ClientSecret),
+            new KeyValuePair<string, string>("token", token),
+        };
+
+        return Post<Auth>("/oauth/revoke", data);
+    }
+
     private static string GetScopeParam(Scope scope)
     {
         var scopeParam = "";
@@ -135,4 +157,5 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     protected override void OnResponseReceived(HttpResponseMessage response)
     {
     }
+
 }

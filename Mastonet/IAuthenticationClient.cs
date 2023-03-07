@@ -24,5 +24,7 @@ public interface IAuthenticationClient
 
     Task<Auth> ConnectWithCode(string code, string? redirect_uri = null);
 
+    Task Revoke(string token);
+
     string OAuthUrl(string? redirectUri = null);
 }
