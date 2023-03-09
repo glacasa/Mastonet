@@ -310,6 +310,26 @@ partial class MastodonClient
     }
 
     /// <summary>
+    /// Privately bookmark a status
+    /// </summary>
+    /// <param name="statusId">The ID of the Status in the database</param>
+    /// <returns>Returns the target Status</returns>
+    public Task<Status> Bookmark(string statusId)
+    {
+        return Post<Status>($"/api/v1/statuses/{statusId}/bookmark");
+    }
+
+    /// <summary>
+    /// Remove a status from your private bookmarks
+    /// </summary>
+    /// <param name="statusId">The ID of the Status in the database</param>
+    /// <returns>Returns the target Status</returns>
+    public  Task<Status> Unbookmark(string statusId)
+    {
+        return Post<Status>($"/api/v1/statuses/{statusId}/unbookmark");
+    }
+
+    /// <summary>
     /// Muting a conversation of a status
     /// </summary>
     /// <param name="statusId"></param>

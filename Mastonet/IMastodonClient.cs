@@ -736,16 +736,30 @@ public interface IMastodonClient
     /// <summary>
     /// Favouriting a status
     /// </summary>
-    /// <param name="statusId"></param>
+    /// <param name="statusId">The ID of the Status in the database</param>
     /// <returns>Returns the target Status</returns>
     Task<Status> Favourite(string statusId);
 
     /// <summary>
     /// Unfavouriting a status
     /// </summary>
-    /// <param name="statusId"></param>
+    /// <param name="statusId">The ID of the Status in the database</param>
     /// <returns>Returns the target Status</returns>
     Task<Status> Unfavourite(string statusId);
+    
+    /// <summary>
+    /// Privately bookmark a status
+    /// </summary>
+    /// <param name="statusId">The ID of the Status in the database</param>
+    /// <returns>Returns the target Status</returns>
+    Task<Status> Bookmark(string statusId);
+    
+    /// <summary>
+    /// Remove a status from your private bookmarks
+    /// </summary>
+    /// <param name="statusId">The ID of the Status in the database</param>
+    /// <returns>Returns the target Status</returns>
+    Task<Status> Unbookmark(string statusId);
 
     /// <summary>
     /// Muting a conversation of a status
