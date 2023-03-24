@@ -183,9 +183,14 @@ public abstract partial class BaseHttpClient
         {
             AddHttpHeader(request);
             request.Content = new FormUrlEncodedContent(data ?? Enumerable.Empty<KeyValuePair<string, string>>());
-            using var response = await client.SendAsync(request);
-            OnResponseReceived(response);
-            return await response.Content.ReadAsStringAsync();
+
+            using (HttpResponseMessage response = client.SendAsync(request).GetAwaiter().GetResult())
+            {
+                using (HttpContent content = response.Content)
+                {
+                    return await content.ReadAsStringAsync();
+                }
+            }
         }
     }
 
