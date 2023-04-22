@@ -1,6 +1,7 @@
 ﻿using Mastonet.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -36,11 +37,43 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
     /// <param name="scope">The rights needed by your application</param>
     /// <param name="website">URL to the homepage of your app</param>
     /// <returns></returns>
-    public async Task<AppRegistration> CreateApp(string appName, Scope scope, string? website = null, string? redirectUri = null)
+    [Obsolete("Use GranularScopes instead of deprecated Scope")]
+    public Task<AppRegistration> CreateApp(string appName, Scope scope, string? website = null, string? redirectUri = null)
     {
+        var scopes = new List<GranularScope>();
+        if (scope.HasFlag(Scope.Read))
+        {
+            scopes.Add(GranularScope.Read);
+        }
+
+        if (scope.HasFlag(Scope.Write))
+        {
+            scopes.Add(GranularScope.Write);
+        }
+
+        if (scope.HasFlag(Scope.Follow))
+        {
+            scopes.AddRange(new GranularScope[] {
+                GranularScope.Read__Blocks, GranularScope.Write__Blocks,
+                GranularScope.Read__Follows, GranularScope.Write__Follows,
+                GranularScope.Read__Mutes, GranularScope.Write__Mutes
+            });
+        }
+
+        return CreateApp(appName, website, redirectUri, scopes);
+    }
+
+    public Task<AppRegistration> CreateApp(string appName, string? website = null, string? redirectUri = null, params GranularScope[] scope)
+    {
+        return CreateApp(appName, website, redirectUri, scope.AsEnumerable());
+    }
+
+    public async Task<AppRegistration> CreateApp(string appName, string? website = null, string? redirectUri = null, IEnumerable<GranularScope>? scope = null)
+    {
+        var scopeString = GetScopeParam(scope);
         var data = new List<KeyValuePair<string, string>>() {
             new KeyValuePair<string, string>("client_name", appName),
-            new KeyValuePair<string, string>("scopes", GetScopeParam(scope)),
+            new KeyValuePair<string, string>("scopes", scopeString),
             new KeyValuePair<string, string>("redirect_uris", redirectUri?? "urn:ietf:wg:oauth:2.0:oob")
         };
 
@@ -52,7 +85,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
         var appRegistration = await Post<AppRegistration>("/api/v1/apps", data);
 
         appRegistration.Instance = Instance;
-        appRegistration.Scope = scope;
+        appRegistration.Scope = scopeString;
         this.AppRegistration = appRegistration;
 
         return appRegistration;
@@ -62,7 +95,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
 
     #region Auth
 
-    public  Task<Auth> ConnectWithPassword(string email, string password)
+    public Task<Auth> ConnectWithPassword(string email, string password)
     {
         if (AppRegistration == null)
         {
@@ -76,13 +109,13 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
             new KeyValuePair<string, string>("grant_type", "password"),
             new KeyValuePair<string, string>("username", email),
             new KeyValuePair<string, string>("password", password),
-            new KeyValuePair<string, string>("scope", GetScopeParam(AppRegistration.Scope)),
+            new KeyValuePair<string, string>("scope", AppRegistration.Scope),
         };
 
         return Post<Auth>("/oauth/token", data);
     }
 
-    public  Task<Auth> ConnectWithCode(string code, string? redirect_uri = null)
+    public Task<Auth> ConnectWithCode(string code, string? redirect_uri = null)
     {
         if (AppRegistration == null)
         {
@@ -117,7 +150,7 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
             redirectUri = "urn:ietf:wg:oauth:2.0:oob";
         }
 
-        return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scope).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
+        return $"https://{this.Instance}/oauth/authorize?response_type=code&client_id={AppRegistration.ClientId}&scope={AppRegistration.Scope.Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
     }
 
     /// <summary>
@@ -142,20 +175,19 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
         return Post<Auth>("/oauth/revoke", data);
     }
 
-    private static string GetScopeParam(Scope scope)
+    private static string GetScopeParam(IEnumerable<GranularScope>? scopes)
     {
-        var scopeParam = "";
-        if ((scope & Scope.Read) == Scope.Read) scopeParam += " read";
-        if ((scope & Scope.Write) == Scope.Write) scopeParam += " write";
-        if ((scope & Scope.Follow) == Scope.Follow) scopeParam += " follow";
+        if (scopes == null)
+        {
+            return "";
+        }
 
-        return scopeParam.Trim();
+        return String.Join(" ", scopes.Select(s => s.ToString().ToLowerInvariant().Replace("__", ":")));
     }
 
     #endregion
-    
+
     protected override void OnResponseReceived(HttpResponseMessage response)
     {
     }
-
 }
