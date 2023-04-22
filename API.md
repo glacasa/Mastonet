@@ -183,7 +183,7 @@ public Task<Relationship> Endorse(long accountId);
 
 public Task<Relationship> Unendorse(long accountId);
 
-public Task<Marker> GetMarkers();
+public Task<Marker> GetMarkers(bool home = false, bool notifications = false);
 
 public Task<Marker> SetMarkers(string? homeLastReadId = null, string? notificationLastReadId = null);
 ```

@@ -19,7 +19,7 @@ public interface IMastodonClient
     /// <returns>Returns the current Instance. Does not require authentication</returns>
     [Obsolete("This method is deprecated on Mastodon v4. Use GetInstanceV2() instead.")]
     Task<Instance> GetInstance();
-    
+
     /// <summary>
     /// Getting instance information
     /// </summary>
@@ -330,7 +330,7 @@ public interface IMastodonClient
 
     /// <summary>
     /// Update the user's display and preferences.
-    /// </summary> 
+    /// </summary>
     /// <param name="discoverable">Whether the account should be shown in the profile directory</param>
     /// <param name="bot">Whether the account has a bot flag</param>
     /// <param name="display_name">The display name to use for the profile</param>
@@ -579,8 +579,10 @@ public interface IMastodonClient
     /// <summary>
     /// Get saved timeline position
     /// </summary>
+    /// <param name="home"></param>
+    /// <param name="notifications"></param>
     /// <returns></returns>
-    Task<Marker> GetMarkers();
+    Task<Marker> GetMarkers(bool home = false, bool notifications = false);
 
     /// <summary>
     /// Save position in timeline
@@ -603,7 +605,7 @@ public interface IMastodonClient
     /// <param name="tag">The name of the hashtag</param>
     /// <returns></returns>
     Task<Tag> FollowTag(string tag);
-    
+
     /// <summary>
     /// Unfollow a hashtag
     /// </summary>
@@ -746,14 +748,14 @@ public interface IMastodonClient
     /// <param name="statusId">The ID of the Status in the database</param>
     /// <returns>Returns the target Status</returns>
     Task<Status> Unfavourite(string statusId);
-    
+
     /// <summary>
     /// Privately bookmark a status
     /// </summary>
     /// <param name="statusId">The ID of the Status in the database</param>
     /// <returns>Returns the target Status</returns>
     Task<Status> Bookmark(string statusId);
-    
+
     /// <summary>
     /// Remove a status from your private bookmarks
     /// </summary>
