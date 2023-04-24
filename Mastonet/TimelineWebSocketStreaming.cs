@@ -25,7 +25,7 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
         this.instanceGetter = instanceGetter;
     }
 
-    public override async Task Start()
+    public override async Task Start(TimeSpan? timeout = null, bool restart = true)
     {
         var instance = await instanceGetter;
         var url = instance?.Configuration?.Urls?.Streaming;
@@ -66,31 +66,56 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
                 throw new NotImplementedException();
         }
 
-        socket = new ClientWebSocket();
-        await socket.ConnectAsync(new Uri(url), CancellationToken.None);
 
         byte[] buffer = new byte[receiveChunkSize];
         MemoryStream ms = new MemoryStream();
-        while (socket != null)
+        var lastValidMessage = DateTime.Now;
+        var timedOut = false;
+        do
         {
-            var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-            ms.Write(buffer, 0, result.Count);
-
-            if (result.EndOfMessage)
+            try
             {
-                var messageStr = Encoding.UTF8.GetString(ms.ToArray());
-
-                var message = JsonConvert.DeserializeObject<TimelineMessage>(messageStr);
-                if (message != null)
+                if (socket == null || socket.State != WebSocketState.Open || socket.CloseStatus != WebSocketCloseStatus.Empty)
                 {
-                    SendEvent(message.Event, message.Payload);
+                    if (socket != null) { socket.Dispose(); }
+                    socket = new ClientWebSocket();
+                    await socket.ConnectAsync(new Uri(url), CancellationToken.None);
                 }
 
-                ms.Dispose();
-                ms = new MemoryStream();
+                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                ms.Write(buffer, 0, result.Count);
+
+                if (result.EndOfMessage)
+                {
+                    var messageStr = Encoding.UTF8.GetString(ms.ToArray());
+
+                    var message = JsonConvert.DeserializeObject<TimelineMessage>(messageStr);
+                    if (message != null)
+                    {
+                        lastValidMessage = DateTime.Now;
+                        SendEvent(message.Event, message.Payload);
+                    }
+                    ms.Dispose();
+                    ms = new MemoryStream();
+                }
+
+                timedOut = timeout != null && lastValidMessage.Add(timeout.Value) < DateTime.Now;
+                if (timedOut)
+                {
+                    var timeoutDuration = DateTime.Now.Subtract(lastValidMessage);
+                    throw new TimeoutException($"TimelineWebSocketStreaming timed out after: {timeoutDuration.ToString()}");
+                }
+            } catch (TimeoutException)
+            {
+                if (!restart)
+                    throw;
+                else
+                    NotifyStreamRestarted(lastValidMessage);
             }
         }
+        while (restart);
+
         ms.Dispose();
 
         this.Stop();
