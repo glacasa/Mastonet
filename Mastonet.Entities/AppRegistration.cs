@@ -22,5 +22,5 @@ public class AppRegistration
     public string Instance { get; set; } = string.Empty;
 
     [JsonPropertyName("scope")]
-    public Scope Scope { get; set; }
+    public string Scope { get; set; } = string.Empty;
 }
