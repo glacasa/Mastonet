@@ -167,10 +167,24 @@ partial class MastodonClient
     /// <summary>
     /// Get saved timeline position
     /// </summary>
+    /// <param name="home"></param>
+    /// <param name="notifications"></param>
     /// <returns></returns>
-    public Task<Marker> GetMarkers()
+    public Task<Marker> GetMarkers(bool home = false, bool notifications = false)
     {
-        return Get<Marker>("/api/v1/markers");
+        var data = new List<KeyValuePair<string, string>>();
+
+        if (home)
+        {
+            data.Add(new KeyValuePair<string, string>("timeline[]", "home"));
+        }
+
+        if (notifications)
+        {
+            data.Add(new KeyValuePair<string, string>("timeline[]", "notifications"));
+        }
+
+        return Get<Marker>("/api/v1/markers", data);
     }
 
     /// <summary>
