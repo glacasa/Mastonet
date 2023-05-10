@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,31 +13,31 @@ public class Filter
     /// <summary>
     /// The ID of the filter in the database.
     /// </summary>
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// The text to be filtered.
     /// </summary>
-    [JsonProperty("phrase")]
+    [JsonPropertyName("phrase")]
     public string Phrase { get; set; } = string.Empty;
 
     /// <summary>
     /// The contexts in which the filter should be applied.
     /// </summary>
-    [JsonProperty("context")]
+    [JsonPropertyName("context")]
     public FilterContext Context { get; set; }
 
     /// <summary>
     /// When the filter should no longer be applied
     /// </summary>
-    [JsonProperty("expires_at")]
+    [JsonPropertyName("expires_at")]
     public DateTime? ExpiresAt { get; set; }
 
     /// <summary>
     /// Should matching entities in home and notifications be dropped by the server?
     /// </summary>
-    [JsonProperty("irreversible")]
+    [JsonPropertyName("irreversible")]
     public bool Irreversible { get; set; }
 
     /// <summary>
@@ -50,6 +50,6 @@ public class Filter
     /// If the phrase ends with a word character, and if the next character after matched range is a word character, its matched range should be treated to not match.
     /// Please check app/javascript/mastodon/selectors/index.js and app/lib/feed_manager.rb in the Mastodon source code for more details.
     /// </remarks>
-    [JsonProperty("whole_word")]
+    [JsonPropertyName("whole_word")]
     public bool WholeWord { get; set; }
 }

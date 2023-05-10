@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace Mastonet;
 
@@ -18,10 +19,10 @@ public enum NotificationType
 
 public class NotificationTypeConverter : JsonConverter<NotificationType>
 {
-    public override NotificationType ReadJson(JsonReader reader, Type objectType, NotificationType existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override NotificationType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        NotificationType context = NotificationType.None;
-        var contextStrings = serializer.Deserialize<IEnumerable<string>>(reader);
+        NotificationType context = 0;
+        var contextStrings = JsonSerializer.Deserialize<IEnumerable<string>>(ref reader, options);
         if (contextStrings != null)
         {
             foreach (var contextString in contextStrings)
@@ -46,10 +47,11 @@ public class NotificationTypeConverter : JsonConverter<NotificationType>
                 }
             }
         }
+
         return context;
     }
 
-    public override void WriteJson(JsonWriter writer, NotificationType value, JsonSerializer serializer)
+    public override void Write(Utf8JsonWriter writer, NotificationType value, JsonSerializerOptions options)
     {
         var contextStrings = new List<string>();
         if ((value & NotificationType.Follow) == NotificationType.Follow) contextStrings.Add("follow");
@@ -57,6 +59,6 @@ public class NotificationTypeConverter : JsonConverter<NotificationType>
         if ((value & NotificationType.Reblog) == NotificationType.Reblog) contextStrings.Add("reblog");
         if ((value & NotificationType.Mention) == NotificationType.Mention) contextStrings.Add("mention");
         if ((value & NotificationType.Poll) == NotificationType.Poll) contextStrings.Add("poll");
-        serializer.Serialize(writer, contextStrings);
+        JsonSerializer.Serialize(writer, contextStrings, options);
     }
 }

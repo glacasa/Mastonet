@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Mastonet.Entities;
 
@@ -10,24 +10,24 @@ public class Activity
     /// <summary>
     /// Midnight at the first day of the week.
     /// </summary>
-    [JsonProperty("week")]
+    [JsonPropertyName("week")]
     public string Week { get; set; } = string.Empty;
 
     /// <summary>
     /// Statuses created since the week began.
     /// </summary>
-    [JsonProperty("statuses")]
+    [JsonPropertyName("statuses")]
     public long Statuses { get; set; }
 
     /// <summary>
     /// User logins since the week began.
     /// </summary>
-    [JsonProperty("logins")]
+    [JsonPropertyName("logins")]
     public long Logins { get; set; }
 
     /// <summary>
     /// User registrations since the week began.
     /// </summary>
-    [JsonProperty("registrations")]
+    [JsonPropertyName("registrations")]
     public long Registrations { get; set; }
 }

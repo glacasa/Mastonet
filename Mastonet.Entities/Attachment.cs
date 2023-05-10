@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,105 +13,105 @@ public class Attachment
     /// <summary>
     /// The ID of the attachment in the database.
     /// </summary>
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// The type of the attachment.
     /// One of: "unknown", "image", "gifv", "video", "audio
     /// </summary>
-    [JsonProperty("type")]
+    [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;
 
     /// <summary>
     /// The location of the original full-size attachment.
     /// </summary>
-    [JsonProperty("url")]
+    [JsonPropertyName("url")]
     public string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// The location of a scaled-down preview of the attachment.
     /// </summary>
-    [JsonProperty("preview_url")]
+    [JsonPropertyName("preview_url")]
     public string PreviewUrl { get; set; } = string.Empty;
 
     /// <summary>
     /// The location of the full-size original attachment on the remote website.
     /// </summary>
-    [JsonProperty("remote_url")]
+    [JsonPropertyName("remote_url")]
     public string? RemoteUrl { get; set; }
 
     ///<summary>
     /// Metadata returned by Paperclip.
     ///</summary>
-    [JsonProperty("meta")]
+    [JsonPropertyName("meta")]
     public AttachmentMeta? Meta { get; set; }
 
     /// <summary>
     /// Alternate text that describes what is in the media attachment, to be used for the visually 
     /// impaired or when media attachments do not load.
     /// </summary>
-    [JsonProperty("description")]
+    [JsonPropertyName("description")]
     public string? Description { get; set; }
 
     /// <summary>
     /// A hash computed by the BlurHash algorithm, for generating colorful preview thumbnails when 
     /// media has not been downloaded yet.
     /// </summary>
-    [JsonProperty("blurhash")]
+    [JsonPropertyName("blurhash")]
     public string? BlurHash { get; set; }
 
     /// <summary>
     /// A shorter URL for the attachment.
     /// </summary>
-    [JsonProperty("text_url")]
+    [JsonPropertyName("text_url")]
     [Obsolete("Attribute was deprecated in version 3.5.0")]
     public string? TextUrl { get; set; }
 }
 
 public class AttachmentMeta
 {
-    [JsonProperty("original")]
+    [JsonPropertyName("original")]
     public AttachmentSizeData? Original { get; set; }
 
-    [JsonProperty("small")]
+    [JsonPropertyName("small")]
     public AttachmentSizeData? Small { get; set; }
 
-    [JsonProperty("focus")]
+    [JsonPropertyName("focus")]
     public AttachmentFocusData? Focus { get; set; }
 }
 
 public class AttachmentSizeData
 {
 
-    [JsonProperty("width")]
+    [JsonPropertyName("width")]
     public int? Width { get; set; }
 
-    [JsonProperty("height")]
+    [JsonPropertyName("height")]
     public int? Height { get; set; }
 
 
-    [JsonProperty("size")]
+    [JsonPropertyName("size")]
     public string? Size { get; set; }
 
-    [JsonProperty("aspect")]
+    [JsonPropertyName("aspect")]
     public double? Aspect { get; set; }
 
-    [JsonProperty("frame_rate")]
+    [JsonPropertyName("frame_rate")]
     public string? FrameRate { get; set; }
 
-    [JsonProperty("duration")]
+    [JsonPropertyName("duration")]
     public double? Duration { get; set; }
 
-    [JsonProperty("bitrate")]
+    [JsonPropertyName("bitrate")]
     public int? BitRate { get; set; }
 }
 
 public class AttachmentFocusData
 {
-    [JsonProperty("x")]
+    [JsonPropertyName("x")]
     public double X { get; set; }
 
-    [JsonProperty("y")]
+    [JsonPropertyName("y")]
     public double Y { get; set; }
 }

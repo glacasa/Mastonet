@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,27 +13,27 @@ public class IdentityProof
     /// <summary>
     /// The name of the identity provider.
     /// </summary>
-    [JsonProperty("provider")]
+    [JsonPropertyName("provider")]
     public string Provider { get; set; } = string.Empty;
 
     /// <summary>
     /// The account owner's username on the identity provider's service.
     /// </summary>
-    [JsonProperty("provider_username")]
+    [JsonPropertyName("provider_username")]
     public string ProviderUsername { get; set; } = string.Empty;
 
     /// <summary>
     /// The account owner's profile URL on the identity provider.
     /// </summary>
-    [JsonProperty("profile_url")]
+    [JsonPropertyName("profile_url")]
     public string ProfileUrl { get; set; } = string.Empty;
 
     /// <summary>
     /// A link to a statement of identity proof, hosted by the identity provider.
     /// </summary>
-    [JsonProperty("proof_url")]
+    [JsonPropertyName("proof_url")]
     public string ProofUrl { get; set; }= string.Empty;
 
-    [JsonProperty("updated_at")]
+    [JsonPropertyName("updated_at")]
     public DateTime UpdatedAt { get; set;}
 }

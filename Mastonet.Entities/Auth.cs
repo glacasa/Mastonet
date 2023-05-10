@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,15 +7,15 @@ namespace Mastonet.Entities;
 
 public class Auth
 {
-    [JsonProperty("access_token")]
+    [JsonPropertyName("access_token")]
     public string AccessToken { get; set; } = string.Empty;
 
-    [JsonProperty("token_type")]
+    [JsonPropertyName("token_type")]
     public string TokenType { get; set; } = string.Empty;
 
-    [JsonProperty("scope")]
+    [JsonPropertyName("scope")]
     public string Scope { get; set; } = string.Empty;
 
-    [JsonProperty("created_at")]
+    [JsonPropertyName("created_at")]
     public string CreatedAt { get; set; } = string.Empty;
 }

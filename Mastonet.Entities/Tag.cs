@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,21 +13,21 @@ public class Tag
     /// <summary>
     /// The value of the hashtag after the # sign.
     /// </summary>
-    [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// A link to the hashtag on the instance.
     /// </summary>
-    [JsonProperty("url")]
+    [JsonPropertyName("url")]
     public string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// Usage statistics for given days.
     /// </summary>
-    [JsonProperty("history")]
+    [JsonPropertyName("history")]
     public IEnumerable<History>? History { get; set; }
     
-    [JsonProperty("following")]
+    [JsonPropertyName("following")]
     public bool? Following { get; set; }
 }

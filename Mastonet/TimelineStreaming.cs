@@ -1,6 +1,6 @@
 ﻿using Mastonet.Entities;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Mastonet;
@@ -32,14 +32,14 @@ public abstract class TimelineStreaming
         switch (eventName)
         {
             case "update":
-                var status = JsonConvert.DeserializeObject<Status>(data);
+                var status = JsonSerializer.Deserialize<Status>(data);
                 if (status != null)
                 {
                     OnUpdate?.Invoke(this, new StreamUpdateEventArgs(status));
                 }
                 break;
             case "notification":
-                var notification = JsonConvert.DeserializeObject<Notification>(data);
+                var notification = JsonSerializer.Deserialize<Notification>(data);
                 if (notification != null)
                 {
                     OnNotification?.Invoke(this, new StreamNotificationEventArgs(notification));
@@ -55,7 +55,7 @@ public abstract class TimelineStreaming
                 OnFiltersChanged?.Invoke(this, new StreamFiltersChangedEventArgs());
                 break;
             case "conversation":
-                var conversation = JsonConvert.DeserializeObject<Conversation>(data);
+                var conversation = JsonSerializer.Deserialize<Conversation>(data);
                 if (conversation != null)
                 {
                     OnConversation?.Invoke(this, new StreamConversationEvenTargs(conversation));

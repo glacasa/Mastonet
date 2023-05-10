@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,61 +16,61 @@ public class Status
     /// <summary>
     /// ID of the status in the database.
     /// </summary>
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// URI of the status used for federation.
     /// </summary>
-    [JsonProperty("uri")]
+    [JsonPropertyName("uri")]
     public string Uri { get; set; } = string.Empty;
 
     /// <summary>
     /// The date when this status was created.
     /// </summary>
-    [JsonProperty("created_at")]
+    [JsonPropertyName("created_at")]
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
     /// The account that authored this status.
     /// </summary>
-    [JsonProperty("account")]
+    [JsonPropertyName("account")]
     public Account Account { get; set; } = new Account();
 
     /// <summary>
     /// HTML-encoded status content.
     /// </summary>
-    [JsonProperty("content")]
+    [JsonPropertyName("content")]
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
     /// Visibility of this status.
     /// </summary>
-    [JsonProperty("visibility")]
+    [JsonPropertyName("visibility")]
     public Visibility Visibility { get; set; }
 
     /// <summary>
     /// Is this status marked as sensitive content?
     /// </summary>
-    [JsonProperty("sensitive")]
+    [JsonPropertyName("sensitive")]
     public bool? Sensitive { get; set; }
 
     /// <summary>
     /// Subject or summary line, below which status content is collapsed until expanded.
     /// </summary>
-    [JsonProperty("spoiler_text")]
+    [JsonPropertyName("spoiler_text")]
     public string SpoilerText { get; set; } = string.Empty;
 
     /// <summary>
     /// Media that is attached to this status.
     /// </summary>
-    [JsonProperty("media_attachments")]
+    [JsonPropertyName("media_attachments")]
     public IEnumerable<Attachment> MediaAttachments { get; set; } = Enumerable.Empty<Attachment>();
 
     /// <summary>
     /// The application used to post this status.
     /// </summary>
-    [JsonProperty("application")]
+    [JsonPropertyName("application")]
     public Application Application { get; set; } = new Application();
 
     // Rendering attributes
@@ -78,19 +78,19 @@ public class Status
     /// <summary>
     /// Mentions of users within the status content.
     /// </summary>
-    [JsonProperty("mentions")]
+    [JsonPropertyName("mentions")]
     public IEnumerable<Mention> Mentions { get; set; } = Enumerable.Empty<Mention>();
 
     /// <summary>
     /// Hashtags used within the status content.
     /// </summary>
-    [JsonProperty("tags")]
+    [JsonPropertyName("tags")]
     public IEnumerable<Tag> Tags { get; set; } = Enumerable.Empty<Tag>();
 
     /// <summary>
     /// Custom emoji to be used when rendering status content.
     /// </summary>
-    [JsonProperty("emojis")]
+    [JsonPropertyName("emojis")]
     public IEnumerable<Emoji> Emojis { get; set; } = Enumerable.Empty<Emoji>();
 
 
@@ -99,19 +99,19 @@ public class Status
     /// <summary>
     /// How many boosts this status has received.
     /// </summary>
-    [JsonProperty("reblogs_count")]
+    [JsonPropertyName("reblogs_count")]
     public long ReblogCount { get; set; }
 
     /// <summary>
     /// How many favourites this status has received.
     /// </summary>
-    [JsonProperty("favourites_count")]
+    [JsonPropertyName("favourites_count")]
     public long FavouritesCount { get; set; }
 
     /// <summary>
     /// How many replies this status has received.
     /// </summary>
-    [JsonProperty("replies_count")]
+    [JsonPropertyName("replies_count")]
     public long RepliesCount { get; set; }
 
 
@@ -120,43 +120,43 @@ public class Status
     /// <summary>
     /// A link to the status's HTML representation.
     /// </summary>
-    [JsonProperty("url")]
+    [JsonPropertyName("url")]
     public string? Url { get; set; }
 
     /// <summary>
     /// ID of the status being replied.
     /// </summary>
-    [JsonProperty("in_reply_to_id")]
+    [JsonPropertyName("in_reply_to_id")]
     public string? InReplyToId { get; set; }
 
     /// <summary>
     /// ID of the account being replied to.
     /// </summary>
-    [JsonProperty("in_reply_to_account_id")]
+    [JsonPropertyName("in_reply_to_account_id")]
     public string? InReplyToAccountId { get; set; }
 
     /// <summary>
     /// The status being reblogged.
     /// </summary>
-    [JsonProperty("reblog")]
+    [JsonPropertyName("reblog")]
     public Status? Reblog { get; set; }
 
     /// <summary>
     /// The poll attached to the status.
     /// </summary>
-    [JsonProperty("poll")]
+    [JsonPropertyName("poll")]
     public Poll? Poll { get; set; }
 
     /// <summary>
     /// Preview card for links included within status content.
     /// </summary>
-    [JsonProperty("card")]
+    [JsonPropertyName("card")]
     public Card? Card { get; set; }
 
     /// <summary>
     /// Primary language of this status.
     /// </summary>
-    [JsonProperty("language")]
+    [JsonPropertyName("language")]
     public string? Language { get; set; }
 
     /// <summary>
@@ -164,7 +164,7 @@ public class Status
     /// Returned instead of content when status is deleted, so the user may redraft from the source text 
     /// without the client having to reverse-engineer the original text from the HTML content.
     /// </summary>
-    [JsonProperty("text")]
+    [JsonPropertyName("text")]
     public string? Text { get; set; }
 
 
@@ -173,27 +173,27 @@ public class Status
     /// <summary>
     /// Have you favourited this status?
     /// </summary>
-    [JsonProperty("favourited")]
+    [JsonPropertyName("favourited")]
     public bool? Favourited { get; set; }
 
     /// <summary>
     /// Have you boosted this status?
     /// </summary>
-    [JsonProperty("reblogged")]
+    [JsonPropertyName("reblogged")]
     public bool? Reblogged { get; set; }
 
     /// <summary>
     /// Have you muted notifications for this status's conversation?
     /// </summary>
-    [JsonProperty("muted")]
+    [JsonPropertyName("muted")]
     public bool? Muted { get; set; }
 
-    [JsonProperty("bookmarked")]
+    [JsonPropertyName("bookmarked")]
     public bool? Bookmarked { get; set; }
 
     /// <summary>
     /// Whether the status is pinned
     /// </summary>
-    [JsonProperty("pinned")]
+    [JsonPropertyName("pinned")]
     public bool? Pinned { get; set; }
 }

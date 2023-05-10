@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +14,12 @@ public class Context
     /// <summary>
     /// Parents in the thread.
     /// </summary>
-    [JsonProperty("ancestors")]
+    [JsonPropertyName("ancestors")]
     public IEnumerable<Status> Ancestors { get; set; } = Enumerable.Empty<Status>();
 
     /// <summary>
     /// Children in the thread.
     /// </summary>
-    [JsonProperty("descendants")]
+    [JsonPropertyName("descendants")]
     public IEnumerable<Status> Descendants { get; set; } = Enumerable.Empty<Status>();
 }

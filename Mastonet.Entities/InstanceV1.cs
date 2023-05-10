@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,85 +15,85 @@ public class Instance
     /// <summary>
     /// The domain name of the instance.
     /// </summary>
-    [JsonProperty("uri")]
+    [JsonPropertyName("uri")]
     public string Uri { get; set; } = string.Empty;
 
     /// <summary>
     /// The title of the website.
     /// </summary>
-    [JsonProperty("title")]
+    [JsonPropertyName("title")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Admin-defined description of the Mastodon site.
     /// </summary>
-    [JsonProperty("description")]
+    [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// A shorter description defined by the admin.
     /// </summary>
-    [JsonProperty("short_description")]
+    [JsonPropertyName("short_description")]
     public string ShortDescription { get; set; }=string.Empty;
 
     /// <summary>
     /// An email that may be contacted for any inquiries.
     /// </summary>
-    [JsonProperty("email")]
+    [JsonPropertyName("email")]
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// The version of Mastodon installed on the instance.
     /// </summary>
-    [JsonProperty("version")]
+    [JsonPropertyName("version")]
     public string Version { get; set; } = string.Empty;
 
     /// <summary>
     /// Primary languages of the website and its staff.
     /// </summary>
-    [JsonProperty("languages")]
+    [JsonPropertyName("languages")]
     public IEnumerable<string> Languages { get; set; } = Enumerable.Empty<string>();
 
     /// <summary>
     /// Whether registrations are enabled.
     /// </summary>
-    [JsonProperty("registrations")]
+    [JsonPropertyName("registrations")]
     public bool RegistrationsEnabled { get; set; }
 
     /// <summary>
     /// Whether registrations require moderator approval.
     /// </summary>
-    [JsonProperty("approval_required")]
+    [JsonPropertyName("approval_required")]
     public bool ApprovalRequired { get; set; }
 
     /// <summary>
     /// Whether invites are enabled.
     /// </summary>
-    [JsonProperty("invites_enabled")]
+    [JsonPropertyName("invites_enabled")]
     public bool InvitesEnabled { get; set;}
 
     /// <summary>
     /// URLs of interest for clients apps.
     /// </summary>
-    [JsonProperty("urls")]
+    [JsonPropertyName("urls")]
     public InstanceUrls Urls { get; set; } = new InstanceUrls();
 
     /// <summary>
     /// Statistics about how much information the instance contains.
     /// </summary>
-    [JsonProperty("stats")]
+    [JsonPropertyName("stats")]
     public InstanceStats Stats { get; set; } = new InstanceStats();
 
     /// <summary>
     /// Banner image for the website.
     /// </summary>
-    [JsonProperty("thumbnail")]
+    [JsonPropertyName("thumbnail")]
     public string? Thumbnail { get; set; }
 
     /// <summary>
     /// A user that can be contacted, as an alternative to email.
     /// </summary>
-    [JsonProperty("contact_account")]
+    [JsonPropertyName("contact_account")]
     public Account? ContactAccount { get; set; }
 }
 
@@ -102,7 +102,7 @@ public class InstanceUrls
     /// <summary>
     /// Websocket base URL for streaming API
     /// </summary>
-    [JsonProperty("streaming_api")]
+    [JsonPropertyName("streaming_api")]
     public string StreamingAPI { get; set; } = string.Empty;
 }
 
@@ -111,18 +111,18 @@ public class InstanceStats
     /// <summary>
     /// Users registered on this instance. 
     /// </summary>
-    [JsonProperty("user_count")]
+    [JsonPropertyName("user_count")]
     public long UserCount { get; set; }
 
     /// <summary>
     /// Statuses authored by users on instance. 
     /// </summary>
-    [JsonProperty("status_count")]
+    [JsonPropertyName("status_count")]
     public long StatusCount { get; set; }
 
     /// <summary>
     /// Domains federated with this instance. 
     /// </summary>
-    [JsonProperty("domain_count")]
+    [JsonPropertyName("domain_count")]
     public long DomainCount { get; set; }
 }
