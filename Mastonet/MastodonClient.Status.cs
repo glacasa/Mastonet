@@ -105,14 +105,14 @@ partial class MastodonClient
 
         if (!string.IsNullOrEmpty(replyStatusId))
         {
-            data.Add(new KeyValuePair<string, string>("in_reply_to_id", replyStatusId));
+            data.Add(new KeyValuePair<string, string>("in_reply_to_id", replyStatusId!));
         }
 
         if (mediaIds != null)
         {
             foreach (var mediaId in mediaIds)
             {
-                data.Add(new KeyValuePair<string, string>("media_ids[]", mediaId.ToString()));
+                data.Add(new KeyValuePair<string, string>("media_ids[]", mediaId));
             }
         }
 

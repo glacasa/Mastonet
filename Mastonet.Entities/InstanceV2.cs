@@ -45,13 +45,13 @@ public class InstanceV2
     /// Usage data for this instance.
     /// </summary>
     [JsonPropertyName("usage")]
-    public InstanceUsage Usage { get; set; }
+    public InstanceUsage Usage { get; set; }= new InstanceUsage();
 
     /// <summary>
     /// An image used to represent this instance.
     /// </summary>
     [JsonPropertyName("thumbnail")]
-    public InstanceThumbnail Thumbnail { get; set; }
+    public InstanceThumbnail Thumbnail { get; set; }= new InstanceThumbnail();
 
     /// <summary>
     /// Primary languages of the website and its staff.
@@ -63,25 +63,25 @@ public class InstanceV2
     /// Configured values and limits for this website.
     /// </summary>
     [JsonPropertyName("configuration")]
-    public InstanceConfiguration Configuration { get; set; }
+    public InstanceConfiguration Configuration { get; set; }= new InstanceConfiguration();
 
     /// <summary>
     /// Information about registering for this website.
     /// </summary>
     [JsonPropertyName("registrations")]
-    public InstanceRegistrations  Registrations { get; set; }
-    
+    public InstanceRegistrations Registrations { get; set; }= new InstanceRegistrations();
+
     /// <summary>
     /// Hints related to contacting a representative of the website.
     /// </summary>
     [JsonPropertyName("contact")]
-    public InstanceContact Contact { get; set; }
-    
+    public InstanceContact Contact { get; set; }=   new InstanceContact();
+
     /// <summary>
     /// An itemized list of rules for this website.
     /// </summary>
     [JsonPropertyName("rules")]
-    public IEnumerable< InstanceRule> Rules { get; set; }
+    public IEnumerable<InstanceRule> Rules { get; set; }= Enumerable.Empty<InstanceRule>();
 }
 
 public class InstanceUsage
@@ -90,7 +90,7 @@ public class InstanceUsage
     /// Usage data related to users on this instance. 
     /// </summary>
     [JsonPropertyName("users")]
-    public InstanceUsageUsers Users { get; set; }
+    public InstanceUsageUsers Users { get; set; } = new InstanceUsageUsers();
 }
 
 public class InstanceUsageUsers
@@ -108,7 +108,7 @@ public class InstanceThumbnail
     /// The URL for the thumbnail image.
     /// </summary>
     [JsonPropertyName("url")]
-    public string Url { get; set; }
+    public string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// A hash computed by the BlurHash algorithm, for generating colorful preview thumbnails when media has not been downloaded yet.
@@ -165,13 +165,13 @@ public class InstanceContact
     /// An email address that can be messaged regarding inquiries or issues.
     /// </summary>
     [JsonPropertyName("email")]
-    public string Email { get; set; }
-    
+    public string Email { get; set; } = string.Empty;
+
     /// <summary>
     /// An account that can be contacted natively over the network regarding inquiries or issues.
     /// </summary>
-    [JsonPropertyName("account")] 
-    public Account Account { get; set; }
+    [JsonPropertyName("account")]
+    public Account Account { get; set; } = new Account();
 }
 
 public class InstanceRule
@@ -180,11 +180,11 @@ public class InstanceRule
     /// An identifier for the rule.
     /// </summary>
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// The rule to be followed.
     /// </summary>
     [JsonPropertyName("text")]
-    public string Text { get; set; }
+    public string Text { get; set; } = string.Empty;
 }

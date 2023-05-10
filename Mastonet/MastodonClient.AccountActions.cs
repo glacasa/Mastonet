@@ -199,12 +199,12 @@ partial class MastodonClient
 
         if (!string.IsNullOrEmpty(homeLastReadId))
         {
-            data.Add(new KeyValuePair<string, string>("home[last_read_id]", homeLastReadId));
+            data.Add(new KeyValuePair<string, string>("home[last_read_id]", homeLastReadId!));
         }
 
         if (!string.IsNullOrEmpty(notificationLastReadId))
         {
-            data.Add(new KeyValuePair<string, string>("notifications[last_read_id]", notificationLastReadId));
+            data.Add(new KeyValuePair<string, string>("notifications[last_read_id]", notificationLastReadId!));
         }
 
         return Post<Marker>("/api/v1/markers", data);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Mastonet.Entities;
@@ -9,37 +10,37 @@ public class InstanceConfiguration
     /// URLs of interest for clients apps.
     /// </summary>
     [JsonPropertyName("urls")]
-    public InstanceConfigurationUrls Urls { get; set; }
+    public InstanceConfigurationUrls Urls { get; set; }= new InstanceConfigurationUrls();
 
     /// <summary>
     /// Limits related to accounts.
     /// </summary>
     [JsonPropertyName("accounts")]
-    public InstanceConfigurationAccounts Accounts { get; set; }
+    public InstanceConfigurationAccounts Accounts { get; set; }= new InstanceConfigurationAccounts();
 
     /// <summary>
     /// Limits related to authoring statuses.
     /// </summary>
     [JsonPropertyName("statuses")]
-    public InstanceConfigurationStatutes Statutes { get; set; }
+    public InstanceConfigurationStatutes Statutes { get; set; }= new InstanceConfigurationStatutes();
 
     /// <summary>
     /// Hints for which attachments will be accepted.
     /// </summary>
     [JsonPropertyName("media_attachments")]
-    public InstanceConfigurationMediaAttachments MediaAttachments { get; set; }
+    public InstanceConfigurationMediaAttachments MediaAttachments { get; set; }= new InstanceConfigurationMediaAttachments();
 
     /// <summary>
     /// Limits related to polls.
     /// </summary>
     [JsonPropertyName("polls")]
-    public InstanceConfigurationPolls Polls { get; set; }
+    public InstanceConfigurationPolls Polls { get; set; }= new InstanceConfigurationPolls();
 
     /// <summary>
     /// Hints related to translation.
     /// </summary>
     [JsonPropertyName("translation")]
-    public InstanceConfigurationTranslation Translation { get; set; }
+    public InstanceConfigurationTranslation Translation { get; set; }= new InstanceConfigurationTranslation();
 }
 
 public class InstanceConfigurationUrls
@@ -48,7 +49,7 @@ public class InstanceConfigurationUrls
     /// The Websockets URL for connecting to the streaming API.
     /// </summary>
     [JsonPropertyName("streaming")]
-    public string Streaming { get; set; }
+    public string Streaming { get; set; }= string.Empty;
 }
 
 public class InstanceConfigurationAccounts
@@ -87,7 +88,7 @@ public class InstanceConfigurationMediaAttachments
     /// Contains MIME types that can be uploaded.
     /// </summary>
     [JsonPropertyName("supported_mime_types")]
-    public IEnumerable<string> SupportedMimeTypes { get; set; }
+    public IEnumerable<string> SupportedMimeTypes { get; set; }= Enumerable.Empty<string>();
 
     /// <summary>
     /// The maximum size of any uploaded image, in bytes.
