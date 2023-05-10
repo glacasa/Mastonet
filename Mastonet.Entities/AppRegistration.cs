@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,21 +6,21 @@ using System.Text;
 namespace Mastonet.Entities;
 public class AppRegistration
 {
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public long Id { get; set; }
 
-    [JsonProperty("redirect_uri")]
+    [JsonPropertyName("redirect_uri")]
     public string RedirectUri { get; set; } = string.Empty;
 
-    [JsonProperty("client_id")]
+    [JsonPropertyName("client_id")]
     public string ClientId { get; set; } = string.Empty;
 
-    [JsonProperty("client_secret")]
+    [JsonPropertyName("client_secret")]
     public string ClientSecret { get; set; } = string.Empty;
 
-    [JsonProperty("instance")]
+    [JsonPropertyName("instance")]
     public string Instance { get; set; } = string.Empty;
 
-    [JsonProperty("scope")]
+    [JsonPropertyName("scope")]
     public Scope Scope { get; set; }
 }

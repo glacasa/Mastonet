@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,18 +13,18 @@ public class Application
     /// <summary>
     /// The name of your application.
     /// </summary>
-    [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// The website associated with your application.
     /// </summary>
-    [JsonProperty("website")]
+    [JsonPropertyName("website")]
     public string? Website { get; set; }
 
     /// <summary>
     /// Used for Push Streaming API.
     /// </summary>
-    [JsonProperty("vapid_key")]
+    [JsonPropertyName("vapid_key")]
     public string? VapidKey { get; set; }
 }

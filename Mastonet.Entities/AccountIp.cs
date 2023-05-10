@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Mastonet.Entities;
 
@@ -11,12 +11,12 @@ public class AccountIp
     /// <summary>
     /// The IP address.
     /// </summary>
-    [JsonProperty("ip")]
+    [JsonPropertyName("ip")]
     public string Ip { get; set; } = string.Empty;
 
     /// <summary>
     /// The timestamp of when the IP address was last used for this account.
     /// </summary>
-    [JsonProperty("used_at")]
+    [JsonPropertyName("used_at")]
     public DateTime UsedAt { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,13 +13,13 @@ public class List
     /// <summary>
     /// The internal database ID of the list.
     /// </summary>
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// The user-defined title of the list.
     /// </summary>
-    [JsonProperty("title")]
+    [JsonPropertyName("title")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -28,6 +28,6 @@ public class List
     /// list = Show replies to members of the list
     /// none = Show replies to no one
     /// </summary>
-    [JsonProperty("replies_policy")]
+    [JsonPropertyName("replies_policy")]
     public string RepliesPolicy { get; set; }= string.Empty;
 }

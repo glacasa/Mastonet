@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Mastonet.Entities;
 
@@ -10,18 +10,18 @@ public class History
     /// <summary>
     /// UNIX timestamp on midnight of the given day.
     /// </summary>
-    [JsonProperty("day")]
+    [JsonPropertyName("day")]
     public int Day { get; set; }
 
     /// <summary>
     /// the counted usage of the tag within that day.
     /// </summary>
-    [JsonProperty("uses")]
+    [JsonPropertyName("uses")]
     public int Uses { get; set; }
 
     /// <summary>
     /// the total of accounts using the tag within that day.
     /// </summary>
-    [JsonProperty("accounts")]
+    [JsonPropertyName("accounts")]
     public int Accounts { get; set; }
 }

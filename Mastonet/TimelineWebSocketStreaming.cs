@@ -1,11 +1,11 @@
 ﻿using Mastonet.Entities;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -81,7 +81,7 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
             {
                 var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
-                var message = JsonConvert.DeserializeObject<TimelineMessage>(messageStr);
+                var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr);
                 if (message != null)
                 {
                     SendEvent(message.Event, message.Payload);

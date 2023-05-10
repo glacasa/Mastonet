@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +13,7 @@ public class Notification
     /// <summary>
     /// The id of the notification in the database.
     /// </summary>
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
@@ -26,24 +26,24 @@ public class Notification
     /// poll = A poll you have voted in or created has ended
     /// status = Someone you enabled notifications for has posted a status
     /// </summary>
-    [JsonProperty("type")]
+    [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;
 
     /// <summary>
     /// The timestamp of the notification.
     /// </summary>
-    [JsonProperty("created_at")]
+    [JsonPropertyName("created_at")]
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
     /// The account that performed the action that generated the notification.
     /// </summary>
-    [JsonProperty("account")]
+    [JsonPropertyName("account")]
     public Account Account { get; set; } = new Account();
 
     /// <summary>
     /// Status that was the object of the notification, e.g. in mentions, reblogs, favourites, or polls.
     /// </summary>
-    [JsonProperty("status")]
+    [JsonPropertyName("status")]
     public Status? Status { get; set; }
 }

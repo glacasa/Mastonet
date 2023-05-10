@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +16,13 @@ public class Announcement
     /// <summary>
     /// The announcement id.
     /// </summary>
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// The content of the announcement.
     /// </summary>
-    [JsonProperty("content")]
+    [JsonPropertyName("content")]
     public string Content { get; set; } = string.Empty;
     
     [Obsolete("This property was incorrectly named, use 'Content' instead.")]
@@ -35,19 +35,19 @@ public class Announcement
     /// <summary>
     /// Whether the announcement is currently active.
     /// </summary>
-    [JsonProperty("published")]
+    [JsonPropertyName("published")]
     public bool Published { get; set; }
 
     /// <summary>
     /// Whether the announcement has a start/end time.
     /// </summary>
-    [JsonProperty("all_day")]
+    [JsonPropertyName("all_day")]
     public bool AllDay { get; set; }
 
     /// <summary>
     /// When the announcement was created.
     /// </summary>
-    [JsonProperty("published_at")]
+    [JsonPropertyName("published_at")]
     public DateTime PublishedAt { get; set; }
     
     [Obsolete("This property was incorrectly named, use 'PublishedAt' instead.")]
@@ -59,19 +59,19 @@ public class Announcement
     /// <summary>
     /// When the announcement was last updated.
     /// </summary>
-    [JsonProperty("updated_at")]
+    [JsonPropertyName("updated_at")]
     public DateTime UpdatedAt { get; set; }
 
     /// <summary>
     /// Whether the announcement has been read by the user.
     /// </summary>
-    [JsonProperty("read")]
+    [JsonPropertyName("read")]
     public bool Read { get; set; }
 
     /// <summary>
     /// Emoji reactions attached to the announcement.
     /// </summary>
-    [JsonProperty("reactions")]
+    [JsonPropertyName("reactions")]
     public IEnumerable<AnnouncementReaction> Reactions { get; set; } = Enumerable.Empty<AnnouncementReaction>();
 
     // Optional attributes
@@ -79,19 +79,19 @@ public class Announcement
     /// <summary>
     /// When the future announcement was scheduled.
     /// </summary>
-    [JsonProperty("scheduled_at")]
+    [JsonPropertyName("scheduled_at")]
     public DateTime? ScheduledAt { get; set; }
 
     /// <summary>
     /// When the future announcement will start.
     /// </summary>
-    [JsonProperty("starts_at")]
+    [JsonPropertyName("starts_at")]
     public DateTime? StartsAt { get; set; }
 
     /// <summary>
     /// When the future announcement will end.
     /// </summary>
-    [JsonProperty("ends_at")]
+    [JsonPropertyName("ends_at")]
     public DateTime? EndsAt { get; set; }
 }
 
@@ -106,19 +106,19 @@ public class AnnouncementReaction
     /// <summary>
     /// The emoji used for the reaction. Either a unicode emoji, or a custom emoji's shortcode.
     /// </summary>
-    [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// The total number of users who have added this reaction.
     /// </summary>
-    [JsonProperty("count")]
+    [JsonPropertyName("count")]
     public int Count { get; set; }
 
     /// <summary>
     /// Whether the authorized user has added this reaction to the announcement.
     /// </summary>
-    [JsonProperty("me")]
+    [JsonPropertyName("me")]
     public bool Me { get; set; }
 
     // Custom emoji attributes
@@ -126,12 +126,12 @@ public class AnnouncementReaction
     /// <summary>
     /// A link to the custom emoji.
     /// </summary>
-    [JsonProperty("url")]
+    [JsonPropertyName("url")]
     public string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// A link to a non-animated version of the custom emoji.
     /// </summary>
-    [JsonProperty("static_url")]
+    [JsonPropertyName("static_url")]
     public string StaticUrl { get; set; } = string.Empty;
 }

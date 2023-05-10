@@ -1,5 +1,4 @@
 ﻿using Mastonet.Entities;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -306,14 +306,15 @@ public abstract partial class BaseHttpClient
     {
         if (json[0] == '{')
         {
-            var error = JsonConvert.DeserializeObject<Error>(json);
+            
+            var error = JsonSerializer.Deserialize<Error>(json);
             if (error != null && !string.IsNullOrEmpty(error.Description))
             {
                 throw new ServerErrorException(error);
             }
         }
 
-        return JsonConvert.DeserializeObject<T>(json)!;
+        return JsonSerializer.Deserialize<T>(json)!;
     }
 
     protected static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)
