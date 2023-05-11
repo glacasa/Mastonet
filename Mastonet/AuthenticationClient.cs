@@ -29,39 +29,6 @@ public class AuthenticationClient : BaseHttpClient, IAuthenticationClient
 
     #region Apps
 
-    /// <summary>
-    /// Registering an application
-    /// </summary>
-    /// <param name="instance">Instance to connect</param>
-    /// <param name="appName">Name of your application</param>
-    /// <param name="scope">The rights needed by your application</param>
-    /// <param name="website">URL to the homepage of your app</param>
-    /// <returns></returns>
-    [Obsolete("Use GranularScopes instead of deprecated Scope")]
-    public Task<AppRegistration> CreateApp(string appName, Scope scope, string? website = null, string? redirectUri = null)
-    {
-        var scopes = new List<GranularScope>();
-        if (scope.HasFlag(Scope.Read))
-        {
-            scopes.Add(GranularScope.Read);
-        }
-
-        if (scope.HasFlag(Scope.Write))
-        {
-            scopes.Add(GranularScope.Write);
-        }
-
-        if (scope.HasFlag(Scope.Follow))
-        {
-            scopes.AddRange(new GranularScope[] {
-                GranularScope.Read__Blocks, GranularScope.Write__Blocks,
-                GranularScope.Read__Follows, GranularScope.Write__Follows,
-                GranularScope.Read__Mutes, GranularScope.Write__Mutes
-            });
-        }
-
-        return CreateApp(appName, website, redirectUri, scopes);
-    }
 
     public Task<AppRegistration> CreateApp(string appName, string? website = null, string? redirectUri = null, params GranularScope[] scope)
     {

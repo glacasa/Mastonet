@@ -4,15 +4,6 @@ using System.Text;
 
 namespace Mastonet;
 
-[Flags]
-[Obsolete("Use Granular Scopes")]
-public enum Scope
-{
-    Read = 1,
-    Write = 2,
-    Follow = 4
-}
-
 public enum GranularScope
 {
     Read,
