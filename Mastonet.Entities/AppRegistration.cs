@@ -7,7 +7,7 @@ namespace Mastonet.Entities;
 public class AppRegistration
 {
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [JsonPropertyName("redirect_uri")]
     public string RedirectUri { get; set; } = string.Empty;

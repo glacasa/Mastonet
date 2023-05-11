@@ -17,5 +17,5 @@ public class Auth
     public string Scope { get; set; } = string.Empty;
 
     [JsonPropertyName("created_at")]
-    public string CreatedAt { get; set; } = string.Empty;
+    public long CreatedAt { get; set; }
 }

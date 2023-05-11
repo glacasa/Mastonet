@@ -28,6 +28,7 @@ public class Source
     /// The default post privacy to be used for new statuses.
     /// </summary>
     [JsonPropertyName("privacy")]
+    [JsonConverter(typeof(VisibilityConverter))]
     public Visibility? Privacy { get; set; }
 
     /// <summary>

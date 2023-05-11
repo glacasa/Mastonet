@@ -47,6 +47,7 @@ public class Status
     /// Visibility of this status.
     /// </summary>
     [JsonPropertyName("visibility")]
+    [JsonConverter(typeof(VisibilityConverter))]
     public Visibility Visibility { get; set; }
 
     /// <summary>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Mastonet;
 
@@ -28,4 +30,22 @@ public enum Visibility
     /// Visible only to mentioned users.
     /// </summary>
     Direct,
+}
+
+public class VisibilityConverter : JsonConverter<Visibility>
+{
+    public override Visibility Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var val = reader.GetString();
+
+        var result = Enum.Parse(typeof(Visibility), val, true);
+
+        return (Visibility) result;
+    }
+
+    public override void Write(Utf8JsonWriter writer, Visibility value, JsonSerializerOptions options)
+    {
+        var val = value.ToString();
+        writer.WriteStringValue(val);
+    }
 }
