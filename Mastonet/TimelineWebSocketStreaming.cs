@@ -6,8 +6,10 @@ using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using static Mastonet.TimelineWebSocketStreaming;
 
 namespace Mastonet;
 
@@ -81,7 +83,7 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
             {
                 var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
-                var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr);
+                var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr, TimelineMessageContext.Default.TimelineMessage);
                 if (message != null)
                 {
                     SendEvent(message.Event, message.Payload);
@@ -96,7 +98,7 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
         this.Stop();
     }
 
-    private class TimelineMessage
+    internal class TimelineMessage
     {
         public string Event { get; set; } = default!;
 
@@ -114,4 +116,9 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
 
         base.Stop();
     }
+}
+
+[JsonSerializable(typeof(TimelineMessage))]
+internal partial class TimelineMessageContext : JsonSerializerContext
+{
 }

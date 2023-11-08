@@ -307,15 +307,17 @@ public abstract partial class BaseHttpClient
         if (json[0] == '{')
         {
             
-            var error = JsonSerializer.Deserialize<Error>(json);
+            var error = JsonSerializer.Deserialize(json, ErrorContext.Default.Error);
             if (error != null && !string.IsNullOrEmpty(error.Description))
             {
                 throw new ServerErrorException(error);
             }
         }
 
-        return JsonSerializer.Deserialize<T>(json)!;
+        return JsonSerializer.Deserialize<T>(json, TryDeserializeContextOptions)!;
     }
+
+    private static readonly JsonSerializerOptions TryDeserializeContextOptions = new() { TypeInfoResolver = TryDeserializeContext.Default };
 
     protected static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)
     {

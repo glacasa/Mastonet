@@ -32,14 +32,14 @@ public abstract class TimelineStreaming
         switch (eventName)
         {
             case "update":
-                var status = JsonSerializer.Deserialize<Status>(data);
+                var status = JsonSerializer.Deserialize(data, TryDeserializeContext.Default.Status);
                 if (status != null)
                 {
                     OnUpdate?.Invoke(this, new StreamUpdateEventArgs(status));
                 }
                 break;
             case "notification":
-                var notification = JsonSerializer.Deserialize<Notification>(data);
+                var notification = JsonSerializer.Deserialize(data, TryDeserializeContext.Default.Notification);
                 if (notification != null)
                 {
                     OnNotification?.Invoke(this, new StreamNotificationEventArgs(notification));
@@ -55,7 +55,7 @@ public abstract class TimelineStreaming
                 OnFiltersChanged?.Invoke(this, new StreamFiltersChangedEventArgs());
                 break;
             case "conversation":
-                var conversation = JsonSerializer.Deserialize<Conversation>(data);
+                var conversation = JsonSerializer.Deserialize(data, TryDeserializeContext.Default.Conversation);
                 if (conversation != null)
                 {
                     OnConversation?.Invoke(this, new StreamConversationEvenTargs(conversation));
