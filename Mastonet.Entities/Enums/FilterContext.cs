@@ -22,7 +22,7 @@ public class FilterContextConverter : JsonConverter<FilterContext>
     public override FilterContext Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         FilterContext context = 0;
-        var contextStrings = JsonSerializer.Deserialize<IEnumerable<string>>(ref reader, EntitiesContext.Default.IEnumerableString);
+        var contextStrings = JsonSerializer.Deserialize(ref reader, EntitiesContext.Default.IEnumerableString);
         if (contextStrings != null) {
             foreach (var contextString in contextStrings)
             {
@@ -55,6 +55,5 @@ public class FilterContextConverter : JsonConverter<FilterContext>
         if ((value & FilterContext.Public) == FilterContext.Public) contextStrings.Add("public");
         if ((value & FilterContext.Thread) == FilterContext.Thread) contextStrings.Add("thread");
         JsonSerializer.Serialize(writer, contextStrings, EntitiesContext.Default.ListString);
-    }
-    
+    }   
 }
