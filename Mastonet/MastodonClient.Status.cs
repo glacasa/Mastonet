@@ -147,7 +147,7 @@ partial class MastodonClient
             data.Add(new KeyValuePair<string, string>("poll[expires_in]", poll.ExpiresIn.TotalSeconds.ToString()));
             if (poll.Multiple.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("poll[multiple]", poll.Multiple.Value.ToString().ToLower()));
+                data.Add(new KeyValuePair<string, string>("poll[multiple]", poll.Multiple.Value.ToString().ToLowerInvariant()));
             }
 
             if (poll.HideTotals.HasValue)

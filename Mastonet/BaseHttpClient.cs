@@ -306,15 +306,23 @@ public abstract partial class BaseHttpClient
     {
         if (json[0] == '{')
         {
-            
+#if NET6_0_OR_GREATER
             var error = JsonSerializer.Deserialize(json, ErrorContext.Default.Error);
+#else
+var error = JsonSerializer.Deserialize<Error>(json);
+#endif
             if (error != null && !string.IsNullOrEmpty(error.Description))
             {
                 throw new ServerErrorException(error);
             }
         }
 
-        return JsonSerializer.Deserialize<T>(json, TryDeserializeContextOptions)!;
+#if NET6_0_OR_GREATER
+        return JsonSerializer.Deserialize<T>(json, TryDeserializeContextOptions);
+#else
+        return JsonSerializer.Deserialize<T>(json);
+
+#endif
     }
 
     private static readonly JsonSerializerOptions TryDeserializeContextOptions = new() { TypeInfoResolver = TryDeserializeContext.Default };
@@ -338,7 +346,7 @@ public abstract partial class BaseHttpClient
         return !string.IsNullOrEmpty(queryParams) ? "&" : "?";
     }
 
-    #endregion
+#endregion
 
 
 }

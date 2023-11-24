@@ -524,7 +524,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     {
         var data = new List<KeyValuePair<string, string>>()
         {
-            new KeyValuePair<string, string>("account_id", accountId.ToString()),
+            new KeyValuePair<string, string>("account_id", accountId),
         };
         if (statusIds != null)
         {

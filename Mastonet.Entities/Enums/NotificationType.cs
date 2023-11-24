@@ -23,7 +23,11 @@ public class NotificationTypeConverter : JsonConverter<NotificationType>
     public override NotificationType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         NotificationType context = 0;
+#if NET6_0_OR_GREATER
         var contextStrings = JsonSerializer.Deserialize(ref reader, EntitiesContext.Default.IEnumerableString);
+#else
+var contextStrings = JsonSerializer.Deserialize<IEnumerable<string>>(ref reader, options);
+#endif
         if (contextStrings != null)
         {
             foreach (var contextString in contextStrings)
@@ -60,7 +64,11 @@ public class NotificationTypeConverter : JsonConverter<NotificationType>
         if ((value & NotificationType.Reblog) == NotificationType.Reblog) contextStrings.Add("reblog");
         if ((value & NotificationType.Mention) == NotificationType.Mention) contextStrings.Add("mention");
         if ((value & NotificationType.Poll) == NotificationType.Poll) contextStrings.Add("poll");
+#if NET6_0_OR_GREATER
         JsonSerializer.Serialize(writer, contextStrings, EntitiesContext.Default.ListString);
+#else
+JsonSerializer.Serialize(writer, contextStrings, options);
+#endif
     }
 }
 

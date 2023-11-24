@@ -83,7 +83,11 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
             {
                 var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
-                var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr, TimelineMessageContext.Default.TimelineMessage);
+#if NET6_0_OR_GREATER
+                var message = JsonSerializer.Deserialize(messageStr, TimelineMessageContext.Default.TimelineMessage);
+#else
+var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr);
+#endif
                 if (message != null)
                 {
                     SendEvent(message.Event, message.Payload);
