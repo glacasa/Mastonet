@@ -305,6 +305,7 @@ public abstract partial class BaseHttpClient
     private static T TryDeserialize<T>(string json)
     {
 #if NET6_0_OR_GREATER
+
         if (json[0] == '{')
         {
             var error = JsonSerializer.Deserialize(json, ErrorContext.Default.Error);
@@ -314,8 +315,10 @@ public abstract partial class BaseHttpClient
                 throw new ServerErrorException(error);
             }
         }
-        return JsonSerializer.Deserialize<T>(json, TryDeserializeContextOptions);
+
+        return (T?)JsonSerializer.Deserialize(json, typeof(T), TryDeserializeContext.Default)!;
 #else
+
 if (json[0] == '{')
         {
             var error = JsonSerializer.Deserialize<Error>(json);
@@ -326,12 +329,10 @@ if (json[0] == '{')
             }
         }
 
-        return JsonSerializer.Deserialize<T>(json);
+        return JsonSerializer.Deserialize<T>(json)!;
 
 #endif
     }
-
-    private static readonly JsonSerializerOptions TryDeserializeContextOptions = new() { TypeInfoResolver = TryDeserializeContext.Default };
 
     protected static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)
     {
