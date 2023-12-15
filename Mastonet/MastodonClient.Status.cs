@@ -152,7 +152,7 @@ partial class MastodonClient
 
             if (poll.HideTotals.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("poll[hide_totals]", poll.HideTotals.Value.ToString()));
+                data.Add(new KeyValuePair<string, string>("poll[hide_totals]", poll.HideTotals.Value.ToString().ToLowerInvariant()));
             }
         }
 

@@ -122,7 +122,7 @@ var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr);
     }
 }
 
-[JsonSerializable(typeof(TimelineMessage))]
+[JsonSerializable(typeof(TimelineMessage), GenerationMode = JsonSourceGenerationMode.Metadata)]
 internal partial class TimelineMessageContext : JsonSerializerContext
 {
 }
