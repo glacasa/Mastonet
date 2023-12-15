@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Mastonet.Entities;
 
 namespace Mastonet;
 
@@ -22,7 +23,11 @@ public class NotificationTypeConverter : JsonConverter<NotificationType>
     public override NotificationType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         NotificationType context = 0;
-        var contextStrings = JsonSerializer.Deserialize<IEnumerable<string>>(ref reader, options);
+#if NET6_0_OR_GREATER
+        var contextStrings = JsonSerializer.Deserialize(ref reader, EntitiesContext.Default.IEnumerableString);
+#else
+var contextStrings = JsonSerializer.Deserialize<IEnumerable<string>>(ref reader, options);
+#endif
         if (contextStrings != null)
         {
             foreach (var contextString in contextStrings)
@@ -59,6 +64,11 @@ public class NotificationTypeConverter : JsonConverter<NotificationType>
         if ((value & NotificationType.Reblog) == NotificationType.Reblog) contextStrings.Add("reblog");
         if ((value & NotificationType.Mention) == NotificationType.Mention) contextStrings.Add("mention");
         if ((value & NotificationType.Poll) == NotificationType.Poll) contextStrings.Add("poll");
-        JsonSerializer.Serialize(writer, contextStrings, options);
+#if NET6_0_OR_GREATER
+        JsonSerializer.Serialize(writer, contextStrings, EntitiesContext.Default.ListString);
+#else
+JsonSerializer.Serialize(writer, contextStrings, options);
+#endif
     }
 }
+

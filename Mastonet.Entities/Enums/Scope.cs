@@ -34,6 +34,7 @@ public enum GranularScope
     Write__Reports,
     Write__Statuses,
 
+    Follow,
     Push,
 
     Admin__Read,

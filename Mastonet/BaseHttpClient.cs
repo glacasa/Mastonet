@@ -304,10 +304,25 @@ public abstract partial class BaseHttpClient
 
     private static T TryDeserialize<T>(string json)
     {
+#if NET6_0_OR_GREATER
+
         if (json[0] == '{')
         {
-            
+            var error = JsonSerializer.Deserialize(json, ErrorContext.Default.Error);
+
+            if (error != null && !string.IsNullOrEmpty(error.Description))
+            {
+                throw new ServerErrorException(error);
+            }
+        }
+
+        return (T?)JsonSerializer.Deserialize(json, typeof(T), TryDeserializeContext.Default)!;
+#else
+
+if (json[0] == '{')
+        {
             var error = JsonSerializer.Deserialize<Error>(json);
+
             if (error != null && !string.IsNullOrEmpty(error.Description))
             {
                 throw new ServerErrorException(error);
@@ -315,6 +330,8 @@ public abstract partial class BaseHttpClient
         }
 
         return JsonSerializer.Deserialize<T>(json)!;
+
+#endif
     }
 
     protected static string AddQueryStringParam(string queryParams, string queryStringParam, string? value)

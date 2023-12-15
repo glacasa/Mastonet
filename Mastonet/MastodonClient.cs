@@ -74,7 +74,29 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <returns></returns>
     public Task<IEnumerable<Tag>> GetTrendingTags()
     {
-        return Get<IEnumerable<Tag>>("/api/v1/trends");
+        return Get<IEnumerable<Tag>>("/api/v1/trends/tags");
+    }
+
+    /// <summary>
+    /// Statuses that have been interacted with more than others.
+    /// </summary>
+    /// <param name="offset"></param>
+    /// <param name="limit"></param>
+    /// <returns></returns>
+    public Task<MastodonList<Status>> GetTrendingStatuses(int? offset = null, int? limit = null)
+    {
+        var queryParams = "";
+
+        if(offset.HasValue)
+        {
+            queryParams = "?offset=" + offset.Value;
+        }
+        if(limit.HasValue)
+        {
+            queryParams += (queryParams != "" ? "&" : "?") + "limit=" + limit.Value;
+        }
+
+        return GetMastodonList<Status>("/api/v1/trends/statuses" + queryParams);
     }
 
     /// <summary>
@@ -348,7 +370,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
             data.Add("focus", $"{focus.X},{focus.Y}");
         }
 
-        return this.Post<Attachment>("/api/v1/media", data, list);
+        return this.Post<Attachment>("/api/v2/media", data, list);
     }
 
     /// <summary>
@@ -502,7 +524,7 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     {
         var data = new List<KeyValuePair<string, string>>()
         {
-            new KeyValuePair<string, string>("account_id", accountId.ToString()),
+            new KeyValuePair<string, string>("account_id", accountId),
         };
         if (statusIds != null)
         {
