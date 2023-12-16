@@ -23,5 +23,5 @@ public class History
     /// the total of accounts using the tag within that day.
     /// </summary>
     [JsonPropertyName("accounts")]
-    public int Accounts { get; set; }
+    public string Accounts { get; set; }
 }
