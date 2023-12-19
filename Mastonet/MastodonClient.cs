@@ -80,8 +80,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// <summary>
     /// Statuses that have been interacted with more than others.
     /// </summary>
-    /// <param name="offset"></param>
-    /// <param name="limit"></param>
+    /// <param name="offset">Maximum number of results to return. Defaults to 10 links. Max 20 links</param>
+    /// <param name="limit">Skip the first n results</param>
     /// <returns></returns>
     public Task<MastodonList<Status>> GetTrendingStatuses(int? offset = null, int? limit = null)
     {
@@ -97,6 +97,26 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         }
 
         return GetMastodonList<Status>("/api/v1/trends/statuses" + queryParams);
+    }
+
+    /// <summary>
+    /// Links that have been shared more than others.
+    /// </summary>
+    /// <returns></returns>
+    public Task<MastodonList<Card>> GetTrendingLinks(int? offset = null, int? limit = null)
+    {
+        var queryParams = "";
+
+        if (offset.HasValue)
+        {
+            queryParams = "?offset=" + offset.Value;
+        }
+        if (limit.HasValue)
+        {
+            queryParams += (queryParams != "" ? "&" : "?") + "limit=" + limit.Value;
+        }
+
+        return GetMastodonList<Card>("/api/v1/trends/links" + queryParams);
     }
 
     /// <summary>

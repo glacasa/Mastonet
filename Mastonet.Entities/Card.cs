@@ -98,9 +98,4 @@ public class Card
     /// </summary>
     [JsonPropertyName("blurhash")]
     public string? BlurHash { get; set; }
-    /// <summary>
-    /// Usage statistics for given days (typically the past week).
-    /// </summary>
-    [JsonPropertyName("history")]
-    public History? History { get; set; }
 }
