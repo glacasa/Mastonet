@@ -1,8 +1,8 @@
 ﻿using Mastonet.Entities;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mastonet;
@@ -171,6 +171,42 @@ public interface IMastodonClient
     Task<Attachment> UploadMedia(Stream data, string fileName = "file", string? description = null, AttachmentFocusData? focus = null);
 
     /// <summary>
+    /// Wait until an attachment has been uploaded and processed
+    /// </summary>
+    /// <param name="attachment">Attachment that has just been created</param>
+    /// <param name="waitSeconds">Poll for Status update interval</param>
+    /// <param name="maxWaitSeconds">Maximum time to wait before giving opt (timeout)</param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    Task<Attachment> WaitUntilMediaIsUploaded(Attachment attachment, int waitSeconds = 10, int maxWaitSeconds = 300);
+
+    /// <summary>
+    /// Get Information from a single Media item
+    /// </summary>
+    /// <param name="mediaId">Id from Attachment</param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    Task<Attachment> GetMedia(string mediaId);
+
+    /// <summary>
+    /// Uploading a media attachment async (v2) You will have to wait afterwards until the attachment is processed. This is meant for bigger attachments (videos)
+    /// </summary>
+    /// <param name="data">Media stream to be uploaded</param>
+    /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
+    /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+    /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    Task<Attachment> UploadMediaAsync(MediaDefinition media, string? description = null, AttachmentFocusData? focus = null);
+
+    /// <summary>
+    /// Uploading a media attachment async (v2) You will have to wait afterwards until the attachment is processed. This is meant for bigger attachments (videos)
+    /// </summary>
+    /// <param name="media">Media to be uploaded</param>
+    /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+    /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    Task<Attachment> UploadMediaAsync(Stream data, string fileName = "file", string? description = null, AttachmentFocusData? focus = null);
+
+
+    /// <summary>
     /// Uploading a media attachment
     /// </summary>
     /// <param name="media">Media to be uploaded</param>
@@ -215,7 +251,6 @@ public interface IMastodonClient
     /// <param name="notificationId"></param>
     /// <returns></returns>
     Task DismissNotification(string notificationId);
-
 
     /// <summary>
     /// Fetching a user's reports
@@ -309,7 +344,7 @@ public interface IMastodonClient
     /// <returns>Returns Poll</returns>
     Task<Poll> Vote(string id, IEnumerable<int> choices);
 
-    #endregion
+    #endregion MastodonClient
 
     #region MastodonClient.Account
 
@@ -325,8 +360,6 @@ public interface IMastodonClient
     /// </summary>
     /// <returns>Returns the user's own Account with Source</returns>
     Task<Account> GetCurrentUser();
-
-
 
     /// <summary>
     /// Update the user's display and preferences.
@@ -468,7 +501,7 @@ public interface IMastodonClient
     /// <returns></returns>
     Task<IEnumerable<Tag>> GetFeaturedTagsSuggestions();
 
-    #endregion
+    #endregion MastodonClient.Account
 
     #region MastodonClient.AccountActions
 
@@ -619,7 +652,7 @@ public interface IMastodonClient
     /// <returns></returns>
     Task<MastodonList<Tag>> ViewFollowedTags(ArrayOptions? options = null);
 
-    #endregion
+    #endregion MastodonClient.AccountActions
 
     #region MastodonClient.Status
 
@@ -791,7 +824,7 @@ public interface IMastodonClient
     /// <returns>Returns the target Status</returns>
     Task<Status> Unpin(string statusId);
 
-    #endregion
+    #endregion MastodonClient.Status
 
     #region MastodonClient.Timeline
 
@@ -860,5 +893,5 @@ public interface IMastodonClient
 
     TimelineStreaming GetDirectMessagesStreaming();
 
-    #endregion
+    #endregion MastodonClient.Timeline
 }
