@@ -104,8 +104,10 @@ var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr);
 
     internal class TimelineMessage
     {
+        [JsonPropertyName("event")]
         public string Event { get; set; } = default!;
 
+        [JsonPropertyName("payload")]
         public string Payload { get; set; } = default!;
     }
 
