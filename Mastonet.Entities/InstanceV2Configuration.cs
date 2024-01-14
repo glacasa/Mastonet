@@ -22,7 +22,7 @@ public class InstanceConfiguration
     /// Limits related to authoring statuses.
     /// </summary>
     [JsonPropertyName("statuses")]
-    public InstanceConfigurationStatutes Statutes { get; set; }= new InstanceConfigurationStatutes();
+    public InstanceConfigurationStatuses Statuses { get; set; }= new InstanceConfigurationStatuses();
 
     /// <summary>
     /// Hints for which attachments will be accepted.
@@ -61,7 +61,7 @@ public class InstanceConfigurationAccounts
     public int MaxFeaturedTags { get; set; }
 }
 
-public class InstanceConfigurationStatutes
+public class InstanceConfigurationStatuses
 {
     /// <summary>
     /// The maximum number of allowed characters per status.
