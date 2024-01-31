@@ -80,6 +80,12 @@ public class InstanceConfigurationStatutes
     /// </summary>
     [JsonPropertyName("characters_reserved_per_url")]
     public int CharactersReservedPerUrl { get; set; }
+
+    /// <summary>
+    /// Contains MIME types that can be used (available on some non-Mastodon instances)
+    /// </summary>
+    [JsonPropertyName("supported_mime_types")]
+    public IEnumerable<string>? SupportedMimeTypes { get; set; } 
 }
 
 public class InstanceConfigurationMediaAttachments
