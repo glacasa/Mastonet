@@ -75,26 +75,37 @@ public class TimelineWebSocketStreaming : TimelineHttpStreaming
         MemoryStream ms = new MemoryStream();
         while (socket != null)
         {
-            var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-            ms.Write(buffer, 0, result.Count);
-
-            if (result.EndOfMessage)
+            try
             {
-                var messageStr = Encoding.UTF8.GetString(ms.ToArray());
+                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                ms.Write(buffer, 0, result.Count);
+
+                if (result.EndOfMessage)
+                {
+                    var messageStr = Encoding.UTF8.GetString(ms.ToArray());
 
 #if NET6_0_OR_GREATER
-                var message = JsonSerializer.Deserialize(messageStr, TimelineMessageContext.Default.TimelineMessage);
+                    var message = JsonSerializer.Deserialize(messageStr, TimelineMessageContext.Default.TimelineMessage);
 #else
 var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr);
 #endif
-                if (message != null)
-                {
-                    SendEvent(message.Event, message.Payload);
-                }
+                    if (message != null)
+                    {
+                        SendEvent(message.Event, message.Payload);
+                    }
 
-                ms.Dispose();
-                ms = new MemoryStream();
+                    ms.Dispose();
+                    ms = new MemoryStream();
+                }
+            }
+            catch (WebSocketException ex)
+            {
+                this.Stop();
+                if (ReconnectStreamOnDisconnect)
+                {
+                    await this.Start();
+                }
             }
         }
         ms.Dispose();
