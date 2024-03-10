@@ -124,7 +124,7 @@ var message = JsonSerializer.Deserialize<TimelineMessage>(messageStr);
 
     public override void Stop()
     {
-        if (socket != null)
+        if (socket?.State == WebSocketState.Open)
         {
             socket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
             socket.Dispose();
