@@ -11,17 +11,17 @@ public class History
     /// UNIX timestamp on midnight of the given day.
     /// </summary>
     [JsonPropertyName("day")]
-    public int Day { get; set; }
+    public string Day { get; set; } = string.Empty;
 
     /// <summary>
     /// the counted usage of the tag within that day.
     /// </summary>
     [JsonPropertyName("uses")]
-    public int Uses { get; set; }
+    public string Uses { get; set; } = string.Empty;
 
     /// <summary>
     /// the total of accounts using the tag within that day.
     /// </summary>
     [JsonPropertyName("accounts")]
-    public int Accounts { get; set; }
+    public string Accounts { get; set; } = string.Empty;
 }
