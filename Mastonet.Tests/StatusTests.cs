@@ -72,7 +72,7 @@ namespace Mastonet.Tests
             await privateClient.Reblog(status.Id);
 
             var rbBy = await privateClient.GetRebloggedBy(status.Id);
-            Assert.NotNull(rbBy.FirstOrDefault(a => a.Id == "11"));
+            Assert.Single(rbBy);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace Mastonet.Tests
             await privateClient.Favourite(status.Id);
 
             var rbBy = await privateClient.GetFavouritedBy(status.Id);
-            Assert.NotNull(rbBy.FirstOrDefault(a => a.Id == "11"));
+            Assert.Single(rbBy);
         }
     }
 }

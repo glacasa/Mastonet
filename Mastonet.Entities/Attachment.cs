@@ -18,7 +18,7 @@ public class Attachment
 
     /// <summary>
     /// The type of the attachment.
-    /// One of: "unknown", "image", "gifv", "video", "audio
+    /// One of: "unknown", "image", "gifv", "video", "audio"
     /// </summary>
     [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;

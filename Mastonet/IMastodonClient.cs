@@ -846,7 +846,7 @@ public interface IMastodonClient
     /// <param name="listId"></param>
     /// <param name="options">Define the first and last items to get</param>
     /// <returns>Returns an array of Statuses, most recent ones first</returns>
-    Task<MastodonList<Status>> GetListTimeline(long listId, ArrayOptions? options = null);
+    Task<MastodonList<Status>> GetListTimeline(string listId, ArrayOptions? options = null);
 
     TimelineStreaming GetPublicStreaming();
 

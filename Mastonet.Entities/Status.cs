@@ -198,3 +198,51 @@ public class Status
     [JsonPropertyName("pinned")]
     public bool? Pinned { get; set; }
 }
+
+public class StatusParameters
+{
+    /// <summary>
+    /// The text of the status
+    /// </summary>
+    public string? Status { get; set; }
+
+    /// <summary>
+    /// Either "direct", "private", "unlisted" or "public"
+    /// </summary>
+    public Visibility? Visibility { get; set; }
+
+    /// <summary>
+    /// Local ID of the status you want to reply to
+    /// </summary>
+    public string? ReplyStatusId { get; set; }
+
+    /// <summary>
+    /// Array of media IDs to attach to the status (maximum 4)
+    /// </summary>
+    public IEnumerable<string>? MediaIds { get; set; }
+
+    /// <summary>
+    /// Set this to mark the media of the status as NSFW
+    /// </summary>
+    public bool Sensitive { get; set; }
+
+    /// <summary>
+    /// Text to be shown as a warning before the actual content
+    /// </summary>
+    public string? SpoilerText { get; set; }
+
+    /// <summary>
+    /// DateTime to schedule posting of status
+    /// </summary>
+    public DateTime? ScheduledAt { get; set; }
+
+    /// <summary>
+    /// Override language code of the toot (ISO 639-2)
+    /// </summary>
+    public string? Language { get; set; }
+
+    /// <summary>
+    /// Nested parameters to attach a poll to the status
+    /// </summary>
+    public PollParameters? PollParameters { get; set; }
+}

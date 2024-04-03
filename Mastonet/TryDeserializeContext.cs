@@ -19,6 +19,7 @@ namespace Mastonet;
 [JsonSerializable(typeof(Poll))]
 [JsonSerializable(typeof(IEnumerable<Tag>))]
 [JsonSerializable(typeof(IEnumerable<Emoji>))]
+[JsonSerializable(typeof(MastodonList<Card>))]
 [JsonSerializable(typeof(Account))]
 [JsonSerializable(typeof(IEnumerable<List>))]
 [JsonSerializable(typeof(Conversation))]

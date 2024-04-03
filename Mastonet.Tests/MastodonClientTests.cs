@@ -22,7 +22,7 @@ namespace _InitTest
         public async Task GetTokens()
         {
             var authClient = new AuthenticationClient(Instance);
-            var appRegistration = await authClient.CreateApp("Mastonet Unit Test", Scope.Read | Scope.Write | Scope.Follow);
+            var appRegistration = await authClient.CreateApp("Mastonet Unit Test", null, null, GranularScope.Read, GranularScope.Write, GranularScope.Follow);
 
             var accessToken1 = await authClient.ConnectWithPassword(Email1, Password1);
             var accessToken2 = await authClient.ConnectWithPassword(Email2, Password2);
