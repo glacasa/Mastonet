@@ -332,7 +332,15 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     #endregion
 
     #region Media
-
+    /// <summary>
+    /// Get a media attachment, before it is attached to a status and posted, but after it is accepted for processing. Use this method to check that the full-sized media has finished processing.
+    /// </summary>
+    /// <param name="attachmentId">The ID of the MediaAttachment in the database</param>
+    /// <returns></returns>
+    public Task<Attachment> GetMediaAttachment(string attachmentId)
+    {
+        return Get<Attachment>($"/api/v1/media/{attachmentId}");
+    }
     /// <summary>
     /// Uploading a media attachment
     /// </summary>
