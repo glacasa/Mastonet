@@ -121,8 +121,10 @@ public interface IMastodonClient
     /// Update a list.
     /// </summary>
     /// <param name="title">The title of the list</param>
+    /// <param name="exclusive">Whether members of this list need to get removed from the “Home” feed</param>
+    /// <param name="replies_policy">One of followed, list, or none. Defaults to list.</param>
     /// <returns>The list updated</returns>
-    Task<List> UpdateList(string listId, string newTitle);
+    Task<List> UpdateList(string listId, string newTitle, bool exclusive, string replies_policy);
 
     /// <summary>
     /// Remove a list.

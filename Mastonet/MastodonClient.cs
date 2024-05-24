@@ -36,11 +36,11 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// </summary>
     /// <returns>Returns the current Instance. Does not require authentication</returns>
     [Obsolete("This method is deprecated on Mastodon v4. Use GetInstanceV2() instead.")]
-    public Task<Instance> GetInstance() 
+    public Task<Instance> GetInstance()
     {
         return this.Get<Instance>("/api/v1/instance");
     }
-    
+
     /// <summary>
     /// Getting instance information
     /// </summary>
@@ -87,11 +87,11 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     {
         var queryParams = "";
 
-        if(offset.HasValue)
+        if (offset.HasValue)
         {
             queryParams = "?offset=" + offset.Value;
         }
-        if(limit.HasValue)
+        if (limit.HasValue)
         {
             queryParams += (queryParams != "" ? "&" : "?") + "limit=" + limit.Value;
         }
@@ -248,8 +248,10 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     /// Update a list.
     /// </summary>
     /// <param name="title">The title of the list</param>
+    /// <param name="exclusive">Whether members of this list need to get removed from the “Home” feed</param>
+    /// <param name="replies_policy">One of followed, list, or none. Defaults to list.</param>
     /// <returns>The list updated</returns>
-    public Task<List> UpdateList(string listId, string newTitle)
+    public Task<List> UpdateList(string listId, string newTitle, bool exclusive, string replies_policy = "list")
     {
         if (string.IsNullOrEmpty(newTitle))
         {
@@ -259,6 +261,8 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         var data = new List<KeyValuePair<string, string>>()
         {
             new KeyValuePair<string, string>("title", newTitle),
+            new KeyValuePair<string, string>("exclusive", exclusive.ToString()),
+            new KeyValuePair<string, string>("replies_policy", replies_policy)
         };
 
         return this.Put<List>("/api/v1/lists/" + listId, data);
