@@ -32,11 +32,11 @@ public class FeaturedTag
     /// The number of authored statuses containing this hashtag.
     /// </summary>
     [JsonPropertyName("statuses_count")]
-    public long StatusesCount { get; set; }
+    public string StatusesCount { get; set; } = string.Empty;
 
     /// <summary>
     /// The timestamp of the last authored status containing this hashtag.
     /// </summary>
     [JsonPropertyName("last_status_at")]
-    public DateTime LastStatusAt { get; set; }
+    public DateTime? LastStatusAt { get; set; }
 }

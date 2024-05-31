@@ -363,6 +363,16 @@ partial class MastodonClient
     }
 
     /// <summary>
+    /// Tags featured by this account
+    /// </summary>
+    /// <param name="id">The ID of the Account in the database</param>
+    /// <returns></returns>
+    public Task<IEnumerable<FeaturedTag>> GetAccountFeaturedTags(string id)
+    {
+        return Get<IEnumerable<FeaturedTag>>($"/api/v1/accounts/{id}/featured_tags");
+    }
+
+    /// <summary>
     /// Feature a tag
     /// </summary>
     /// <param name="name"></param>
