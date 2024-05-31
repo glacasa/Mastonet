@@ -19,9 +19,13 @@ partial class MastodonClient
     /// <param name="accountId"></param>
     /// <param name="reblogs">Whether the followed account’s reblogs will show up in the home timeline</param>
     /// <returns>Returns the target Account</returns>
-    public Task<Relationship> Follow(string accountId, bool reblogs = true)
+    public Task<Relationship> Follow(string accountId, bool reblogs = true, bool notify = false)
     {
-        var data = reblogs ? null : Enumerable.Repeat(new KeyValuePair<string, string>("reblogs", "false"), 1);
+        var data = new List<KeyValuePair<string, string>>()
+        {
+            new KeyValuePair<string, string>("reblogs", reblogs.ToString()),
+            new KeyValuePair<string, string>("notify", notify.ToString().ToLowerInvariant())
+        };
         return this.Post<Relationship>($"/api/v1/accounts/{accountId}/follow", data);
     }
 

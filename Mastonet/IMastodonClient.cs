@@ -478,7 +478,7 @@ public interface IMastodonClient
     /// <param name="accountId"></param>
     /// <param name="reblogs">Whether the followed account’s reblogs will show up in the home timeline</param>
     /// <returns>Returns the target Account</returns>
-    Task<Relationship> Follow(string accountId, bool reblogs = true);
+    Task<Relationship> Follow(string accountId, bool reblogs = true, bool notify = false);
 
     /// <summary>
     /// Unfollowing an account
