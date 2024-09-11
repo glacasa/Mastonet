@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Mastonet.Entities;
 
@@ -39,15 +40,23 @@ public class Card
     public string Type { get; set; } = string.Empty;
 
     /// <summary>
+    /// Fediverse account of the authors of the original resource.
+    /// </summary>
+    [JsonPropertyName("authors")]
+    public IEnumerable<CardAuthor> Authors { get; set; } = Enumerable.Empty<CardAuthor>();
+
+    /// <summary>
     /// The author of the original resource.
     /// </summary>
     [JsonPropertyName("author_name")]
+    [Obsolete("This property was deprecated in Mastodon v4.3. Use the Authors property instead.")]
     public string? AuthorName { get; set; }
 
     /// <summary>
     /// A link to the author of the original resource.
     /// </summary>
     [JsonPropertyName("author_url")]
+    [Obsolete("This property was deprecated in Mastodon v4.3. Use the Authors property instead.")]
     public string? AuthorUrl { get; set; }
 
     /// <summary>
