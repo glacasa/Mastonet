@@ -27,7 +27,10 @@ public class Tag
     /// </summary>
     [JsonPropertyName("history")]
     public IEnumerable<History>? History { get; set; }
-    
+
+    /// <summary>
+    /// Whether the current token’s authorized user is following this tag.
+    /// </summary>
     [JsonPropertyName("following")]
     public bool? Following { get; set; }
 }

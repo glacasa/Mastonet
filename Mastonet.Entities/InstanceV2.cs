@@ -54,6 +54,12 @@ public class InstanceV2
     public InstanceThumbnail Thumbnail { get; set; }= new InstanceThumbnail();
 
     /// <summary>
+    /// The list of available size variants for this instance configured icon.
+    /// </summary>
+    [JsonPropertyName("icon")]
+    public IEnumerable<InstanceIcon> Icon { get; set; } = Enumerable.Empty<InstanceIcon>();
+
+    /// <summary>
     /// Primary languages of the website and its staff.
     /// </summary>
     [JsonPropertyName("languages")]
@@ -70,6 +76,12 @@ public class InstanceV2
     /// </summary>
     [JsonPropertyName("registrations")]
     public InstanceRegistrations Registrations { get; set; }= new InstanceRegistrations();
+
+    /// <summary>
+    /// Information about which version of the API is implemented by this server. It contains at least a mastodon attribute, and other implementations may have their own additional attributes.
+    /// </summary>
+    [JsonPropertyName("api_versions")]
+    public InstanceApiVersion InstanceApiVersion { get; set; } = new InstanceApiVersion();
 
     /// <summary>
     /// Hints related to contacting a representative of the website.
@@ -159,6 +171,15 @@ public class InstanceRegistrations
     public string? Message { get; set; }
 }
 
+public class InstanceApiVersion
+{
+    /// <summary>
+    /// API version number that this server implements. Starting from Mastodon v4.3.0, API changes will come with a version number, which clients can check against this value.
+    /// </summary>
+    [JsonPropertyName("mastodon")]
+    public int Mastodon { get; set; }
+}
+
 public class InstanceContact
 {
     /// <summary>
@@ -187,4 +208,19 @@ public class InstanceRule
     /// </summary>
     [JsonPropertyName("text")]
     public string Text { get; set; } = string.Empty;
+}
+
+public class InstanceIcon
+{
+    /// <summary>
+    /// The URL of this icon.
+    /// </summary>
+    [JsonPropertyName("src")]
+    public string Source { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The size of this icon.
+    /// </summary>
+    [JsonPropertyName("size")]
+    public string Size { get; set; } = string.Empty;
 }

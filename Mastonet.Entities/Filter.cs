@@ -17,6 +17,12 @@ public class Filter
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// A title given by the user to name the filter.
+    /// </summary>
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
     /// The text to be filtered.
     /// </summary>
     [JsonPropertyName("phrase")]

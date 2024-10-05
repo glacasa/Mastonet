@@ -29,6 +29,12 @@ public class Relationship
     public bool Requested { get; set; }
 
     /// <summary>
+    /// Has this user requested to follow you?
+    /// </summary>
+    [JsonPropertyName("requested_by")]
+    public bool RequestedBy { get; set; }
+
+    /// <summary>
     /// Are you featuring this user on your profile?
     /// </summary>
     [JsonPropertyName("endorsed")]

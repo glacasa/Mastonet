@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -41,6 +42,12 @@ public class InstanceConfiguration
     /// </summary>
     [JsonPropertyName("translation")]
     public InstanceConfigurationTranslation Translation { get; set; }= new InstanceConfigurationTranslation();
+
+    /// <summary>
+    /// The instances VAPID public key, used for push notifications, the same as WebPushSubscription#server_key.
+    /// </summary>
+    [JsonPropertyName("vapid")]
+    public InstanceConfigurationVapid Vapid { get; set; } = new InstanceConfigurationVapid();
 }
 
 public class InstanceConfigurationUrls
@@ -161,4 +168,13 @@ public class InstanceConfigurationTranslation
     /// </summary>
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
+}
+
+public class InstanceConfigurationVapid
+{
+    /// <summary>
+    /// The instances VAPID public key, used for push notifications, the same as WebPushSubscription#server_key.
+    /// </summary>
+    [JsonPropertyName("public_key")]
+    public string PublicKey { get; set; } = string.Empty;
 }
