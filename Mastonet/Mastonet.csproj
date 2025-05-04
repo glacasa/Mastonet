@@ -19,8 +19,8 @@
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageTags>Mastodon</PackageTags>
-		<IsTrimmable>true</IsTrimmable>
-		<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+		<IsAotCompatible Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 8">true</IsAotCompatible>
+		<IsTrimmable Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 6">true</IsTrimmable>
 	</PropertyGroup>
 	
 	<ItemGroup>
