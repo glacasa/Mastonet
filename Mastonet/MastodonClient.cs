@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mastonet;
@@ -348,6 +349,20 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
     }
 
     /// <summary>
+    /// Uploading a media attachment async (v2) You will have to wait afterwards until the attachment is processed. This is meant for bigger attachments (videos)
+    /// </summary>
+    /// <param name="data">Media stream to be uploaded</param>
+    /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
+    /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+    /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    public Task<Attachment> UploadMediaAsync(Stream data, string fileName = "file", string? description = null,
+    AttachmentFocusData? focus = null)
+    {
+        return UploadMediaAsync(new MediaDefinition(data, fileName), description, focus);
+    }
+
+    /// <summary>
     /// Uploading a media attachment
     /// </summary>
     /// <param name="media">Media to be uploaded</param>
@@ -371,6 +386,64 @@ public partial class MastodonClient : BaseHttpClient, IMastodonClient
         }
 
         return this.Post<Attachment>("/api/v2/media", data, list);
+    }
+
+    /// <summary>
+    /// Uploading a media attachment async (v2) You will have to wait afterwards until the attachment is processed. This is meant for bigger attachments (videos)
+    /// </summary>
+    /// <param name="media">Media to be uploaded</param>
+    /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
+    /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    public async Task<Attachment> UploadMediaAsync(MediaDefinition media, string? description = null,
+    AttachmentFocusData? focus = null)
+    {
+        media.ParamName = "file";
+        var list = new List<MediaDefinition>() { media };
+        var data = new Dictionary<string, string>();
+        if (description != null)
+        {
+            data.Add("description", description);
+        }
+
+        if (focus != null)
+        {
+            data.Add("focus", $"{focus.X},{focus.Y}");
+        }
+
+        return await this.Post<Attachment>("/api/v2/media", data, list);
+    }
+
+    /// <summary>
+    /// Wait until an attachment has been uploaded and processed
+    /// </summary>
+    /// <param name="attachment">Attachment that has just been created</param>
+    /// <param name="waitSeconds">Poll for Status update interval</param>
+    /// <param name="maxWaitSeconds">Maximum time to wait before giving opt (timeout)</param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    public async Task<Attachment> WaitUntilMediaIsUploaded(Attachment attachment, int waitSeconds = 10, int maxWaitSeconds = 300)
+    {
+        int totalTimeWasted = 0;
+        while (attachment.Id != null && attachment.Url == null && attachment.PreviewUrl != null && totalTimeWasted < maxWaitSeconds)
+        {
+            Thread.Sleep(waitSeconds * 1000);
+            totalTimeWasted += waitSeconds;
+            attachment = await GetMedia(attachment.Id);
+        }
+        return attachment;
+    }
+
+    /// <summary>
+    /// Get Information from a single Media item
+    /// </summary>
+    /// <param name="mediaId">Id from Attachment</param>
+    /// <returns>Returns an Attachment that can be used when creating a status after the processing is finished</returns>
+    public async Task<Attachment> GetMedia(string mediaId)
+    {
+        var attachment = await this.Get<Attachment>("/api/v1/media/" + mediaId);
+        var prev = attachment.PreviewUrl;
+        var url = attachment.Url;
+        return attachment;
     }
 
     /// <summary>
