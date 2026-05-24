@@ -15,6 +15,8 @@ public class TimelineHttpStreaming : TimelineStreaming
     private HttpClient client;
     private CancellationTokenSource? cts;
 
+    public event EventHandler StreamingStopped;
+
     public TimelineHttpStreaming(StreamingType type, string? param, string instance, string? accessToken)
         : this(type, param, instance, accessToken, DefaultHttpClient.Instance) { }
     public TimelineHttpStreaming(StreamingType type, string? param, string instance, string? accessToken, HttpClient client)
@@ -100,6 +102,7 @@ public class TimelineHttpStreaming : TimelineStreaming
         {
             cts.Cancel();
             cts = null;
+            StreamingStopped?.Invoke(this, EventArgs.Empty);
         }
     }
 }

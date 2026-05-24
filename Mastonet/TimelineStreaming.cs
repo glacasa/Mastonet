@@ -27,6 +27,8 @@ public abstract class TimelineStreaming
     public abstract Task Start();
     public abstract void Stop();
 
+    public bool ReconnectStreamOnDisconnect { get; set; }
+
     protected void SendEvent(string eventName, string data)
     {
         switch (eventName)
