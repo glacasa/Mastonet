@@ -94,6 +94,12 @@ public class Status
     [JsonPropertyName("emojis")]
     public IEnumerable<Emoji> Emojis { get; set; } = Enumerable.Empty<Emoji>();
 
+    /// <summary>
+    /// Summary of the post quote’s approval policy and how it applies to the user making the request,
+    /// that is, whether the user can be expected to be allowed to quote that post.
+    /// </summary>
+    [JsonPropertyName("quote_approval")]
+    public QuoteApproval QuoteApproval { get; set; } = new QuoteApproval();
 
     // Informational attributes
 
@@ -115,6 +121,11 @@ public class Status
     [JsonPropertyName("replies_count")]
     public long RepliesCount { get; set; }
 
+    /// <summary>
+    /// How many accepted quotes this status has.
+    /// </summary>
+    [JsonPropertyName("quotes_count")]
+    public long QuotesCount { get; set; }
 
     // Nullable attributes
 
@@ -149,6 +160,12 @@ public class Status
     public Poll? Poll { get; set; }
 
     /// <summary>
+    /// Information about the status being quoted, if any.
+    /// </summary>
+    [JsonPropertyName("quote")]
+    public Quote? Quote { get; set; }
+
+    /// <summary>
     /// Preview card for links included within status content.
     /// </summary>
     [JsonPropertyName("card")]
@@ -161,8 +178,8 @@ public class Status
     public string? Language { get; set; }
 
     /// <summary>
-    /// Plain-text source of a status. 
-    /// Returned instead of content when status is deleted, so the user may redraft from the source text 
+    /// Plain-text source of a status.
+    /// Returned instead of content when status is deleted, so the user may redraft from the source text
     /// without the client having to reverse-engineer the original text from the HTML content.
     /// </summary>
     [JsonPropertyName("text")]

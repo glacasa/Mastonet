@@ -5,11 +5,11 @@ using System.Linq;
 namespace Mastonet.Entities;
 
 /// <summary>
-/// Represents display or publishing preferences of user's own account. 
+/// Represents display or publishing preferences of user's own account.
 /// Returned as an additional entity when verifying and updated credentials, as an attribute of Account.
 /// </summary>
 public class Source
-{        
+{
     /// <summary>
     /// Profile bio.
     /// </summary>
@@ -48,4 +48,10 @@ public class Source
     /// </summary>
     [JsonPropertyName("follow_requests_count")]
     public int? FollowRequestsCount { get; set; }
+
+    /// <summary>
+    /// The default quote policy to be used for new statuses.
+    /// </summary>
+    [JsonPropertyName("quote_policy")]
+    public QuotePolicy? QuotePolicy { get; set; }
 }
